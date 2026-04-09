@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<section class="hero">
+    <div class="hero-video-wrap">
+        <video autoplay muted loop playsinline id="hero-video">
+            <source src="{{ url_for('static', filename='car.mp4') }}" type="video/mp4">
+        </video>
+        <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge"><span class="dot"></span> Premium Automotive Care</div>
+        <h1 class="hero-title">
+            <span class="title-letter" style="animation-delay:0s">V</span>
+            <span class="title-letter" style="animation-delay:0.08s">A</span>
+            <span class="title-letter" style="animation-delay:0.16s">L</span>
+            <span class="title-letter blue-letter" style="animation-delay:0.24s">T</span>
+            <span class="title-letter" style="animation-delay:0.32s">R</span>
+            <span class="title-letter" style="animation-delay:0.40s">I</span>
+            <span class="title-letter" style="animation-delay:0.48s">O</span>
+            <span class="title-letter" style="animation-delay:0.56s">N</span>
+        </h1>
+        <p class="hero-tagline">Expert Care for Every Car</p>
+        <div class="hero-actions">
+            <a href="{{ url_for('main.services') }}" class="btn btn-primary hero-btn"><i class="fa fa-wrench"></i> Explore Services</a>
+            <a href="{{ url_for('main.estimator') }}" class="btn btn-outline hero-btn"><i class="fa fa-calculator"></i> Get Estimate</a>
+        </div>
+        <div class="hero-stats">
+            <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Happy Customers</span></div>
+            <div class="stat-div"></div>
+            <div class="stat"><span class="stat-num">4</span><span class="stat-label">Cities</span></div>
+            <div class="stat-div"></div>
+            <div class="stat"><span class="stat-num">30</span><span class="stat-label">Day Warranty</span></div>
+            <div class="stat-div"></div>
+            <div class="stat"><span class="stat-num">100%</span><span class="stat-label">Transparent</span></div>
+        </div>
+    </div>
+    <div class="hero-scroll"><i class="fa fa-chevron-down"></i></div>
+</section>
+
+<section class="section" id="why">
+    <div class="container">
+        <div style="text-align:center;margin-bottom:50px;">
+            <p class="section-label">EXCELLENCE DEFINED</p>
+            <h2 class="section-title">Why Choose <span>Valtrion</span></h2>
+            <p class="section-sub">Everything you deserve from a premium car care experience</p>
+        </div>
+        <div class="why-grid">
+            <div class="why-card"><div class="why-icon"><i class="fa fa-user-check"></i></div><div><h4 class="why-title">Certified Experts</h4><p class="why-desc">Professionally trained automotive technicians with multi-brand expertise.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-bullseye"></i></div><div><h4 class="why-title">Precision Standards</h4><p class="why-desc">Precision-driven servicing standards for every vehicle we handle.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-truck"></i></div><div><h4 class="why-title">Free Pickup and Delivery</h4><p class="why-desc">Complimentary pickup and doorstep delivery at your convenience.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-cog"></i></div><div><h4 class="why-title">OEM-Grade Parts</h4><p class="why-desc">Genuine OEM-grade spare parts for lasting performance.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-receipt"></i></div><div><h4 class="why-title">Transparent Pricing</h4><p class="why-desc">Detailed cost breakdown with absolutely no hidden charges.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-microscope"></i></div><div><h4 class="why-title">Advanced Diagnostics</h4><p class="why-desc">Latest diagnostic and servicing equipment for accurate results.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-shield-halved"></i></div><div><h4 class="why-title">30-Day Warranty</h4><p class="why-desc">Every service backed by a 30-day warranty assurance.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-satellite-dish"></i></div><div><h4 class="why-title">Real-Time Updates</h4><p class="why-desc">Track your car service status in real-time, always.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-magnifying-glass-chart"></i></div><div><h4 class="why-title">Quality Control</h4><p class="why-desc">Strict quality inspection before every delivery.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-headset"></i></div><div><h4 class="why-title">Premium Support</h4><p class="why-desc">Dedicated customer support for a seamless experience.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-clock"></i></div><div><h4 class="why-title">On-Time Delivery</h4><p class="why-desc">We respect your time with timely service completion.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-database"></i></div><div><h4 class="why-title">Digital Records</h4><p class="why-desc">Digitally managed service history for your vehicle.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-car-burst"></i></div><div><h4 class="why-title">Multi-Brand</h4><p class="why-desc">Expertise across all major car brands in India.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-star"></i></div><div><h4 class="why-title">Trusted by Many</h4><p class="why-desc">Hundreds of satisfied customers across 4 cities.</p></div></div>
+            <div class="why-card"><div class="why-icon"><i class="fa fa-file-invoice"></i></div><div><h4 class="why-title">No Hidden Charges</h4><p class="why-desc">What you see is what you pay. Period.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<div class="glow-line"></div>
+
+<section class="section" id="services">
+    <div class="container">
+        <div style="text-align:center;margin-bottom:50px;">
+            <p class="section-label">WHAT WE DO</p>
+            <h2 class="section-title">Our <span>Service</span> Categories</h2>
+            <p class="section-sub">World-class automotive care delivered to your doorstep</p>
+        </div>
+        <div class="cat-tabs">
+            <button class="cat-tab active" onclick="filterCat('all', this)">All Services</button>
+            {% for cat in categories %}
+            <button class="cat-tab" onclick="filterCat('{{ cat }}', this)">{{ cat }}</button>
+            {% endfor %}
+        </div>
+        <div class="services-grid" id="services-grid">
+            {% for service in services %}
+            <div class="service-card" data-cat="{{ service.category }}">
+                <div class="service-icon-wrap"><i class="fa {{ service.icon or 'fa-wrench' }}"></i></div>
+                <h3 class="service-name">{{ service.name }}</h3>
+                <span class="service-cat-badge">{{ service.category }}</span>
+                <p class="service-duration"><i class="fa fa-clock"></i> {{ service.duration }}</p>
+                <div class="s-tabs">
+                    <button class="s-tab active" onclick="switchTab(this, 'desc-{{ service.id }}')">Description</button>
+                    <button class="s-tab" onclick="switchTab(this, 'price-{{ service.id }}')">Price</button>
+                </div>
+                <div class="s-content" id="desc-{{ service.id }}">
+                    <p class="service-desc">{{ service.description }}</p>
+                </div>
+                <div class="s-content" id="price-{{ service.id }}" style="display:none;">
+                    <div class="price-display">Rs.{{ "%.0f"|format(service.price) }}</div>
+                    <p style="color:var(--silver);font-size:13px;margin-top:4px;">Inclusive of all taxes. No hidden charges.</p>
+                </div>
+                <a href="{{ url_for('booking.book_service', service_id=service.id) }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px;">
+                    <i class="fa fa-calendar-check"></i> Book Now
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<div class="glow-line"></div>
+
+<section class="section">
+    <div class="container">
+        <div style="text-align:center;margin-bottom:50px;">
+            <p class="section-label">WE ARE HERE</p>
+            <h2 class="section-title">Our <span>Locations</span></h2>
+            <p class="section-sub">Serving 4 major cities across South India</p>
+        </div>
+        <div class="branches-grid">
+            <div class="branch-card"><div class="branch-city-icon"><i class="fa fa-map-marker-alt"></i></div><h3 class="branch-city">Bengaluru</h3><div class="branch-detail"><i class="fa fa-location-dot"></i> #12, 1st Cross, Koramangala</div><div class="branch-detail"><i class="fa fa-phone"></i> <a href="tel:+919876543210">+91 9876543210</a></div><div class="branch-detail"><i class="fa fa-envelope"></i> <a href="mailto:valtrionblore@gmail.com">valtrionblore@gmail.com</a></div><div class="branch-detail"><i class="fa fa-clock"></i> Mon-Sat: 8AM-8PM</div></div>
+            <div class="branch-card"><div class="branch-city-icon"><i class="fa fa-map-marker-alt"></i></div><h3 class="branch-city">Hyderabad</h3><div class="branch-detail"><i class="fa fa-location-dot"></i> #32/1, BDA Layout, Kadapa</div><div class="branch-detail"><i class="fa fa-phone"></i> <a href="tel:+918765432190">+91 8765432190</a></div><div class="branch-detail"><i class="fa fa-envelope"></i> <a href="mailto:valtrionhyd@gmail.com">valtrionhyd@gmail.com</a></div><div class="branch-detail"><i class="fa fa-clock"></i> Mon-Sat: 8AM-8PM</div></div>
+            <div class="branch-card"><div class="branch-city-icon"><i class="fa fa-map-marker-alt"></i></div><h3 class="branch-city">Chennai</h3><div class="branch-detail"><i class="fa fa-location-dot"></i> #15A, Dollars Colony, Mylapore</div><div class="branch-detail"><i class="fa fa-phone"></i> <a href="tel:+917654321890">+91 7654321890</a></div><div class="branch-detail"><i class="fa fa-envelope"></i> <a href="mailto:valtrionchen@gmail.com">valtrionchen@gmail.com</a></div><div class="branch-detail"><i class="fa fa-clock"></i> Mon-Sat: 8AM-8PM</div></div>
+            <div class="branch-card"><div class="branch-city-icon"><i class="fa fa-map-marker-alt"></i></div><h3 class="branch-city">Pune</h3><div class="branch-detail"><i class="fa fa-location-dot"></i> #54, Viman Nagar</div><div class="branch-detail"><i class="fa fa-phone"></i> <a href="tel:+918928371522">+91 8928371522</a></div><div class="branch-detail"><i class="fa fa-envelope"></i> <a href="mailto:valtrionpune@gmail.com">valtrionpune@gmail.com</a></div><div class="branch-detail"><i class="fa fa-clock"></i> Mon-Sat: 8AM-8PM</div></div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .hero { position: relative; height: 100vh; min-height: 600px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .hero-video-wrap { position: absolute; inset: 0; z-index: 0; }
+    #hero-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.55; filter: saturate(0.6) brightness(0.7); }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,8,16,0.3) 0%, rgba(5,8,16,0.5) 60%, rgba(5,8,16,1) 100%); }
+    .hero-content { position: relative; z-index: 2; text-align: center; padding: 0 24px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,102,255,0.15); border: 1px solid rgba(0,102,255,0.4); padding: 6px 18px; border-radius: 30px; color: var(--blue-bright); font-size: 13px; letter-spacing: 2px; margin-bottom: 32px; text-transform: uppercase; font-weight: 700; animation: fadeUp 0.8s ease both; }
+    .dot { width: 8px; height: 8px; background: var(--blue); border-radius: 50%; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+    .hero-title { font-family: 'Orbitron', monospace; font-size: clamp(60px, 12vw, 140px); font-weight: 900; letter-spacing: 12px; line-height: 1; margin-bottom: 20px; display: flex; justify-content: center; gap: 2px; }
+    .title-letter { display: inline-block; color: var(--white); text-shadow: 0 0 60px rgba(255,255,255,0.3); animation: letterDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+    .blue-letter { color: var(--blue) !important; text-shadow: 0 0 40px var(--blue), 0 0 80px rgba(0,102,255,0.5) !important; }
+    @keyframes letterDrop { from{opacity:0;transform:translateY(-60px) scale(0.8)} to{opacity:1;transform:translateY(0) scale(1)} }
+    .hero-tagline { font-size: 18px; letter-spacing: 6px; text-transform: uppercase; color: var(--silver); margin-bottom: 40px; animation: fadeUp 1s ease 0.6s both; }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; margin-bottom: 60px; animation: fadeUp 1s ease 0.8s both; }
+    .hero-btn { padding: 14px 32px; font-size: 15px; }
+    .hero-stats { display: flex; gap: 40px; justify-content: center; align-items: center; animation: fadeUp 1s ease 1s both; }
+    .stat { text-align: center; }
+    .stat-num { display: block; font-family: 'Orbitron'; font-size: 28px; font-weight: 700; color: var(--white); }
+    .stat-label { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--silver); }
+    .stat-div { width: 1px; height: 40px; background: var(--border); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .hero-scroll { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: var(--silver); font-size: 20px; animation: bounce 2s infinite; z-index: 2; }
+    @keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(10px)} }
+    .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .why-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; gap: 16px; align-items: flex-start; transition: all 0.3s; }
+    .why-card:hover { border-color: var(--blue); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,102,255,0.1); }
+    .why-icon { width: 44px; height: 44px; min-width: 44px; background: rgba(0,102,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 18px; }
+    .why-title { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 4px; }
+    .why-desc { font-size: 13px; color: var(--silver); line-height: 1.5; }
+    .cat-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+    .cat-tab { background: var(--card); border: 1px solid var(--border); color: var(--silver); padding: 8px 18px; border-radius: 30px; cursor: pointer; font-family: 'Rajdhani'; font-size: 14px; font-weight: 600; transition: all 0.2s; letter-spacing: 0.5px; }
+    .cat-tab.active, .cat-tab:hover { background: var(--blue); border-color: var(--blue); color: white; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .service-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: all 0.3s; }
+    .service-card:hover { border-color: var(--blue); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,102,255,0.12); }
+    .service-icon-wrap { width: 64px; height: 64px; background: linear-gradient(135deg, rgba(0,102,255,0.2), rgba(0,102,255,0.05)); border: 1px solid rgba(0,102,255,0.3); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: var(--blue); margin-bottom: 16px; }
+    .service-name { font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+    .service-cat-badge { display: inline-block; background: rgba(0,102,255,0.1); border: 1px solid rgba(0,102,255,0.3); color: var(--blue-bright); font-size: 11px; letter-spacing: 1px; padding: 2px 10px; border-radius: 20px; margin-bottom: 8px; text-transform: uppercase; font-weight: 600; }
+    .service-duration { color: var(--silver); font-size: 13px; margin-bottom: 14px; }
+    .s-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+    .s-tab { background: none; border: none; color: var(--silver); padding: 6px 14px; cursor: pointer; font-family: 'Rajdhani'; font-size: 13px; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+    .s-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .service-desc { color: var(--silver); font-size: 14px; line-height: 1.6; }
+    .price-display { font-family: 'Orbitron'; font-size: 32px; font-weight: 700; color: var(--blue); }
+    .branches-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .branch-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; text-align: center; transition: all 0.3s; }
+    .branch-card:hover { border-color: var(--blue); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,102,255,0.1); }
+    .branch-city-icon { font-size: 32px; color: var(--blue); margin-bottom: 12px; }
+    .branch-city { font-family: 'Orbitron'; font-size: 14px; letter-spacing: 2px; color: var(--white); margin-bottom: 16px; }
+    .branch-detail { color: var(--silver); font-size: 13px; margin-bottom: 8px; line-height: 1.5; }
+    .branch-detail a { color: var(--blue-bright); text-decoration: none; }
+    .branch-detail i { color: var(--blue); margin-right: 6px; width: 14px; }
+    @media (max-width: 900px) { .why-grid { grid-template-columns: repeat(2, 1fr); } .services-grid { grid-template-columns: repeat(2, 1fr); } .branches-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .why-grid, .services-grid, .branches-grid { grid-template-columns: 1fr; } .hero-actions { flex-direction: column; } .hero-stats { display: none; } }
+</style>
+
+<script>
+    function filterCat(cat, btn) {
+        document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
+        btn.classList.add('active');
+        document.querySelectorAll('.service-card').forEach(function(card) {
+            card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+        });
+    }
+    function switchTab(btn, contentId) {
+        var card = btn.closest('.service-card');
+        card.querySelectorAll('.s-tab').forEach(function(t) { t.classList.remove('active'); });
+        card.querySelectorAll('.s-content').forEach(function(c) { c.style.display = 'none'; });
+        btn.classList.add('active');
+        document.getElementById(contentId).style.display = 'block';
+    }
+</script>
+{% endblock %}

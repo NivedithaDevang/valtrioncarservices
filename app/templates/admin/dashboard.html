@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;max-width:1400px;margin:0 auto;">
+
+    <!-- HEADER -->
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;">
+        <div>
+            <p class="section-label">CONTROL CENTER</p>
+            <h2 class="section-title">Admin <span>Dashboard</span></h2>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+            <div style="position:relative;">
+                <input type="date" id="date-filter" class="form-control" style="width:180px;" onchange="filterDate()">
+            </div>
+            {% if unread_msgs > 0 %}
+            <a href="{{ url_for('admin.chat') }}" class="btn btn-primary btn-sm" style="position:relative;">
+                <i class="fa fa-comments"></i> Chat
+                <span style="position:absolute;top:-6px;right:-6px;background:var(--red);color:white;border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;">{{ unread_msgs }}</span>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-bottom:28px;">
+        <div class="card" style="text-align:center;background:rgba(0,102,255,0.06);">
+            <div style="font-family:'Orbitron';font-size:28px;color:var(--blue);">{{ total_bookings }}</div>
+            <div style="color:var(--silver);font-size:11px;letter-spacing:1px;margin-top:4px;">TOTAL</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(255,165,0,0.06);">
+            <div style="font-family:'Orbitron';font-size:28px;color:orange;">{{ pending_jobs }}</div>
+            <div style="color:var(--silver);font-size:11px;letter-spacing:1px;margin-top:4px;">PENDING</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(0,102,255,0.06);">
+            <div style="font-family:'Orbitron';font-size:28px;color:var(--blue-bright);">{{ confirmed }}</div>
+            <div style="color:var(--silver);font-size:11px;letter-spacing:1px;margin-top:4px;">CONFIRMED</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(0,255,136,0.06);">
+            <div style="font-family:'Orbitron';font-size:28px;color:var(--green);">{{ completed }}</div>
+            <div style="color:var(--silver);font-size:11px;letter-spacing:1px;margin-top:4px;">COMPLETED</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(255,51,85,0.06);">
+            <div style="font-family:'Orbitron';font-size:28px;color:var(--red);">{{ cancelled }}</div>
+            <div style="color:var(--silver);font-size:11px;letter-spacing:1px;margin-top:4px;">CANCELLED</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(0,255,136,0.06);">
+            <div style="font-family:'Orbitron';font-size:22px;color:var(--green);">Rs.{{ total_revenue|int }}</div>
+            <div style="color:var(--silver);font-size:11px;letter-spacing:1px;margin-top:4px;">REVENUE</div>
+        </div>
+    </div>
+
+    <!-- TODAY STATS -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;">
+        <div class="card" style="background:rgba(0,102,255,0.05);border-color:rgba(0,102,255,0.2);">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:44px;height:44px;background:rgba(0,102,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fa fa-calendar-check" style="color:var(--blue);font-size:18px;"></i></div>
+                <div><div style="font-family:'Orbitron';font-size:22px;color:var(--blue);">{{ bookings_today }}</div><div style="color:var(--silver);font-size:12px;">Bookings Today</div></div>
+            </div>
+        </div>
+        <div class="card" style="background:rgba(0,255,136,0.05);border-color:rgba(0,255,136,0.2);">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:44px;height:44px;background:rgba(0,255,136,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fa fa-indian-rupee-sign" style="color:var(--green);font-size:18px;"></i></div>
+                <div><div style="font-family:'Orbitron';font-size:20px;color:var(--green);">Rs.{{ revenue_today|int }}</div><div style="color:var(--silver);font-size:12px;">Revenue Today</div></div>
+            </div>
+        </div>
+        <div class="card" style="background:rgba(255,165,0,0.05);border-color:rgba(255,165,0,0.2);">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:44px;height:44px;background:rgba(255,165,0,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fa fa-wrench" style="color:orange;font-size:18px;"></i></div>
+                <div><div style="font-family:'Orbitron';font-size:22px;color:orange;">{{ pending_jobs }}</div><div style="color:var(--silver);font-size:12px;">Pending Jobs</div></div>
+            </div>
+        </div>
+        <div class="card" style="background:rgba(0,102,255,0.05);border-color:rgba(0,102,255,0.2);">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:44px;height:44px;background:rgba(0,102,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;"><i class="fa fa-user-plus" style="color:var(--blue);font-size:18px;"></i></div>
+                <div><div style="font-family:'Orbitron';font-size:22px;color:var(--blue);">{{ new_customers }}</div><div style="color:var(--silver);font-size:12px;">New Customers</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHARTS -->
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;margin-bottom:28px;">
+        <div class="card">
+            <h4 style="font-family:'Orbitron';font-size:12px;letter-spacing:2px;color:var(--blue);margin-bottom:16px;">BOOKINGS — LAST 7 DAYS</h4>
+            <canvas id="bookingsChart" height="100"></canvas>
+        </div>
+        <div class="card">
+            <h4 style="font-family:'Orbitron';font-size:12px;letter-spacing:2px;color:var(--blue);margin-bottom:16px;">STATUS BREAKDOWN</h4>
+            <canvas id="statusChart"></canvas>
+        </div>
+    </div>
+
+    <!-- QUICK NAV + RECENT BOOKINGS -->
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:24px;">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+            <a href="{{ url_for('admin.bookings') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:14px;">
+                <i class="fa fa-calendar-check" style="color:var(--blue);font-size:20px;width:30px;"></i>
+                <div><div style="color:var(--white);font-weight:700;">All Bookings</div><div style="color:var(--silver);font-size:12px;">Manage & track</div></div>
+            </a>
+            <a href="{{ url_for('admin.customers') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:14px;">
+                <i class="fa fa-users" style="color:var(--blue);font-size:20px;width:30px;"></i>
+                <div><div style="color:var(--white);font-weight:700;">Customers</div><div style="color:var(--silver);font-size:12px;">View all profiles</div></div>
+            </a>
+            <a href="{{ url_for('admin.services') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:14px;">
+                <i class="fa fa-wrench" style="color:var(--blue);font-size:20px;width:30px;"></i>
+                <div><div style="color:var(--white);font-weight:700;">Services</div><div style="color:var(--silver);font-size:12px;">Add/edit services</div></div>
+            </a>
+            <a href="{{ url_for('admin.payments') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:14px;">
+                <i class="fa fa-credit-card" style="color:var(--blue);font-size:20px;width:30px;"></i>
+                <div><div style="color:var(--white);font-weight:700;">Payments</div><div style="color:var(--silver);font-size:12px;">View all transactions</div></div>
+            </a>
+            <a href="{{ url_for('admin.chat') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:14px;">
+                <i class="fa fa-comments" style="color:var(--blue);font-size:20px;width:30px;"></i>
+                <div><div style="color:var(--white);font-weight:700;">Live Chat</div><div style="color:var(--silver);font-size:12px;">Support customers</div></div>
+            </a>
+            <a href="{{ url_for('admin.mechanics') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:14px;">
+                <i class="fa fa-user-gear" style="color:var(--blue);font-size:20px;width:30px;"></i>
+                <div><div style="color:var(--white);font-weight:700;">Mechanics</div><div style="color:var(--silver);font-size:12px;">Manage team</div></div>
+            </a>
+        </div>
+
+        <div class="card">
+            <h4 style="font-family:'Orbitron';font-size:12px;letter-spacing:2px;color:var(--blue);margin-bottom:16px;">RECENT BOOKINGS</h4>
+            <table class="vt">
+                <thead><tr><th>#</th><th>Customer</th><th>Service</th><th>Date</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for b in recent_bookings %}
+                <tr>
+                    <td style="color:var(--blue);font-family:'Orbitron';font-size:11px;">#V{{ "%04d"|format(b.id) }}</td>
+                    <td>{{ b.customer_name }}</td>
+                    <td>{{ b.service.name }}</td>
+                    <td>{{ b.created_at.strftime('%d %b') }}</td>
+                    <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var labels = {{ labels|tojson }};
+var counts = {{ counts|tojson }};
+var revenues = {{ revenues|tojson }};
+new Chart(document.getElementById('bookingsChart'), {
+    type:'bar',
+    data:{ labels:labels, datasets:[
+        {label:'Bookings',data:counts,backgroundColor:'rgba(0,102,255,0.6)',borderColor:'#0066FF',borderWidth:1,borderRadius:6}
+    ]},
+    options:{ responsive:true, plugins:{legend:{labels:{color:'#a8b8d0'}}}, scales:{x:{ticks:{color:'#a8b8d0'},grid:{color:'#1a2540'}},y:{ticks:{color:'#a8b8d0'},grid:{color:'#1a2540'}}}}
+});
+new Chart(document.getElementById('statusChart'), {
+    type:'doughnut',
+    data:{ labels:['Pending','Confirmed','Completed','Cancelled'], datasets:[{
+        data:[{{ pending_jobs }},{{ confirmed }},{{ completed }},{{ cancelled }}],
+        backgroundColor:['rgba(255,165,0,0.8)','rgba(0,102,255,0.8)','rgba(0,255,136,0.8)','rgba(255,51,85,0.8)'],
+        borderWidth:0
+    }]},
+    options:{ responsive:true, plugins:{legend:{labels:{color:'#a8b8d0'}}}}
+});
+
+function filterDate(){
+    var d = document.getElementById('date-filter').value;
+    if(d) window.location.href = '{{ url_for("admin.bookings") }}?date=' + d;
+}
+</script>
+{% endblock %}

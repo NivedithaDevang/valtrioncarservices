@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;max-width:1400px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+        <div>
+            <p class="section-label">ADMIN</p>
+            <h2 class="section-title">All <span>Bookings</span></h2>
+        </div>
+        <div style="display:flex;gap:10px;">
+            <select onchange="filterStatus(this.value)" class="form-control" style="width:160px;">
+                <option value="">All Status</option>
+                <option value="Pending" {% if status_filter=='Pending' %}selected{% endif %}>Pending</option>
+                <option value="Confirmed" {% if status_filter=='Confirmed' %}selected{% endif %}>Confirmed</option>
+                <option value="Completed" {% if status_filter=='Completed' %}selected{% endif %}>Completed</option>
+                <option value="Cancelled" {% if status_filter=='Cancelled' %}selected{% endif %}>Cancelled</option>
+            </select>
+            <input type="date" id="date-filter" class="form-control" style="width:180px;" value="{{ date_filter }}" onchange="filterDate()">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <div class="card" style="overflow-x:auto;">
+        <table class="vt">
+            <thead><tr><th>#</th><th>Customer</th><th>Car</th><th>Service</th><th>Date</th><th>Amount</th><th>Payment</th><th>Status</th><th>Mechanic</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for b in bookings %}
+            <tr id="row-{{ b.id }}">
+                <td style="color:var(--blue);font-family:'Orbitron';font-size:11px;">#V{{ "%04d"|format(b.id) }}</td>
+                <td>
+                    <div style="font-weight:600;">{{ b.customer_name }}</div>
+                    <div style="color:var(--silver);font-size:12px;">{{ b.customer_phone }}</div>
+                </td>
+                <td>
+                    <div>{{ b.car_brand }} {{ b.car_model }}</div>
+                    <div style="color:var(--silver);font-size:12px;">{{ b.car_number or '' }} • {{ b.fuel_type }}</div>
+                </td>
+                <td>{{ b.service.name }}</td>
+                <td style="font-size:12px;">{{ b.preferred_date[:16] if b.preferred_date else '-' }}</td>
+                <td style="color:var(--blue);font-weight:700;">Rs.{{ b.total_amount|int }}</td>
+                <td>
+                    <span class="badge badge-{{ 'paid' if b.payment_status=='Paid' else 'cod' }}">{{ b.payment_method or b.payment_status }}</span>
+                </td>
+                <td>
+                    <select class="form-control" style="width:130px;padding:6px;" onchange="updateStatus({{ b.id }}, this.value)">
+                        {% for s in ['Pending','Confirmed','In Progress','Completed','Cancelled'] %}
+                        <option value="{{ s }}" {% if b.status==s %}selected{% endif %}>{{ s }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control" style="width:130px;padding:6px;" onchange="assignMechanic({{ b.id }}, this.value)">
+                        <option value="">Assign...</option>
+                        {% for m in mechanics %}
+                        <option value="{{ m.id }}" {% if b.mechanic_id==m.id %}selected{% endif %}>{{ m.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td>
+                    <div style="display:flex;gap:6px;">
+                        <a href="{{ url_for('booking.download_invoice', booking_id=b.id) }}" target="_blank" class="btn btn-outline btn-sm" title="Invoice"><i class="fa fa-file-invoice"></i></a>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="10" style="text-align:center;color:var(--silver);padding:40px;">No bookings found.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+function filterStatus(v){ window.location.href='?status='+v+'&date={{ date_filter }}'; }
+function filterDate(){ var d=document.getElementById('date-filter').value; window.location.href='?status={{ status_filter }}&date='+d; }
+function updateStatus(id,status){
+    fetch('/admin/booking/update-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({booking_id:id,status:status})})
+    .then(r=>r.json()).then(d=>{ if(d.success) showToast('Status updated to '+status); });
+}
+function assignMechanic(id,mechId){
+    fetch('/admin/booking/assign-mechanic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({booking_id:id,mechanic_id:mechId})})
+    .then(r=>r.json()).then(d=>{ if(d.success) showToast('Mechanic assigned!'); });
+}
+function showToast(msg){
+    var t=document.createElement('div');
+    t.style.cssText='position:fixed;top:80px;right:20px;background:rgba(0,255,136,0.15);border:1px solid var(--green);color:var(--green);padding:12px 20px;border-radius:8px;z-index:9999;font-family:Rajdhani;font-weight:600;';
+    t.textContent=msg; document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 2500);
+}
+</script>
+{% endblock %}

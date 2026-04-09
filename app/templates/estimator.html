@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+<div class="container" style="max-width:700px;">
+    <div style="text-align:center;margin-bottom:40px;">
+        <p class="section-label">SMART PRICING</p>
+        <h2 class="section-title">Service Cost <span>Estimator</span></h2>
+        <p style="color:var(--silver);">Get an instant price estimate based on your car and service</p>
+    </div>
+    <div class="card">
+        <div class="form-group">
+            <label class="form-label">Car Brand</label>
+            <select id="e_brand" class="form-control">
+                <option value="">-- Select Brand --</option>
+                <option>Maruti Suzuki</option><option>Tata</option><option>Hyundai</option>
+                <option>Mahindra</option><option>Toyota</option><option>Honda</option>
+                <option>Kia</option><option>Volkswagen</option><option>Skoda</option>
+                <option>MG</option><option>Renault</option><option>Nissan</option>
+                <option>Jeep</option><option>BMW</option><option>Mercedes-Benz</option>
+                <option>Audi</option><option>Volvo</option><option>Jaguar</option>
+                <option>Land Rover</option><option>Porsche</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Car Age (Years)</label>
+            <div style="display:flex;align-items:center;gap:16px;">
+                <input type="range" id="e_age" min="0" max="20" value="3" style="flex:1;accent-color:var(--blue);" oninput="document.getElementById('age_val').textContent=this.value+' yrs'">
+                <span id="age_val" style="color:var(--blue);font-family:'Orbitron';font-size:16px;font-weight:700;min-width:60px;text-align:right;">3 yrs</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Service Type</label>
+            <select id="e_service" class="form-control">
+                <option value="">-- Select Service --</option>
+                <option>Basic Car Wash</option><option>Premium Car Wash</option>
+                <option>Oil Change</option><option>AC Service</option>
+                <option>Brake Service</option><option>Full Inspection</option>
+                <option>Battery Replacement</option><option>Tyre Rotation</option>
+                <option>Engine Tune-Up</option><option>Suspension Check</option>
+                <option>Wheel Alignment</option><option>Periodic Service</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:15px;" onclick="getEstimate()">
+            <i class="fa fa-calculator"></i> Calculate Estimate
+        </button>
+    </div>
+
+    <div id="result-card" class="card" style="display:none;margin-top:24px;text-align:center;background:rgba(0,102,255,0.05);border-color:rgba(0,102,255,0.3);">
+        <div style="color:var(--silver);font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">ESTIMATED COST</div>
+        <div id="result-price" style="font-family:'Orbitron';font-size:56px;font-weight:700;color:var(--blue);margin-bottom:8px;"></div>
+        <div id="result-label" style="color:var(--silver);font-size:14px;margin-bottom:20px;"></div>
+        <p style="color:var(--silver);font-size:13px;margin-bottom:20px;">Estimate only. Final price may vary based on car condition.</p>
+        <a href="{{ url_for('main.services') }}" class="btn btn-primary" style="display:inline-flex;"><i class="fa fa-calendar-check"></i> Book Now</a>
+    </div>
+
+    <div style="margin-top:32px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;">
+        <h4 style="color:var(--silver-light);font-size:14px;margin-bottom:16px;font-weight:700;">HOW PRICING WORKS</h4>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+            <div style="text-align:center;"><div style="font-size:24px;color:var(--blue);margin-bottom:8px;"><i class="fa fa-car"></i></div><div style="font-size:13px;color:var(--silver-light);font-weight:600;">Car Brand</div><div style="font-size:12px;color:var(--silver);margin-top:4px;">Luxury brands have higher parts cost</div></div>
+            <div style="text-align:center;"><div style="font-size:24px;color:var(--blue);margin-bottom:8px;"><i class="fa fa-calendar"></i></div><div style="font-size:13px;color:var(--silver-light);font-weight:600;">Car Age</div><div style="font-size:12px;color:var(--silver);margin-top:4px;">Older cars need more intensive care</div></div>
+            <div style="text-align:center;"><div style="font-size:24px;color:var(--blue);margin-bottom:8px;"><i class="fa fa-wrench"></i></div><div style="font-size:13px;color:var(--silver-light);font-weight:600;">Service Type</div><div style="font-size:12px;color:var(--silver);margin-top:4px;">Complex services cost more</div></div>
+        </div>
+    </div>
+</div>
+</section>
+<script>
+async function getEstimate() {
+    var brand = document.getElementById("e_brand").value;
+    var age = document.getElementById("e_age").value;
+    var service = document.getElementById("e_service").value;
+    if (!brand || !service) { alert("Please select brand and service!"); return; }
+    var res = await fetch("/api/estimate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({brand: brand, age: age, service: service})
+    });
+    var data = await res.json();
+    document.getElementById("result-price").textContent = "Rs." + data.estimate.toLocaleString();
+    document.getElementById("result-label").textContent = data.service + " for your " + data.brand;
+    document.getElementById("result-card").style.display = "block";
+    document.getElementById("result-card").scrollIntoView({behavior:"smooth"});
+}
+</script>
+{% endblock %}

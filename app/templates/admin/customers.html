@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;max-width:1400px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+        <div><p class="section-label">ADMIN</p><h2 class="section-title">Customer <span>List</span></h2></div>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+    <div class="card" style="overflow-x:auto;">
+        <table class="vt">
+            <thead><tr><th>#</th><th>Name</th><th>Contact</th><th>Address</th><th>Joined</th><th>Bookings</th><th>Spent</th><th>Actions</th></tr></thead>
+            <tbody>
+            {% for c in customers %}
+            <tr>
+                <td style="color:var(--blue);font-family:'Orbitron';font-size:11px;">#{{ c.id }}</td>
+                <td>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="width:36px;height:36px;background:rgba(0,102,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:13px;color:var(--blue);">{{ c.name[0].upper() }}</div>
+                        <span style="font-weight:600;">{{ c.name }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div>{{ c.email }}</div>
+                    <div style="color:var(--silver);font-size:12px;">{{ c.phone }}</div>
+                </td>
+                <td style="color:var(--silver);font-size:13px;">{{ c.address or '—' }}</td>
+                <td style="font-size:13px;">{{ c.created_at.strftime('%d %b %Y') }}</td>
+                <td style="text-align:center;"><span class="badge badge-confirmed">{{ c.bookings|length }}</span></td>
+                <td style="color:var(--green);font-weight:700;">Rs.{{ c.bookings|selectattr('payment_status','eq','Paid')|sum(attribute='total_amount')|int }}</td>
+                <td><a href="{{ url_for('admin.customer_detail', user_id=c.id) }}" class="btn btn-outline btn-sm"><i class="fa fa-eye"></i> View</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" style="text-align:center;color:var(--silver);padding:40px;">No customers yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

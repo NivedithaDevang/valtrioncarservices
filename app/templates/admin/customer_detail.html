@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;max-width:1100px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+        <div><p class="section-label">CUSTOMER PROFILE</p><h2 class="section-title">{{ user.name }}</h2></div>
+        <a href="{{ url_for('admin.customers') }}" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 2fr;gap:24px;">
+        <div>
+            <div class="card" style="margin-bottom:16px;text-align:center;">
+                <div style="width:72px;height:72px;background:rgba(0,102,255,0.15);border:2px solid var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:28px;color:var(--blue);margin:0 auto 16px;">{{ user.name[0].upper() }}</div>
+                <h3 style="font-family:'Orbitron';font-size:15px;letter-spacing:1px;">{{ user.name }}</h3>
+                <p style="color:var(--silver);font-size:13px;margin-top:4px;">{{ user.email }}</p>
+                <p style="color:var(--silver);font-size:13px;">{{ user.phone }}</p>
+                <p style="color:var(--silver);font-size:13px;margin-top:8px;">{{ user.address or 'No address' }}</p>
+            </div>
+            <div class="card">
+                <h4 style="font-family:'Orbitron';font-size:12px;letter-spacing:2px;color:var(--blue);margin-bottom:16px;">VEHICLES USED</h4>
+                {% set cars = bookings|map(attribute='car_brand')|list|unique|list %}
+                {% for b in bookings %}
+                <div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;">
+                    <div style="font-weight:600;">{{ b.car_brand }} {{ b.car_model }}</div>
+                    <div style="color:var(--silver);font-size:12px;">{{ b.car_number or 'No plate' }} • {{ b.fuel_type }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card">
+            <h4 style="font-family:'Orbitron';font-size:12px;letter-spacing:2px;color:var(--blue);margin-bottom:16px;">SERVICE HISTORY</h4>
+            {% if bookings %}
+            <table class="vt">
+                <thead><tr><th>#</th><th>Service</th><th>Car</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+                <tbody>
+                {% for b in bookings %}
+                <tr>
+                    <td style="color:var(--blue);font-family:'Orbitron';font-size:11px;">#V{{ "%04d"|format(b.id) }}</td>
+                    <td>{{ b.service.name }}</td>
+                    <td>{{ b.car_brand }} {{ b.car_model }}</td>
+                    <td>{{ b.preferred_date[:10] if b.preferred_date else '-' }}</td>
+                    <td style="color:var(--blue);font-weight:700;">Rs.{{ b.total_amount|int }}</td>
+                    <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}<p style="color:var(--silver);text-align:center;padding:20px;">No bookings yet.</p>{% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

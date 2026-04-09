@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;max-width:1400px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+        <div><p class="section-label">ADMIN</p><h2 class="section-title">Payment <span>Records</span></h2></div>
+        <div style="display:flex;gap:10px;">
+            <select onchange="filterMethod(this.value)" class="form-control" style="width:160px;">
+                <option value="">All Methods</option>
+                <option value="PhonePe" {% if method_filter=='PhonePe' %}selected{% endif %}>PhonePe</option>
+                <option value="GPay" {% if method_filter=='GPay' %}selected{% endif %}>GPay</option>
+                <option value="Paytm" {% if method_filter=='Paytm' %}selected{% endif %}>Paytm</option>
+                <option value="QR Code" {% if method_filter=='QR Code' %}selected{% endif %}>QR Code</option>
+                <option value="UPI ID" {% if method_filter=='UPI ID' %}selected{% endif %}>UPI ID</option>
+                <option value="COD" {% if method_filter=='COD' %}selected{% endif %}>Cash on Delivery</option>
+            </select>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div class="card" style="text-align:center;background:rgba(0,102,255,0.05);">
+            <div style="font-family:'Orbitron';font-size:24px;color:var(--blue);">Rs.{{ total_upi|int }}</div>
+            <div style="color:var(--silver);font-size:12px;margin-top:4px;">UPI / Digital</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(255,165,0,0.05);">
+            <div style="font-family:'Orbitron';font-size:24px;color:orange;">Rs.{{ total_cod|int }}</div>
+            <div style="color:var(--silver);font-size:12px;margin-top:4px;">Cash on Delivery</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(0,255,136,0.05);">
+            <div style="font-family:'Orbitron';font-size:24px;color:var(--green);">Rs.{{ (total_upi + total_cod)|int }}</div>
+            <div style="color:var(--silver);font-size:12px;margin-top:4px;">Total</div>
+        </div>
+    </div>
+
+    <div class="card" style="overflow-x:auto;">
+        <table class="vt">
+            <thead><tr><th>#</th><th>Customer</th><th>Service</th><th>Method</th><th>Ref / UPI</th><th>Amount</th><th>Status</th><th>Date</th><th>Invoice</th></tr></thead>
+            <tbody>
+            {% for p in payments %}
+            <tr>
+                <td style="color:var(--blue);font-family:'Orbitron';font-size:11px;">#V{{ "%04d"|format(p.id) }}</td>
+                <td><div style="font-weight:600;">{{ p.customer_name }}</div><div style="color:var(--silver);font-size:12px;">{{ p.customer_phone }}</div></td>
+                <td>{{ p.service.name }}</td>
+                <td>
+                    {% if p.payment_method == 'COD' %}
+                    <span style="background:rgba(255,165,0,0.15);color:orange;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">💵 COD</span>
+                    {% elif p.payment_method == 'PhonePe' %}
+                    <span style="background:rgba(95,37,159,0.2);color:#a855f7;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">📱 PhonePe</span>
+                    {% elif p.payment_method == 'GPay' %}
+                    <span style="background:rgba(0,168,107,0.2);color:#00a86b;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">G GPay</span>
+                    {% else %}
+                    <span style="background:rgba(0,102,255,0.15);color:var(--blue);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">⚡ {{ p.payment_method or 'UPI' }}</span>
+                    {% endif %}
+                </td>
+                <td style="font-size:12px;color:var(--silver);">{{ p.payment_ref or 'dhanushkoti08-3@okicici' }}</td>
+                <td style="color:var(--blue);font-weight:700;font-family:'Orbitron';font-size:14px;">Rs.{{ p.total_amount|int }}</td>
+                <td><span class="badge badge-{{ 'paid' if p.payment_status=='Paid' else 'cod' }}">{{ p.payment_status }}</span></td>
+                <td style="font-size:12px;">{{ p.created_at.strftime('%d %b %Y') }}</td>
+                <td><a href="{{ url_for('booking.download_invoice', booking_id=p.id) }}" target="_blank" class="btn btn-outline btn-sm"><i class="fa fa-file-invoice"></i></a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="9" style="text-align:center;color:var(--silver);padding:40px;">No payment records.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+function filterMethod(v){ window.location.href='?method='+v; }
+</script>
+{% endblock %}

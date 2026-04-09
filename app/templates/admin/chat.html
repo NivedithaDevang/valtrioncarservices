@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="padding:30px;max-width:1200px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+        <div><p class="section-label">ADMIN</p><h2 class="section-title">Live <span>Chat</span></h2></div>
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+
+    <div style="display:grid;grid-template-columns:280px 1fr;gap:0;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;height:70vh;">
+        <!-- CUSTOMER LIST -->
+        <div style="border-right:1px solid var(--border);overflow-y:auto;">
+            <div style="padding:16px;border-bottom:1px solid var(--border);">
+                <input type="text" placeholder="Search customers..." class="form-control" style="padding:8px 12px;font-size:13px;">
+            </div>
+            {% for c in customers %}
+            <div onclick="loadChat({{ c.id }},'{{ c.name }}')" id="cust-{{ c.id }}"
+                style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.2s;">
+                <div style="width:40px;height:40px;background:rgba(0,102,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:14px;color:var(--blue);flex-shrink:0;">{{ c.name[0].upper() }}</div>
+                <div style="flex:1;min-width:0;">
+                    <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.name }}</div>
+                    <div style="color:var(--silver);font-size:12px;">{{ c.phone }}</div>
+                </div>
+                {% if unread_by_user.get(c.id, 0) > 0 %}
+                <span style="background:var(--red);color:white;border-radius:50%;width:20px;height:20px;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;">{{ unread_by_user[c.id] }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- CHAT AREA -->
+        <div style="display:flex;flex-direction:column;">
+            <div id="chat-header-bar" style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;background:rgba(0,102,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:14px;font-family:'Orbitron';" id="chat-avatar">?</div>
+                <div><div id="chat-customer-name" style="font-weight:700;">Select a customer</div><div style="color:var(--silver);font-size:12px;">to start chatting</div></div>
+            </div>
+            <div id="admin-chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--dark);">
+                <div style="text-align:center;color:var(--silver);font-size:14px;margin:auto;">Select a customer from the list</div>
+            </div>
+            <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:10px;" id="admin-input-area">
+                <input type="text" id="admin-msg-input" placeholder="Type a reply..." class="form-control" style="border-radius:20px;" disabled onkeydown="if(event.key==='Enter') sendAdminReply()">
+                <button class="btn btn-primary" style="border-radius:20px;padding:10px 20px;" onclick="sendAdminReply()" id="admin-send-btn" disabled><i class="fa fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+<script>
+var socket = io();
+var activeCustId = null;
+socket.emit('join', {room: 'admin_room'});
+
+socket.on('new_customer_message', function(data){
+    if(activeCustId == data.user_id){
+        appendAdminChatMsg(data.message, 'customer', data.time);
+    }
+    // flash the customer row
+    var row = document.getElementById('cust-' + data.user_id);
+    if(row) row.style.background = 'rgba(0,102,255,0.12)';
+});
+
+function loadChat(userId, name){
+    activeCustId = userId;
+    document.getElementById('chat-customer-name').textContent = name;
+    document.getElementById('chat-avatar').textContent = name[0].toUpperCase();
+    document.getElementById('admin-msg-input').disabled = false;
+    document.getElementById('admin-send-btn').disabled = false;
+    // highlight selected
+    document.querySelectorAll('[id^="cust-"]').forEach(function(el){ el.style.background=''; });
+    document.getElementById('cust-'+userId).style.background = 'rgba(0,102,255,0.1)';
+
+    fetch('/admin/chat/messages/' + userId).then(r=>r.json()).then(function(msgs){
+        var c = document.getElementById('admin-chat-messages');
+        c.innerHTML = '';
+        if(msgs.length === 0){
+            c.innerHTML = '<div style="text-align:center;color:var(--silver);margin:auto;">No messages yet.</div>';
+            return;
+        }
+        msgs.forEach(function(m){
+            appendAdminChatMsg(m.message, m.sender, m.time);
+        });
+    });
+}
+
+function appendAdminChatMsg(msg, sender, time){
+    var c = document.getElementById('admin-chat-messages');
+    var isAdmin = sender === 'admin';
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:' + (isAdmin?'flex-end':'flex-start') + ';';
+    wrap.innerHTML = '<div style="max-width:75%;padding:10px 14px;border-radius:14px;font-size:14px;font-family:Rajdhani;background:' +
+        (isAdmin?'var(--blue)':'rgba(0,102,255,0.12)') + ';color:' + (isAdmin?'white':'var(--white)') +
+        ';border-bottom-' + (isAdmin?'right':'left') + '-radius:4px;">' + msg +
+        '<div style="font-size:10px;color:' + (isAdmin?'rgba(255,255,255,0.6)':'var(--silver)') + ';margin-top:4px;">' + time + '</div></div>';
+    c.appendChild(wrap);
+    c.scrollTop = c.scrollHeight;
+}
+
+function sendAdminReply(){
+    if(!activeCustId) return;
+    var input = document.getElementById('admin-msg-input');
+    var msg = input.value.trim();
+    if(!msg) return;
+    socket.emit('admin_reply', {user_id: activeCustId, message: msg});
+    appendAdminChatMsg(msg, 'admin', new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}));
+    input.value = '';
+}
+</script>
+{% endblock %}
