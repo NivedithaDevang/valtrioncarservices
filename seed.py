@@ -25,6 +25,10 @@ with app.app_context():
             Service(name="Standard Periodic Service", description="Comprehensive service including oil, all filters, brake fluid, coolant and belts check.", price=2999, duration="3-4 hours", category="Periodic", icon="fa-clipboard-list"),
             Service(name="Comprehensive Service", description="Full vehicle overhaul - all fluids, filters, plugs, belts, brakes and safety check.", price=5999, duration="5-6 hours", category="Periodic", icon="fa-shield-halved"),
             Service(name="Suspension Check", description="Shock absorber, strut, ball joint and bushing inspection for a smooth ride.", price=1499, duration="1.5 hours", category="Suspension", icon="fa-car"),
+            Service(name="Signature Care", description="The Signature Care package provides essential maintenance with a premium touch. It is ideal for regular servicing to keep your vehicle running smoothly and efficiently.", price=2999, duration="Every 6 months or 5,000-7,500 km", category="Packages", icon="fa-medal"),
+            Service(name="Prestige Care", description="The Prestige Care package offers an advanced level of servicing with additional checks and enhancements to improve vehicle performance and comfort. It is perfect for annual maintenance.", price=5999, duration="Every 12 months or 15,000 km", category="Packages", icon="fa-crown"),
+            Service(name="Imperial Care", description="The Imperial Care package delivers a complete and thorough service designed to restore your vehicle's overall health and reliability. It is best suited for major servicing.", price=9999, duration="Every 18-24 months or 30,000 km", category="Packages", icon="fa-shield"),
+            Service(name="Royal Majesty", description="The Royal Majesty package is the ultimate luxury experience, offering top-tier services and exclusive benefits for customers who want the very best for their vehicles.", price=14999, duration="Once every 2 years or as required for luxury detailing", category="Packages", icon="fa-gem"),
         ]
         db.session.bulk_save_objects(services)
         print("Added " + str(len(services)) + " services!")

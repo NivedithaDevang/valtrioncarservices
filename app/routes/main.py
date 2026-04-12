@@ -5,17 +5,150 @@ from app import db
 
 main = Blueprint('main', __name__)
 
+PACKAGE_DEFINITIONS = [
+    {
+        'name': 'Signature Care',
+        'tagline': 'Essential Elegance for Every Drive',
+        'description': 'The Signature Care package provides essential maintenance with a premium touch. It is ideal for regular servicing to keep your vehicle running smoothly and efficiently.',
+        'price': 2999,
+        'duration': 'Every 6 months or 5,000-7,500 km',
+        'category': 'Packages',
+        'icon': 'fa-medal'
+    },
+    {
+        'name': 'Prestige Care',
+        'tagline': 'Enhanced Performance, Elevated Comfort',
+        'description': 'The Prestige Care package offers an advanced level of servicing with additional checks and enhancements to improve vehicle performance and comfort. It is perfect for annual maintenance.',
+        'price': 5999,
+        'duration': 'Every 12 months or 15,000 km',
+        'category': 'Packages',
+        'icon': 'fa-crown'
+    },
+    {
+        'name': 'Imperial Care',
+        'tagline': 'Comprehensive Care for Lasting Excellence',
+        'description': 'The Imperial Care package delivers a complete and thorough service designed to restore your vehicle\'s overall health and reliability. It is best suited for major servicing.',
+        'price': 9999,
+        'duration': 'Every 18-24 months or 30,000 km',
+        'category': 'Packages',
+        'icon': 'fa-shield'
+    },
+    {
+        'name': 'Royal Majesty',
+        'tagline': 'Because Your Car Deserves Royal Treatment',
+        'description': 'The Royal Majesty package is the ultimate luxury experience, offering top-tier services and exclusive benefits for customers who want the very best for their vehicles.',
+        'price': 14999,
+        'duration': 'Once every 2 years or as required for luxury detailing',
+        'category': 'Packages',
+        'icon': 'fa-gem'
+    }
+]
+
+
+def ensure_packages_exist():
+    existing_names = {s.name for s in Service.query.filter(Service.category == 'Packages').all()}
+    created = False
+    for p in PACKAGE_DEFINITIONS:
+        if p['name'] not in existing_names:
+            db.session.add(Service(
+                name=p['name'],
+                description=p['description'],
+                price=p['price'],
+                duration=p['duration'],
+                category=p['category'],
+                icon=p['icon']
+            ))
+            created = True
+    if created:
+        db.session.commit()
+
 @main.route('/')
 def index():
+    ensure_packages_exist()
     services = Service.query.all()
     categories = list(set([s.category for s in services]))
     return render_template('index.html', services=services, categories=categories)
 
 @main.route('/services')
 def services():
-    all_services = Service.query.all()
+    ensure_packages_exist()
+    all_services = Service.query.filter(Service.category != 'Packages').all()
     categories = list(set([s.category for s in all_services]))
     return render_template('services.html', services=all_services, categories=categories)
+
+
+@main.route('/packages')
+def packages():
+    ensure_packages_exist()
+    package_services = Service.query.filter_by(category='Packages').order_by(Service.price.asc()).all()
+    package_map = {
+        'Signature Care': {
+            'tagline': 'Essential Elegance for Every Drive',
+            'inclusions': [
+                'Engine oil replacement',
+                'Oil filter replacement',
+                'Fluid top-ups (coolant, brake fluid, windshield washer)',
+                'Battery health check',
+                'Tyre pressure and condition check',
+                'Basic brake inspection',
+                '20-30 point vehicle inspection',
+                'Exterior car wash',
+                'Interior vacuum cleaning'
+            ],
+            'addons': ['Pick-up and drop service', 'Windshield washer refill', 'Car perfume']
+        },
+        'Prestige Care': {
+            'tagline': 'Enhanced Performance, Elevated Comfort',
+            'inclusions': [
+                'All services included in Signature Care',
+                'Air filter cleaning or replacement',
+                'Cabin (AC) filter cleaning or replacement',
+                'Wheel alignment and balancing',
+                'Brake pad cleaning and adjustment',
+                'Battery terminal cleaning',
+                'AC performance check',
+                'Dashboard and interior polishing',
+                'Tyre and alloy polishing'
+            ],
+            'addons': ['Engine bay cleaning', 'Minor scratch removal', 'Interior sanitization/fumigation']
+        },
+        'Imperial Care': {
+            'tagline': 'Comprehensive Care for Lasting Excellence',
+            'inclusions': [
+                'All services included in Prestige Care',
+                'Spark plug replacement (for petrol vehicles)',
+                'Fuel filter replacement',
+                'Brake fluid replacement',
+                'Coolant replacement',
+                'Transmission fluid inspection/top-up',
+                'Full AC servicing',
+                'Engine diagnostics using OBD scanner',
+                'Engine bay degreasing and dressing',
+                'Complete interior detailing (seats, carpets, roof)',
+                'Exterior waxing and paint protection'
+            ],
+            'addons': ['Headlight restoration', 'Underbody anti-rust coating', 'Paint protection treatments']
+        },
+        'Royal Majesty': {
+            'tagline': 'Because Your Car Deserves Royal Treatment',
+            'inclusions': [
+                'All services included in Imperial Care',
+                'Ceramic or Teflon coating',
+                'Paint correction and swirl removal',
+                'Leather seat conditioning',
+                'Steam or ozone interior sanitization',
+                'Underbody anti-rust treatment',
+                'Premium car spa detailing',
+                'Complimentary pick-up and drop service',
+                'Priority/express servicing',
+                'Dedicated service advisor',
+                'Free follow-up inspection within 1 month',
+                'Complimentary premium gift hamper (optional)'
+            ],
+            'addons': []
+        }
+    }
+    return render_template('packages.html', packages=package_services, package_map=package_map)
 
 @main.route('/estimator')
 def estimator():
@@ -72,6 +205,11 @@ def chatbot():
     msg = data.get('message', '').lower()
 
     responses = {
+        'package': 'We offer 4 plans: Signature Care (Rs.2,999), Prestige Care (Rs.5,999), Imperial Care (Rs.9,999), and Royal Majesty (Rs.14,999). Visit Packages to book.',
+        'signature': 'Signature Care is Rs.2,999 and includes essential periodic maintenance with wash and inspection.',
+        'prestige': 'Prestige Care is Rs.5,999 and includes Signature plus AC/filter/alignment enhancements.',
+        'imperial': 'Imperial Care is Rs.9,999 with major service items, diagnostics, detailing, and protection.',
+        'royal': 'Royal Majesty is Rs.14,999, our top luxury package with premium detailing and priority support.',
         'oil': "Our Oil Change starts at Rs.1,299. We use OEM-grade engine oils. Book via our Services page!",
         'ac': "Our AC Service (gas refill + cleaning) is Rs.2,499 and takes 2-3 hours. Want to book?",
         'brake': "Brake Service including pads and fluid check is Rs.1,999. Safety first! Book now.",

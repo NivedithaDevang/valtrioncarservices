@@ -69,19 +69,35 @@
     </div>
 </div>
 <script>
-function filterStatus(v){ window.location.href='?status='+v+'&date={{ date_filter }}'; }
-function filterDate(){ var d=document.getElementById('date-filter').value; window.location.href='?status={{ status_filter }}&date='+d; }
+function filterStatus(v){
+    var params = new URLSearchParams();
+    if (v) params.set('status', v);
+    var df = '{{ date_filter }}';
+    if (df) params.set('date', df);
+    window.location.href = '?' + params.toString();
+}
+function filterDate(){
+    var d = document.getElementById('date-filter').value;
+    var params = new URLSearchParams();
+    var sf = '{{ status_filter }}';
+    if (sf) params.set('status', sf);
+    if (d) params.set('date', d);
+    window.location.href = '?' + params.toString();
+}
 function updateStatus(id,status){
     fetch('/admin/booking/update-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({booking_id:id,status:status})})
-    .then(r=>r.json()).then(d=>{ if(d.success) showToast('Status updated to '+status); });
+    .then(r=>r.json()).then(d=>{ if(d.success) showToast('Status updated to '+status); else showToast(d.error || 'Failed to update status', true); })
+    .catch(()=>showToast('Failed to update status', true));
 }
 function assignMechanic(id,mechId){
-    fetch('/admin/booking/assign-mechanic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({booking_id:id,mechanic_id:mechId})})
-    .then(r=>r.json()).then(d=>{ if(d.success) showToast('Mechanic assigned!'); });
+    var mechanicId = mechId ? parseInt(mechId, 10) : null;
+    fetch('/admin/booking/assign-mechanic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({booking_id:id,mechanic_id:mechanicId})})
+    .then(r=>r.json()).then(d=>{ if(d.success) showToast(mechanicId ? 'Mechanic assigned!' : 'Mechanic unassigned.'); else showToast(d.error || 'Failed to assign mechanic', true); })
+    .catch(()=>showToast('Failed to assign mechanic', true));
 }
-function showToast(msg){
+function showToast(msg, isError){
     var t=document.createElement('div');
-    t.style.cssText='position:fixed;top:80px;right:20px;background:rgba(0,255,136,0.15);border:1px solid var(--green);color:var(--green);padding:12px 20px;border-radius:8px;z-index:9999;font-family:Rajdhani;font-weight:600;';
+    t.style.cssText='position:fixed;top:80px;right:20px;background:'+ (isError ? 'rgba(255,51,85,0.15)' : 'rgba(0,255,136,0.15)') +';border:1px solid '+ (isError ? 'var(--red)' : 'var(--green)') +';color:'+ (isError ? 'var(--red)' : 'var(--green)') +';padding:12px 20px;border-radius:8px;z-index:9999;font-family:Rajdhani;font-weight:600;';
     t.textContent=msg; document.body.appendChild(t);
     setTimeout(function(){ t.remove(); }, 2500);
 }

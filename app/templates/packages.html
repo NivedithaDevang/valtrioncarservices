@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="section">
+<div class="container">
+    <div style="text-align:center;margin-bottom:44px;">
+        <p class="section-label">PREMIUM PLANS</p>
+        <h2 class="section-title">Care <span>Packages</span></h2>
+        <p style="color:var(--silver);">Choose a complete maintenance package and book it just like any service.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px;" id="pg">
+        {% for p in packages %}
+        {% set details = package_map.get(p.name, {}) %}
+        <div class="card pcard">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px;">
+                <div>
+                    <h3 style="font-size:20px;font-weight:700;color:var(--white);margin-bottom:4px;">{{ p.name }}</h3>
+                    <p style="color:var(--blue-bright);font-weight:600;font-size:13px;">{{ details.get('tagline', '') }}</p>
+                </div>
+                <div style="width:46px;height:46px;border-radius:12px;background:rgba(0,102,255,0.15);border:1px solid rgba(0,102,255,0.35);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:20px;">
+                    <i class="fa {{ p.icon or 'fa-medal' }}"></i>
+                </div>
+            </div>
+
+            <p style="color:var(--silver);font-size:14px;line-height:1.6;margin-bottom:14px;">{{ p.description }}</p>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(0,102,255,0.08);border:1px solid rgba(0,102,255,0.25);padding:10px 12px;border-radius:10px;margin-bottom:14px;">
+                <span style="color:var(--silver);font-size:12px;">Recommended Interval</span>
+                <span style="color:var(--white);font-size:13px;font-weight:600;text-align:right;">{{ p.duration }}</span>
+            </div>
+
+            <div style="margin-bottom:14px;">
+                <div style="font-size:12px;letter-spacing:1px;color:var(--blue);font-weight:700;margin-bottom:8px;">KEY INCLUSIONS</div>
+                <ul style="margin:0;padding-left:18px;color:var(--silver-light);display:grid;gap:6px;font-size:14px;">
+                    {% for item in details.get('inclusions', []) %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            {% if details.get('addons') %}
+            <div style="margin-bottom:14px;">
+                <div style="font-size:12px;letter-spacing:1px;color:var(--blue);font-weight:700;margin-bottom:8px;">OPTIONAL ADD-ONS</div>
+                <ul style="margin:0;padding-left:18px;color:var(--silver);display:grid;gap:6px;font-size:14px;">
+                    {% for add in details.get('addons', []) %}
+                    <li>{{ add }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border);">
+                <div>
+                    <div style="font-size:11px;letter-spacing:1px;color:var(--silver);">PRICE</div>
+                    <div style="font-family:'Orbitron';font-size:28px;color:var(--blue);font-weight:700;">Rs.{{ '%.0f'|format(p.price) }}</div>
+                </div>
+                <a href="{{ url_for('booking.book_service', service_id=p.id) }}" class="btn btn-primary" style="justify-content:center;">
+                    <i class="fa fa-calendar-check"></i> Book Package
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</section>
+
+<style>
+    .pcard { transition:all 0.25s ease; }
+    .pcard:hover { transform:translateY(-4px); border-color:var(--blue); box-shadow:0 20px 40px rgba(0,102,255,0.12); }
+    @media(max-width:950px){ #pg{grid-template-columns:1fr;} }
+</style>
+{% endblock %}

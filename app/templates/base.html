@@ -101,7 +101,7 @@
             position:fixed; bottom:30px; right:30px;
             width:64px; height:64px;
             background:transparent; border:none; cursor:pointer;
-            z-index:999; padding:0;
+            z-index:5001; padding:0;
             animation:orb-float 3s ease-in-out infinite;
             filter:drop-shadow(0 0 16px rgba(0,200,255,0.5));
         }
@@ -109,7 +109,7 @@
         @keyframes orb-float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-7px);} }
         #orb-canvas { border-radius:50%; display:block; }
 
-        #chatbot-window { position:fixed; bottom:110px; right:30px; width:360px; height:500px; background:var(--card); border:1px solid var(--blue); border-radius:20px; display:none; flex-direction:column; z-index:998; box-shadow:0 0 50px rgba(0,102,255,0.25); overflow:hidden; }
+        #chatbot-window { position:fixed; bottom:110px; right:30px; width:360px; height:500px; background:var(--card); border:1px solid var(--blue); border-radius:20px; display:none; flex-direction:column; z-index:5000; box-shadow:0 0 50px rgba(0,102,255,0.25); overflow:hidden; }
         #chatbot-window.open { display:flex; }
         .chat-header { background:linear-gradient(135deg,#0044cc,#0066FF); padding:16px 20px; display:flex; justify-content:space-between; align-items:center; }
         .chat-header-left { display:flex; align-items:center; gap:10px; }
@@ -137,7 +137,8 @@
             nav { padding:0 16px; }
             .nav-links a:not(.nav-btn) { display:none; }
             .footer-grid { grid-template-columns:1fr 1fr; }
-            #chatbot-window { width:calc(100vw - 40px); right:20px; }
+            #chatbot-window { width:calc(100vw - 40px); right:20px; bottom:100px; height:470px; }
+            #chatbot-btn { right:18px; bottom:20px; }
         }
     </style>
 </head>
@@ -147,6 +148,7 @@
     <div class="nav-links">
         <a href="{{ url_for('main.index') }}">Home</a>
         <a href="{{ url_for('main.services') }}">Services</a>
+        <a href="{{ url_for('main.packages') }}">Packages</a>
         <a href="{{ url_for('main.estimator') }}">Estimator</a>
         {% if current_user.is_authenticated %}
             {% if current_user.role == 'admin' %}
@@ -190,6 +192,7 @@
                 <h4>Quick Links</h4>
                 <ul>
                     <li><a href="{{ url_for('main.services') }}">All Services</a></li>
+                    <li><a href="{{ url_for('main.packages') }}">Packages</a></li>
                     <li><a href="{{ url_for('main.estimator') }}">Price Estimator</a></li>
                     <li><a href="{{ url_for('main.dashboard') }}">My Bookings</a></li>
                     <li><a href="{{ url_for('auth.register') }}">Create Account</a></li>

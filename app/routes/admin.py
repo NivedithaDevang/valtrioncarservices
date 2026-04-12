@@ -87,9 +87,25 @@ def update_booking_status():
 @login_required
 @admin_required
 def assign_mechanic():
-    data = request.json
-    b = Booking.query.get_or_404(data['booking_id'])
-    b.mechanic_id = data['mechanic_id']
+    data = request.json or {}
+    b = Booking.query.get_or_404(data.get('booking_id'))
+    mechanic_id = data.get('mechanic_id')
+
+    if mechanic_id in ('', None):
+        b.mechanic_id = None
+        db.session.commit()
+        return jsonify({'success': True})
+
+    try:
+        mechanic_id = int(mechanic_id)
+    except (TypeError, ValueError):
+        return jsonify({'success': False, 'error': 'Invalid mechanic selected.'}), 400
+
+    mechanic = Mechanic.query.get(mechanic_id)
+    if not mechanic or not mechanic.is_active:
+        return jsonify({'success': False, 'error': 'Mechanic not found or inactive.'}), 404
+
+    b.mechanic_id = mechanic_id
     db.session.commit()
     return jsonify({'success': True})
 
@@ -205,8 +221,11 @@ def mechanics():
 @login_required
 @admin_required
 def add_mechanic():
-    data = request.json
-    m = Mechanic(name=data['name'], phone=data.get('phone',''), specialty=data.get('specialty',''))
+    data = request.json or {}
+    name = (data.get('name') or '').strip()
+    if not name:
+        return jsonify({'success': False, 'error': 'Mechanic name is required.'}), 400
+    m = Mechanic(name=name, phone=(data.get('phone') or '').strip(), specialty=(data.get('specialty') or '').strip())
     db.session.add(m); db.session.commit()
     return jsonify({'success': True, 'id': m.id})
 
