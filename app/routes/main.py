@@ -7,16 +7,16 @@ main = Blueprint('main', __name__)
 
 PACKAGE_DEFINITIONS = [
     {
-        'name': 'Signature Care',
+        'name': 'Prime Care',
         'tagline': 'Essential Elegance for Every Drive',
-        'description': 'The Signature Care package provides essential maintenance with a premium touch. It is ideal for regular servicing to keep your vehicle running smoothly and efficiently.',
+        'description': 'The Prime Care package provides essential maintenance with a premium touch. It is ideal for regular servicing to keep your vehicle running smoothly and efficiently.',
         'price': 2999,
         'duration': 'Every 6 months or 5,000-7,500 km',
         'category': 'Packages',
         'icon': 'fa-medal'
     },
     {
-        'name': 'Prestige Care',
+        'name': 'Elite Care',
         'tagline': 'Enhanced Performance, Elevated Comfort',
         'description': 'The Prestige Care package offers an advanced level of servicing with additional checks and enhancements to improve vehicle performance and comfort. It is perfect for annual maintenance.',
         'price': 5999,
@@ -25,18 +25,18 @@ PACKAGE_DEFINITIONS = [
         'icon': 'fa-crown'
     },
     {
-        'name': 'Imperial Care',
+        'name': 'Prestige Care',
         'tagline': 'Comprehensive Care for Lasting Excellence',
-        'description': 'The Imperial Care package delivers a complete and thorough service designed to restore your vehicle\'s overall health and reliability. It is best suited for major servicing.',
+        'description': 'The Prestige Care package delivers a complete and thorough service designed to restore your vehicle\'s overall health and reliability. It is best suited for major servicing.',
         'price': 9999,
         'duration': 'Every 18-24 months or 30,000 km',
         'category': 'Packages',
         'icon': 'fa-shield'
     },
     {
-        'name': 'Royal Majesty',
+        'name': 'Platinum Elite',
         'tagline': 'Because Your Car Deserves Royal Treatment',
-        'description': 'The Royal Majesty package is the ultimate luxury experience, offering top-tier services and exclusive benefits for customers who want the very best for their vehicles.',
+        'description': 'The Platinum Elite package is the ultimate luxury experience, offering top-tier services and exclusive benefits for customers who want the very best for their vehicles.',
         'price': 14999,
         'duration': 'Once every 2 years or as required for luxury detailing',
         'category': 'Packages',
@@ -46,6 +46,20 @@ PACKAGE_DEFINITIONS = [
 
 
 def ensure_packages_exist():
+    legacy_renames = {
+        'Signature Care': 'Prime Care',
+        'Prestige Care': 'Elite Care',
+        'Imperial Care': 'Prestige Care',
+        'Royal Majesty': 'Platinum Elite'
+    }
+    changed = False
+    for old_name, new_name in legacy_renames.items():
+        existing = Service.query.filter_by(name=old_name, category='Packages').first()
+        target_exists = Service.query.filter_by(name=new_name, category='Packages').first()
+        if existing and not target_exists:
+            existing.name = new_name
+            changed = True
+
     existing_names = {s.name for s in Service.query.filter(Service.category == 'Packages').all()}
     created = False
     for p in PACKAGE_DEFINITIONS:
@@ -59,7 +73,7 @@ def ensure_packages_exist():
                 icon=p['icon']
             ))
             created = True
-    if created:
+    if created or changed:
         db.session.commit()
 
 @main.route('/')
@@ -82,7 +96,7 @@ def packages():
     ensure_packages_exist()
     package_services = Service.query.filter_by(category='Packages').order_by(Service.price.asc()).all()
     package_map = {
-        'Signature Care': {
+        'Prime Care': {
             'tagline': 'Essential Elegance for Every Drive',
             'inclusions': [
                 'Engine oil replacement',
@@ -97,10 +111,10 @@ def packages():
             ],
             'addons': ['Pick-up and drop service', 'Windshield washer refill', 'Car perfume']
         },
-        'Prestige Care': {
+        'Elite Care': {
             'tagline': 'Enhanced Performance, Elevated Comfort',
             'inclusions': [
-                'All services included in Signature Care',
+                'All services included in Prime Care',
                 'Air filter cleaning or replacement',
                 'Cabin (AC) filter cleaning or replacement',
                 'Wheel alignment and balancing',
@@ -112,10 +126,10 @@ def packages():
             ],
             'addons': ['Engine bay cleaning', 'Minor scratch removal', 'Interior sanitization/fumigation']
         },
-        'Imperial Care': {
+        'Prestige Care': {
             'tagline': 'Comprehensive Care for Lasting Excellence',
             'inclusions': [
-                'All services included in Prestige Care',
+                'All services included in Elite Care',
                 'Spark plug replacement (for petrol vehicles)',
                 'Fuel filter replacement',
                 'Brake fluid replacement',
@@ -129,10 +143,10 @@ def packages():
             ],
             'addons': ['Headlight restoration', 'Underbody anti-rust coating', 'Paint protection treatments']
         },
-        'Royal Majesty': {
+        'Platinum Elite': {
             'tagline': 'Because Your Car Deserves Royal Treatment',
             'inclusions': [
-                'All services included in Imperial Care',
+                'All services included in Prestige Care',
                 'Ceramic or Teflon coating',
                 'Paint correction and swirl removal',
                 'Leather seat conditioning',
@@ -205,11 +219,14 @@ def chatbot():
     msg = data.get('message', '').lower()
 
     responses = {
-        'package': 'We offer 4 plans: Signature Care (Rs.2,999), Prestige Care (Rs.5,999), Imperial Care (Rs.9,999), and Royal Majesty (Rs.14,999). Visit Packages to book.',
-        'signature': 'Signature Care is Rs.2,999 and includes essential periodic maintenance with wash and inspection.',
-        'prestige': 'Prestige Care is Rs.5,999 and includes Signature plus AC/filter/alignment enhancements.',
-        'imperial': 'Imperial Care is Rs.9,999 with major service items, diagnostics, detailing, and protection.',
-        'royal': 'Royal Majesty is Rs.14,999, our top luxury package with premium detailing and priority support.',
+        'package': 'We offer 4 plans: Prime Care (Rs.2,999), Elite Care (Rs.5,999), Prestige Care (Rs.9,999), and Platinum Elite (Rs.14,999). Visit Packages to book.',
+        'signature': 'Prime Care is Rs.2,999 and includes essential periodic maintenance with wash and inspection.',
+        'prime': 'Prime Care is Rs.2,999 and includes essential periodic maintenance with wash and inspection.',
+        'elite': 'Elite Care is Rs.5,999 and includes Prime plus AC/filter/alignment enhancements.',
+        'prestige': 'Prestige Care is Rs.9,999 with major service items, diagnostics, detailing, and protection.',
+        'imperial': 'Prestige Care is Rs.9,999 with major service items, diagnostics, detailing, and protection.',
+        'platinum': 'Platinum Elite is Rs.14,999, our top luxury package with premium detailing and priority support.',
+        'royal': 'Platinum Elite is Rs.14,999, our top luxury package with premium detailing and priority support.',
         'oil': "Our Oil Change starts at Rs.1,299. We use OEM-grade engine oils. Book via our Services page!",
         'ac': "Our AC Service (gas refill + cleaning) is Rs.2,499 and takes 2-3 hours. Want to book?",
         'brake': "Brake Service including pads and fluid check is Rs.1,999. Safety first! Book now.",

@@ -41,9 +41,12 @@
 <script>
 function openAddMechModal(){ document.getElementById('mech-modal').style.display='flex'; }
 function addMech(){
+    var name = document.getElementById('m-name').value.trim();
+    if(!name){ alert('Mechanic name is required.'); return; }
     fetch('/admin/mechanic/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        name:document.getElementById('m-name').value,phone:document.getElementById('m-phone').value,specialty:document.getElementById('m-spec').value
-    })}).then(r=>r.json()).then(d=>{ if(d.success) location.reload(); });
+        name:name,phone:document.getElementById('m-phone').value.trim(),specialty:document.getElementById('m-spec').value.trim()
+    })}).then(r=>r.json()).then(d=>{ if(d.success) location.reload(); else alert(d.error || 'Unable to add mechanic.'); })
+    .catch(()=>alert('Unable to add mechanic.'));
 }
 function deleteMech(id){
     if(!confirm('Remove this mechanic?')) return;

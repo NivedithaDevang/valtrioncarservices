@@ -6,3 +6,4 @@ flask-wtf
 flask-mail
 flask-socketio
 twilio
+psycopg2-binary

@@ -137,10 +137,19 @@ def services():
 @login_required
 @admin_required
 def add_service():
-    data = request.json
-    s = Service(name=data['name'], description=data.get('description',''),
-                price=float(data['price']), duration=data.get('duration',''),
-                category=data.get('category',''), icon=data.get('icon','fa-wrench'))
+    data = request.json or {}
+    name = (data.get('name') or '').strip()
+    if not name:
+        return jsonify({'success': False, 'error': 'Service name is required.'}), 400
+    try:
+        price = float(data.get('price', 0))
+    except (TypeError, ValueError):
+        return jsonify({'success': False, 'error': 'Invalid service price.'}), 400
+    if price <= 0:
+        return jsonify({'success': False, 'error': 'Service price must be greater than 0.'}), 400
+    s = Service(name=name, description=(data.get('description') or '').strip(),
+                price=price, duration=(data.get('duration') or '').strip(),
+                category=(data.get('category') or '').strip(), icon=(data.get('icon') or 'fa-wrench').strip())
     db.session.add(s); db.session.commit()
     return jsonify({'success': True, 'id': s.id})
 
@@ -148,13 +157,22 @@ def add_service():
 @login_required
 @admin_required
 def edit_service():
-    data = request.json
+    data = request.json or {}
     s = Service.query.get_or_404(data['id'])
-    s.name = data.get('name', s.name)
-    s.description = data.get('description', s.description)
-    s.price = float(data.get('price', s.price))
-    s.duration = data.get('duration', s.duration)
-    s.category = data.get('category', s.category)
+    name = (data.get('name') or s.name).strip()
+    if not name:
+        return jsonify({'success': False, 'error': 'Service name is required.'}), 400
+    try:
+        price = float(data.get('price', s.price))
+    except (TypeError, ValueError):
+        return jsonify({'success': False, 'error': 'Invalid service price.'}), 400
+    if price <= 0:
+        return jsonify({'success': False, 'error': 'Service price must be greater than 0.'}), 400
+    s.name = name
+    s.description = (data.get('description') or s.description or '').strip()
+    s.price = price
+    s.duration = (data.get('duration') or s.duration or '').strip()
+    s.category = (data.get('category') or s.category or '').strip()
     db.session.commit()
     return jsonify({'success': True})
 

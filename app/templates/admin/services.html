@@ -17,8 +17,15 @@
                 <i class="fa {{ s.icon or 'fa-wrench' }}" style="color:var(--blue);font-size:18px;"></i>
             </div>
             <div style="display:flex;gap:6px;">
-                <button class="btn btn-outline btn-sm" onclick="openEditModal({{ s.id }},'{{ s.name }}','{{ s.description }}',{{ s.price }},'{{ s.duration }}','{{ s.category }}')"><i class="fa fa-edit"></i></button>
-                <button class="btn btn-danger btn-sm" onclick="deleteService({{ s.id }})"><i class="fa fa-trash"></i></button>
+                <button class="btn btn-outline btn-sm"
+                    data-id="{{ s.id }}"
+                    data-name="{{ s.name|e }}"
+                    data-description="{{ (s.description or '')|e }}"
+                    data-price="{{ s.price }}"
+                    data-duration="{{ (s.duration or '')|e }}"
+                    data-category="{{ (s.category or '')|e }}"
+                    onclick="openEditFromRow(this)"><i class="fa fa-edit"></i></button>
+                <button class="btn btn-danger btn-sm" data-id="{{ s.id }}" onclick="deleteServiceFromRow(this)"><i class="fa fa-trash"></i></button>
             </div>
         </div>
         <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;">{{ s.name }}</h3>
@@ -81,24 +88,58 @@ function openEditModal(id,name,desc,price,dur,cat){
     document.getElementById('edit-cat').value=cat;
     document.getElementById('edit-modal').style.display='flex';
 }
+function openEditFromRow(btn){
+    openEditModal(
+        btn.dataset.id,
+        btn.dataset.name || '',
+        btn.dataset.description || '',
+        btn.dataset.price || '',
+        btn.dataset.duration || '',
+        btn.dataset.category || ''
+    );
+}
 function closeModal(id){ document.getElementById(id).style.display='none'; }
 function addService(){
+    var payload = {
+        name:document.getElementById('add-name').value.trim(),
+        description:document.getElementById('add-desc').value.trim(),
+        price:document.getElementById('add-price').value,
+        duration:document.getElementById('add-dur').value.trim(),
+        category:document.getElementById('add-cat').value.trim()
+    };
+    if(!payload.name){ alert('Service name is required.'); return; }
+    if(!payload.price || Number(payload.price) <= 0){ alert('Enter a valid service price.'); return; }
     fetch('/admin/service/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        name:document.getElementById('add-name').value,description:document.getElementById('add-desc').value,
-        price:document.getElementById('add-price').value,duration:document.getElementById('add-dur').value,
-        category:document.getElementById('add-cat').value
-    })}).then(r=>r.json()).then(d=>{ if(d.success) location.reload(); });
+        name:payload.name,description:payload.description,
+        price:payload.price,duration:payload.duration,
+        category:payload.category
+    })}).then(r=>r.json()).then(d=>{ if(d.success) location.reload(); else alert(d.error || 'Unable to add service.'); })
+    .catch(()=>alert('Unable to add service.'));
 }
 function saveEdit(){
+    var payload = {
+        id:document.getElementById('edit-id').value,
+        name:document.getElementById('edit-name').value.trim(),
+        description:document.getElementById('edit-desc').value.trim(),
+        price:document.getElementById('edit-price').value,
+        duration:document.getElementById('edit-dur').value.trim(),
+        category:document.getElementById('edit-cat').value.trim()
+    };
+    if(!payload.name){ alert('Service name is required.'); return; }
+    if(!payload.price || Number(payload.price) <= 0){ alert('Enter a valid service price.'); return; }
     fetch('/admin/service/edit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-        id:document.getElementById('edit-id').value,name:document.getElementById('edit-name').value,
-        description:document.getElementById('edit-desc').value,price:document.getElementById('edit-price').value,
-        duration:document.getElementById('edit-dur').value,category:document.getElementById('edit-cat').value
-    })}).then(r=>r.json()).then(d=>{ if(d.success) location.reload(); });
+        id:payload.id,name:payload.name,
+        description:payload.description,price:payload.price,
+        duration:payload.duration,category:payload.category
+    })}).then(r=>r.json()).then(d=>{ if(d.success) location.reload(); else alert(d.error || 'Unable to save service.'); })
+    .catch(()=>alert('Unable to save service.'));
 }
 function deleteService(id){
     if(!confirm('Delete this service?')) return;
     fetch('/admin/service/delete/'+id,{method:'POST'}).then(r=>r.json()).then(d=>{ if(d.success) document.getElementById('svc-'+id).remove(); });
+}
+function deleteServiceFromRow(btn){
+    deleteService(btn.dataset.id);
 }
 </script>
 {% endblock %}
