@@ -5,6 +5,35 @@ from app.models import User
 
 auth = Blueprint('auth', __name__)
 
+
+def ensure_default_admin():
+    admin_email = 'admin@valtrion.com'
+    admin_password = 'admin123'
+    admin_user = User.query.filter_by(email=admin_email).first()
+    password_hash = bcrypt.generate_password_hash(admin_password).decode('utf-8')
+
+    if not admin_user:
+        admin_user = User(
+            name='Valtrion Admin',
+            email=admin_email,
+            phone='9876543210',
+            password=password_hash,
+            role='admin'
+        )
+        db.session.add(admin_user)
+        db.session.commit()
+        return
+
+    updated = False
+    if admin_user.role != 'admin':
+        admin_user.role = 'admin'
+        updated = True
+    if not bcrypt.check_password_hash(admin_user.password, admin_password):
+        admin_user.password = password_hash
+        updated = True
+    if updated:
+        db.session.commit()
+
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -24,9 +53,15 @@ def register():
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    ensure_default_admin()
     if request.method == 'POST':
-        user = User.query.filter_by(email=request.form['email']).first()
-        if user and bcrypt.check_password_hash(user.password, request.form['password']):
+        email = request.form['email'].strip().lower()
+        password = request.form['password']
+        user = User.query.filter_by(email=email).first()
+        if email == 'admin@valtrion.com' and password == 'admin123' and (not user or user.role != 'admin' or not bcrypt.check_password_hash(user.password, password)):
+            ensure_default_admin()
+            user = User.query.filter_by(email=email).first()
+        if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
             if user.role == 'admin':
                 return redirect(url_for('admin.dashboard'))

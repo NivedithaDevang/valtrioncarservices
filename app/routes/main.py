@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
-from app.models import Service, Booking
 from app import db
+from app.models import Service, Booking
+from datetime import date, timedelta
 
 main = Blueprint('main', __name__)
 
@@ -12,16 +13,14 @@ PACKAGE_DEFINITIONS = [
         'description': 'The Prime Care package provides essential maintenance with a premium touch. It is ideal for regular servicing to keep your vehicle running smoothly and efficiently.',
         'price': 2999,
         'duration': 'Every 6 months or 5,000-7,500 km',
-        'category': 'Packages',
         'icon': 'fa-medal'
     },
     {
         'name': 'Elite Care',
         'tagline': 'Enhanced Performance, Elevated Comfort',
-        'description': 'The Prestige Care package offers an advanced level of servicing with additional checks and enhancements to improve vehicle performance and comfort. It is perfect for annual maintenance.',
+        'description': 'The Elite Care package offers an advanced level of servicing with additional checks and enhancements to improve vehicle performance and comfort. It is perfect for annual maintenance.',
         'price': 5999,
         'duration': 'Every 12 months or 15,000 km',
-        'category': 'Packages',
         'icon': 'fa-crown'
     },
     {
@@ -30,7 +29,6 @@ PACKAGE_DEFINITIONS = [
         'description': 'The Prestige Care package delivers a complete and thorough service designed to restore your vehicle\'s overall health and reliability. It is best suited for major servicing.',
         'price': 9999,
         'duration': 'Every 18-24 months or 30,000 km',
-        'category': 'Packages',
         'icon': 'fa-shield'
     },
     {
@@ -39,7 +37,6 @@ PACKAGE_DEFINITIONS = [
         'description': 'The Platinum Elite package is the ultimate luxury experience, offering top-tier services and exclusive benefits for customers who want the very best for their vehicles.',
         'price': 14999,
         'duration': 'Once every 2 years or as required for luxury detailing',
-        'category': 'Packages',
         'icon': 'fa-gem'
     }
 ]
@@ -53,6 +50,7 @@ def ensure_packages_exist():
         'Royal Majesty': 'Platinum Elite'
     }
     changed = False
+
     for old_name, new_name in legacy_renames.items():
         existing = Service.query.filter_by(name=old_name, category='Packages').first()
         target_exists = Service.query.filter_by(name=new_name, category='Packages').first()
@@ -60,34 +58,36 @@ def ensure_packages_exist():
             existing.name = new_name
             changed = True
 
-    existing_names = {s.name for s in Service.query.filter(Service.category == 'Packages').all()}
-    created = False
-    for p in PACKAGE_DEFINITIONS:
-        if p['name'] not in existing_names:
+    existing_names = {service.name for service in Service.query.filter_by(category='Packages').all()}
+    for package in PACKAGE_DEFINITIONS:
+        if package['name'] not in existing_names:
             db.session.add(Service(
-                name=p['name'],
-                description=p['description'],
-                price=p['price'],
-                duration=p['duration'],
-                category=p['category'],
-                icon=p['icon']
+                name=package['name'],
+                description=package['description'],
+                price=package['price'],
+                duration=package['duration'],
+                category='Packages',
+                icon=package['icon']
             ))
-            created = True
-    if created or changed:
+            changed = True
+
+    if changed:
         db.session.commit()
+
 
 @main.route('/')
 def index():
     ensure_packages_exist()
     services = Service.query.all()
-    categories = list(set([s.category for s in services]))
+    categories = list(set(service.category for service in services if service.category))
     return render_template('index.html', services=services, categories=categories)
+
 
 @main.route('/services')
 def services():
     ensure_packages_exist()
     all_services = Service.query.filter(Service.category != 'Packages').all()
-    categories = list(set([s.category for s in all_services]))
+    categories = list(set(service.category for service in all_services if service.category))
     return render_template('services.html', services=all_services, categories=categories)
 
 
@@ -164,9 +164,11 @@ def packages():
     }
     return render_template('packages.html', packages=package_services, package_map=package_map)
 
+
 @main.route('/estimator')
 def estimator():
     return render_template('estimator.html')
+
 
 @main.route('/dashboard')
 @login_required
@@ -174,9 +176,10 @@ def dashboard():
     bookings = Booking.query.filter_by(user_id=current_user.id).order_by(Booking.created_at.desc()).all()
     return render_template('dashboard.html', bookings=bookings)
 
+
 @main.route('/api/estimate', methods=['POST'])
 def api_estimate():
-    data = request.json
+    data = request.json or {}
     brand = data.get('brand', '')
     age = int(data.get('age', 0))
     service_type = data.get('service', '')
@@ -213,42 +216,40 @@ def api_estimate():
 
     return jsonify({'estimate': round(base), 'service': service_type, 'brand': brand})
 
+
 @main.route('/api/chatbot', methods=['POST'])
 def chatbot():
-    data = request.json
-    msg = data.get('message', '').lower()
+    data = request.json or {}
+    msg = (data.get('message', '') or '').lower()
 
     responses = {
-        'package': 'We offer 4 plans: Prime Care (Rs.2,999), Elite Care (Rs.5,999), Prestige Care (Rs.9,999), and Platinum Elite (Rs.14,999). Visit Packages to book.',
-        'signature': 'Prime Care is Rs.2,999 and includes essential periodic maintenance with wash and inspection.',
-        'prime': 'Prime Care is Rs.2,999 and includes essential periodic maintenance with wash and inspection.',
-        'elite': 'Elite Care is Rs.5,999 and includes Prime plus AC/filter/alignment enhancements.',
-        'prestige': 'Prestige Care is Rs.9,999 with major service items, diagnostics, detailing, and protection.',
-        'imperial': 'Prestige Care is Rs.9,999 with major service items, diagnostics, detailing, and protection.',
-        'platinum': 'Platinum Elite is Rs.14,999, our top luxury package with premium detailing and priority support.',
-        'royal': 'Platinum Elite is Rs.14,999, our top luxury package with premium detailing and priority support.',
-        'oil': "Our Oil Change starts at Rs.1,299. We use OEM-grade engine oils. Book via our Services page!",
-        'ac': "Our AC Service (gas refill + cleaning) is Rs.2,499 and takes 2-3 hours. Want to book?",
-        'brake': "Brake Service including pads and fluid check is Rs.1,999. Safety first! Book now.",
-        'wash': "We offer Basic Car Wash at Rs.499 and Premium Wash at Rs.999. Both include interior vacuum!",
-        'battery': "Battery Replacement with installation is Rs.3,499. Quick 30-minute service!",
-        'tyre': "Tyre Rotation is Rs.599. Wheel Alignment is Rs.899.",
-        'price': "Our prices start from Rs.499 for car wash to Rs.3,999 for engine tune-up. All transparent, no hidden charges!",
-        'book': "To book a service, click Book Now on any service card or go to our Services page!",
-        'location': "We serve Bengaluru, Hyderabad, Chennai and Pune. Pickup and delivery included!",
-        'pickup': "Yes! We offer complimentary pickup and doorstep delivery for all services.",
-        'warranty': "All our services come with a 30-day service warranty assurance.",
-        'time': "Service times vary: Car wash 1hr, Oil change 1-2hr, AC service 2-3hr.",
-        'payment': "We accept online payments via Razorpay including UPI, cards, and net banking.",
-        'hello': "Hello! Welcome to Valtrion! I am your car care assistant. How can I help you today?",
-        'hi': "Hi there! Welcome to Valtrion! Ask me about our services, pricing, or bookings!",
-        'help': "I can help you with service prices, booking info, our locations, and pickup and delivery. What do you need?",
-        'inspection': "Our Full Car Inspection (30-point check) is just Rs.799 and takes 1.5 hours!",
-        'engine': "Engine Tune-Up is Rs.3,999. Improves performance and fuel efficiency!",
-        'periodic': "Periodic Service (comprehensive) is Rs.2,999. Includes all major checks!",
+        'package': 'We have four packages: Prime Care, Elite Care, Prestige Care, and Platinum Elite.',
+        'prime': 'Prime Care is Rs.2,999.',
+        'elite': 'Elite Care is Rs.5,999.',
+        'prestige': 'Prestige Care is Rs.9,999.',
+        'platinum': 'Platinum Elite is Rs.14,999.',
+        'oil': 'Oil Change starts at Rs.1,299.',
+        'ac': 'AC Service is Rs.2,499.',
+        'brake': 'Brake Service is Rs.1,999.',
+        'wash': 'Basic Car Wash starts at Rs.499 and Premium Wash starts at Rs.999.',
+        'battery': 'Battery Replacement is Rs.3,499.',
+        'tyre': 'Tyre Rotation is Rs.599 and Wheel Alignment is Rs.899.',
+        'price': 'Our services start from Rs.499.',
+        'book': 'You can book from the Services or Packages page.',
+        'location': 'We serve Bengaluru, Hyderabad, Chennai, and Pune.',
+        'pickup': 'Yes, pickup and delivery are included.',
+        'warranty': 'We provide a 30-day service warranty.',
+        'time': 'Service time depends on the selected service or package.',
+        'payment': 'We accept online payments and COD where available.',
+        'hello': 'Hello, how can I help you?',
+        'hi': 'Hi, how can I help?',
+        'help': 'I can help with pricing, booking, locations, pickup, and payment.',
+        'inspection': 'Full Car Inspection is Rs.799.',
+        'engine': 'Engine Tune-Up is Rs.3,999.',
+        'periodic': 'Periodic Service starts at Rs.2,999.',
     }
 
-    reply = "I am not sure about that. Try asking about services, prices, booking, locations, or pickup!"
+    reply = 'I am not sure about that. Try asking about services, prices, booking, locations, or pickup.'
     for key, response in responses.items():
         if key in msg:
             reply = response
