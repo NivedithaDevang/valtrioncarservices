@@ -61,12 +61,44 @@
         </div>
         {% endfor %}
     </div>
+
+    <div style="margin-top:70px;">
+        <div style="text-align:center;margin-bottom:34px;">
+            <p class="section-label">CUSTOM WORK</p>
+            <h2 class="section-title">Custom Car <span>Services</span></h2>
+            <p style="color:var(--silver);max-width:760px;margin:0 auto;">Tailored upgrades, protection, and compliance support for cars that need a more personal setup.</p>
+        </div>
+
+        <div class="custom-services-grid">
+            {% for service in custom_car_services %}
+            <div class="card pcard custom-service-card">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:12px;">
+                    <h3 style="font-size:20px;font-weight:700;color:var(--white);margin:0;">{{ service.name }}</h3>
+                    <div style="width:42px;height:42px;border-radius:12px;background:{{ service.accent }}22;border:1px solid {{ service.accent }}66;display:flex;align-items:center;justify-content:center;color:{{ service.accent }};font-size:18px;flex-shrink:0;">
+                        <i class="fa fa-wrench"></i>
+                    </div>
+                </div>
+
+                <p style="color:var(--silver);font-size:14px;line-height:1.6;margin:0 0 12px;">{{ service.description }}</p>
+
+                <div style="font-size:12px;letter-spacing:1px;color:var(--blue);font-weight:700;margin-bottom:8px;">INCLUDED OPTIONS</div>
+                <ul style="margin:0;padding-left:18px;color:var(--silver-light);display:grid;gap:6px;font-size:14px;line-height:1.5;">
+                    {% for item in service.examples %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 </section>
 
 <style>
     .pcard { transition:all 0.25s ease; }
     .pcard:hover { transform:translateY(-4px); border-color:var(--blue); box-shadow:0 20px 40px rgba(0,102,255,0.12); }
-    @media(max-width:950px){ #pg{grid-template-columns:1fr;} }
+    .custom-services-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; }
+    .custom-service-card { padding:20px; }
+    @media(max-width:950px){ #pg{grid-template-columns:1fr;} .custom-services-grid{grid-template-columns:1fr;} }
 </style>
 {% endblock %}

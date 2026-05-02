@@ -7,3 +7,8 @@ flask-mail
 flask-socketio
 twilio
 psycopg2-binary
+tzdata
+chardet
+razorpay
+qrcode[pil]
+pillow

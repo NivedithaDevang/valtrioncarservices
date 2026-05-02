@@ -153,70 +153,13 @@
         <div class="card" id="payment-methods-card">
             <h3 style="font-family:'Orbitron';font-size:13px;letter-spacing:2px;color:var(--blue);margin-bottom:20px;">CHOOSE PAYMENT METHOD</h3>
 
-            <!-- UPI APPS -->
-            <div style="margin-bottom:16px;">
-                <div style="color:var(--silver);font-size:12px;letter-spacing:1px;font-weight:600;margin-bottom:12px;">UPI APPS</div>
-                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;" id="upi-apps-grid">
-                    <button class="pay-opt" onclick="selectPayOpt('PhonePe',this)" data-color="#5f259f">
-                        <div class="pay-icon" style="background:#5f259f;">
-                            <svg viewBox="0 0 40 40" width="28" height="28"><circle cx="20" cy="20" r="20" fill="#5f259f"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="16" font-weight="900" fill="white" font-family="Arial">Pe</text></svg>
-                        </div>
-                        <span>PhonePe</span>
-                    </button>
-                    <button class="pay-opt" onclick="selectPayOpt('GPay',this)" data-color="#00a86b">
-                        <div class="pay-icon" style="background:#1a73e8;">
-                            <svg viewBox="0 0 40 40" width="28" height="28"><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="20" font-weight="900" fill="white" font-family="Arial">G</text></svg>
-                        </div>
-                        <span>GPay</span>
-                    </button>
-                    <button class="pay-opt" onclick="selectPayOpt('Paytm',this)" data-color="#00baf2">
-                        <div class="pay-icon" style="background:#00baf2;">
-                            <svg viewBox="0 0 40 40" width="28" height="28"><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="13" font-weight="900" fill="white" font-family="Arial">Paytm</text></svg>
-                        </div>
-                        <span>Paytm</span>
-                    </button>
-                    <button class="pay-opt" onclick="selectPayOpt('BHIM',this)" data-color="#00457c">
-                        <div class="pay-icon" style="background:#00457c;">
-                            <svg viewBox="0 0 40 40" width="28" height="28"><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="14" font-weight="900" fill="white" font-family="Arial">BHIM</text></svg>
-                        </div>
-                        <span>BHIM</span>
-                    </button>
-                    <button class="pay-opt" onclick="selectPayOpt('Amazon Pay',this)" data-color="#f90">
-                        <div class="pay-icon" style="background:#232f3e;">
-                            <svg viewBox="0 0 40 40" width="28" height="28"><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="11" font-weight="900" fill="#f90" font-family="Arial">amzn</text></svg>
-                        </div>
-                        <span>Amazon Pay</span>
-                    </button>
-                    <button class="pay-opt" onclick="selectPayOpt('CRED Pay',this)" data-color="#1a1a1a">
-                        <div class="pay-icon" style="background:#1a1a1a;border:1px solid #444;">
-                            <svg viewBox="0 0 40 40" width="28" height="28"><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="12" font-weight="900" fill="white" font-family="Arial">CRED</text></svg>
-                        </div>
-                        <span>CRED Pay</span>
-                    </button>
-                    <button class="pay-opt" onclick="selectPayOpt('Navi Pay',this)" data-color="#7c3aed">
-                        <div class="pay-icon" style="background:#7c3aed;">
-                            <svg viewBox="0 0 40 40" width="28" height="28"><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="12" font-weight="900" fill="white" font-family="Arial">Navi</text></svg>
-                        </div>
-                        <span>Navi Pay</span>
-                    </button>
-                    <button class="pay-opt" onclick="selectPayOpt('MobiKwik',this)" data-color="#e63a2e">
-                        <div class="pay-icon" style="background:#e63a2e;">
-                            <svg viewBox="0 0 40 40" width="28" height="28"><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" font-size="10" font-weight="900" fill="white" font-family="Arial">MobiK</text></svg>
-                        </div>
-                        <span>MobiKwik</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- DIVIDER -->
-            <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
-                <div style="flex:1;height:1px;background:var(--border);"></div>
-                <span style="color:var(--silver);font-size:12px;font-weight:600;">OR</span>
-                <div style="flex:1;height:1px;background:var(--border);"></div>
-            </div>
-
             <!-- OTHER OPTIONS -->
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button class="pay-opt-large" onclick="selectPayOpt('Razorpay',this)">
+                    <i class="fa fa-bolt" style="font-size:22px;color:#ff9800;margin-bottom:6px;display:block;"></i>
+                    <span style="font-size:14px;font-weight:700;">Pay with Razorpay</span>
+                    <span style="font-size:11px;color:var(--silver);display:block;margin-top:2px;">Cards, UPI apps, Netbanking</span>
+                </button>
                 <button class="pay-opt-large" onclick="selectPayOpt('QR Code',this)">
                     <i class="fa fa-qrcode" style="font-size:22px;color:var(--blue);margin-bottom:6px;display:block;"></i>
                     <span style="font-size:14px;font-weight:700;">Scan QR Code</span>
@@ -283,8 +226,8 @@
                 <div style="width:56px;height:56px;border:3px solid var(--blue);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;"></div>
                 <p style="color:var(--silver);">Waiting for payment on your UPI app...</p>
                 <p style="color:var(--silver);font-size:12px;margin-top:4px;">Open <strong style="color:var(--white);">{{ upi_id or 'your UPI app' }}</strong> to approve</p>
-                <button class="btn btn-success" style="margin-top:20px;width:100%;justify-content:center;" onclick="confirmCODorQR()">
-                    <i class="fa fa-check"></i> Payment Done — Confirm Booking
+                <button class="btn btn-success" style="margin-top:20px;width:100%;justify-content:center;" onclick="sendUPIRequest()">
+                    <i class="fa fa-rotate-right"></i> Retry Payment Request
                 </button>
             </div>
         </div>
@@ -309,33 +252,15 @@
             </button>
         </div>
 
-        <!-- UPI APP DEEP LINK PANEL (for app buttons) -->
-        <div id="app-panel" class="card" style="display:none;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;cursor:pointer;" onclick="backToMethods()">
-                <i class="fa fa-arrow-left" style="color:var(--blue);"></i>
-                <span style="color:var(--blue);font-size:13px;font-weight:600;">Back to payment methods</span>
-            </div>
-            <h3 id="app-panel-title" style="font-family:'Orbitron';font-size:14px;letter-spacing:2px;margin-bottom:20px;text-align:center;">PAY WITH APP</h3>
-            <div style="background:rgba(0,102,255,0.05);border:1px solid rgba(0,102,255,0.2);border-radius:10px;padding:14px;margin-bottom:20px;">
-                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--silver);">Service</span><span>{{ service.name }}</span></div>
-                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--silver);">Amount</span><span style="font-family:'Orbitron';color:var(--blue);font-size:18px;font-weight:700;">Rs.{{ "%.0f"|format(service.price) }}</span></div>
-                <div style="display:flex;justify-content:space-between;"><span style="color:var(--silver);">Paying to</span><span style="color:var(--green);font-weight:600;">dhanushkoti08-3@okicici</span></div>
-            </div>
-            <a id="app-deeplink" href="#" class="btn btn-primary" style="width:100%;justify-content:center;font-size:15px;padding:14px;margin-bottom:12px;" target="_blank" onclick="onAppLinkClick()">
-                <i class="fa fa-mobile-screen"></i> <span id="app-link-text">Open App & Pay</span>
-            </a>
-            <div style="text-align:center;color:var(--silver);font-size:12px;margin-bottom:16px;">
-                <i class="fa fa-info-circle"></i> App will open with amount pre-filled
-            </div>
-            <div id="app-paid-section" style="display:none;border-top:1px solid var(--border);padding-top:16px;">
-                <p style="color:var(--silver);font-size:13px;text-align:center;margin-bottom:12px;">Completed payment in the app?</p>
-                <button class="btn btn-success" style="width:100%;justify-content:center;font-size:15px;padding:14px;" onclick="confirmCODorQR()">
-                    <i class="fa fa-circle-check"></i> Payment Done — Confirm Booking
-                </button>
-            </div>
-        </div>
     </div>
 </div>
+
+<div id="payment-config"
+     data-service-price="{{ service.price|int }}"
+     data-service-name="{{ service.name|e }}"
+     data-service-id="{{ service.id }}"
+     data-razorpay-key-id="{{ config.RAZORPAY_KEY_ID|e }}"
+     style="display:none;"></div>
 </section>
 
 <style>
@@ -365,12 +290,15 @@
     @keyframes spin{to{transform:rotate(360deg);}}
 </style>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-var SERVICE_PRICE = {{ "%.0f"|format(service.price) }};
-var SERVICE_NAME  = "{{ service.name }}";
-var SERVICE_ID    = {{ service.id }};
+var paymentConfig = document.getElementById('payment-config');
+var SERVICE_PRICE = parseInt(paymentConfig.dataset.servicePrice, 10);
+var SERVICE_NAME  = paymentConfig.dataset.serviceName;
+var SERVICE_ID    = parseInt(paymentConfig.dataset.serviceId, 10);
 var selectedPayMethod = '';
+var RAZORPAY_KEY_ID = paymentConfig.dataset.razorpayKeyId;
 
 // ===================== BRANDS =====================
 var brands = [
@@ -489,6 +417,18 @@ function pickDate(d,dt){ selDateObj=dt; var y=dt.getFullYear(),m=String(dt.getMo
 
 // ===================== FORM VALIDATION =====================
 function showErr(msg){ var e=document.getElementById("booking-error"); e.textContent=msg; e.style.display="block"; e.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+function getValidationError(){
+    var d=getFormData();
+    if(!d.name){ return 'Please enter your full name.'; }
+    if(!d.phone || d.phone.length !== 10){ return 'Please enter a valid 10-digit phone number.'; }
+    if(!d.brand){ return 'Please select your car brand.'; }
+    if(!d.model){ return 'Please select your car model.'; }
+    if(!d.fuel){ return 'Please select fuel type.'; }
+    if(!d.address){ return 'Please enter your pickup address.'; }
+    if(!d.date){ return 'Please select a preferred date.'; }
+    if(!d.time){ return 'Please select a preferred time.'; }
+    return '';
+}
 function getFormData(){
   return {
     name: document.getElementById("f_name").value.trim(),
@@ -503,15 +443,8 @@ function getFormData(){
   };
 }
 function goToPayment(){
-  var d=getFormData();
-  if(!d.name){showErr("Please enter your full name.");return;}
-  if(!d.phone||d.phone.length!==10){showErr("Please enter a valid 10-digit phone number.");return;}
-  if(!d.brand){showErr("Please select your car brand.");return;}
-  if(!d.model){showErr("Please select your car model.");return;}
-  if(!d.fuel){showErr("Please select fuel type.");return;}
-  if(!d.address){showErr("Please enter your pickup address.");return;}
-  if(!d.date){showErr("Please select a preferred date.");return;}
-  if(!d.time){showErr("Please select a preferred time.");return;}
+    var validationError = getValidationError();
+    if(validationError){ showErr(validationError); return; }
   document.getElementById("booking-error").style.display="none";
   document.getElementById("booking-form-card").style.display="none";
   document.getElementById("payment-card").style.display="block";
@@ -519,21 +452,14 @@ function goToPayment(){
 }
 
 // ===================== PAYMENT =====================
-var UPI_DEEP_LINKS = {
-  'PhonePe': 'phonepe://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR',
-  'GPay':    'tez://upi/pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR',
-  'Paytm':   'paytmmp://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR',
-  'BHIM':    'upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR',
-  'Amazon Pay': 'upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR',
-  'CRED Pay':   'upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR',
-  'Navi Pay':   'upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR',
-  'MobiKwik':   'upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR'
-};
-
 function selectPayOpt(method, btn){
   selectedPayMethod = method;
-  document.querySelectorAll('.pay-opt,.pay-opt-large').forEach(function(b){ b.classList.remove('selected'); });
+    document.querySelectorAll('.pay-opt-large').forEach(function(b){ b.classList.remove('selected'); });
   btn.classList.add('selected');
+    if(method === 'Razorpay'){
+        startRazorpayCheckout();
+        return;
+    }
   hidePanels();
   if(method === 'QR Code'){
     document.getElementById('payment-methods-card').style.display='none';
@@ -545,34 +471,27 @@ function selectPayOpt(method, btn){
   } else if(method === 'COD'){
     document.getElementById('payment-methods-card').style.display='none';
     document.getElementById('cod-panel').style.display='block';
-  } else {
-    // UPI App
-    document.getElementById('payment-methods-card').style.display='none';
-    document.getElementById('app-panel').style.display='block';
-    document.getElementById('app-panel-title').textContent = 'PAY WITH ' + method.toUpperCase();
-    document.getElementById('app-link-text').textContent = 'Open ' + method + ' & Pay';
-    var link = UPI_DEEP_LINKS[method] || 'upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am='+SERVICE_PRICE+'&cu=INR';
-    document.getElementById('app-deeplink').href = link;
   }
 }
-function hidePanels(){ ['qr-panel','upi-panel','cod-panel','app-panel'].forEach(function(id){ document.getElementById(id).style.display='none'; }); }
-function backToMethods(){ hidePanels(); document.getElementById('payment-methods-card').style.display='block'; selectedPayMethod=''; document.querySelectorAll('.pay-opt,.pay-opt-large').forEach(function(b){ b.classList.remove('selected'); }); }
+function hidePanels(){ ['qr-panel','upi-panel','cod-panel'].forEach(function(id){ document.getElementById(id).style.display='none'; }); }
+function backToMethods(){ hidePanels(); document.getElementById('payment-methods-card').style.display='block'; selectedPayMethod=''; document.querySelectorAll('.pay-opt-large').forEach(function(b){ b.classList.remove('selected'); }); }
 function generateQR(){
   var upi="upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am="+SERVICE_PRICE+"&cu=INR&tn="+encodeURIComponent("Valtrion "+SERVICE_NAME);
   document.getElementById("qr-container").innerHTML="";
   new QRCode(document.getElementById("qr-container"),{text:upi,width:220,height:220,colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.H});
 }
-function onAppLinkClick(){ setTimeout(function(){ document.getElementById('app-paid-section').style.display='block'; },1500); }
 function sendUPIRequest(){
   var upiId=document.getElementById('upi-id-input').value.trim();
   if(!upiId||!upiId.includes('@')){ alert("Please enter a valid UPI ID (e.g. yourname@upi)"); return; }
-  document.getElementById('upi-pending').style.display='block';
-  document.querySelector('#upi-panel .btn-primary').style.display='none';
-  // Open UPI app with their ID as payer
-  var link="upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am="+SERVICE_PRICE+"&cu=INR&tn="+encodeURIComponent("Valtrion "+SERVICE_NAME);
-  window.location.href=link;
+    document.getElementById('upi-pending').style.display='block';
+    startRazorpayCheckout(upiId);
 }
+var _bookingInProgress = false;
 async function confirmCODorQR(){
+  if(_bookingInProgress) return;
+  _bookingInProgress = true;
+  var confirmBtns = document.querySelectorAll('#qr-panel .btn-success, #cod-panel .btn-success');
+  confirmBtns.forEach(function(b){ b.disabled=true; b.style.opacity='0.6'; });
   var d=getFormData();
   var ref = selectedPayMethod==='COD' ? 'COD' : (selectedPayMethod==='UPI ID' ? document.getElementById('upi-id-input').value : selectedPayMethod+'-'+Date.now());
   try{
@@ -582,8 +501,93 @@ async function confirmCODorQR(){
         payment_method:selectedPayMethod,payment_ref:ref,amount:SERVICE_PRICE})});
     var data=await res.json();
     if(data.success){ window.location.href='/payment/success/'+data.booking_id; }
-    else{ alert("Something went wrong. Please try again."); }
-  } catch(e){ alert("Error. Please try again."); }
+    else{ alert("Something went wrong. Please try again."); _bookingInProgress=false; confirmBtns.forEach(function(b){ b.disabled=false; b.style.opacity=''; }); }
+  } catch(e){ alert("Error. Please try again."); _bookingInProgress=false; confirmBtns.forEach(function(b){ b.disabled=false; b.style.opacity=''; }); }
+}
+async function startRazorpayCheckout(upiId){
+    var validationError = getValidationError();
+    if(validationError){ showErr(validationError); return; }
+    try{
+        var d = getFormData();
+        var orderResponse = await fetch('/razorpay/create-order', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ service_id: SERVICE_ID })
+        });
+        var orderData = await orderResponse.json();
+        if(!orderData.success){
+            alert(orderData.error || 'Unable to start Razorpay payment.');
+            backToMethods();
+            return;
+        }
+
+        var options = {
+            key: orderData.key_id || RAZORPAY_KEY_ID,
+            amount: orderData.amount,
+            currency: orderData.currency || 'INR',
+            name: 'Valtrion Automotive Services',
+            description: SERVICE_NAME,
+            order_id: orderData.order_id,
+            method: {
+                upi: true,
+                card: true,
+                netbanking: true,
+                wallet: true,
+                paylater: true,
+                emi: true
+            },
+            prefill: {
+                name: d.name,
+                email: orderData.customer_email || '',
+                contact: d.phone,
+                vpa: upiId || undefined
+            },
+            theme: { color: '#0066FF' },
+            handler: async function(response){
+                var verifyResponse = await fetch('/razorpay/verify-payment', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({
+                        service_id: SERVICE_ID,
+                        name: d.name,
+                        phone: d.phone,
+                        car_brand: d.brand,
+                        car_model: d.model,
+                        car_number: d.car_number,
+                        fuel_type: d.fuel,
+                        address: d.address,
+                        date: d.date + ' ' + d.time,
+                        payment_method: 'Razorpay',
+                        payment_ref: response.razorpay_payment_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                });
+                var verifyData = await verifyResponse.json();
+                if(verifyData.success){
+                    window.location.href = '/payment/success/' + verifyData.booking_id;
+                } else {
+                    alert(verifyData.error || 'Payment verification failed.');
+                }
+            },
+            modal: {
+                ondismiss: function(){ backToMethods(); }
+            }
+        };
+
+        if(window.Razorpay){
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            alert('Razorpay checkout failed to load. Please try again.');
+            backToMethods();
+        }
+    } catch(error){
+        console.error(error);
+        alert('Unable to start Razorpay payment. Please try again.');
+        backToMethods();
+    }
 }
 function goBack(){ document.getElementById('payment-card').style.display='none'; document.getElementById('booking-form-card').style.display='block'; }
 </script>

@@ -1,108 +1,261 @@
 {% extends 'base.html' %}
 {% block content %}
-<div style="padding:30px;max-width:1200px;margin:0 auto;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-        <div><p class="section-label">ADMIN</p><h2 class="section-title">Live <span>Chat</span></h2></div>
-        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+<div style="padding:30px;max-width:1280px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;gap:16px;flex-wrap:wrap;">
+        <div>
+            <p class="section-label">ADMIN</p>
+            <h2 class="section-title">Live <span>Chat</span></h2>
+            <p style="color:var(--silver);margin-top:8px;">Reply to customers in real time.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+            <button type="button" class="btn btn-danger btn-sm" onclick="resetLiveChat()"><i class="fa fa-rotate-left"></i> Reset Chat</button>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
     </div>
 
-    <div style="display:grid;grid-template-columns:280px 1fr;gap:0;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;height:70vh;">
-        <!-- CUSTOMER LIST -->
-        <div style="border-right:1px solid var(--border);overflow-y:auto;">
+    <div class="chat-shell">
+        <aside class="chat-sidebar">
             <div style="padding:16px;border-bottom:1px solid var(--border);">
-                <input type="text" placeholder="Search customers..." class="form-control" style="padding:8px 12px;font-size:13px;">
+                <div style="font-family:'Orbitron';font-size:12px;letter-spacing:2px;color:var(--blue);margin-bottom:10px;">Customers</div>
+                <input type="text" id="customer-search" class="form-control" placeholder="Search customers..." oninput="filterCustomers()">
             </div>
-            {% for c in customers %}
-            <div onclick="loadChat({{ c.id }},'{{ c.name }}')" id="cust-{{ c.id }}"
-                style="display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--border);transition:background 0.2s;">
-                <div style="width:40px;height:40px;background:rgba(0,102,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:14px;color:var(--blue);flex-shrink:0;">{{ c.name[0].upper() }}</div>
-                <div style="flex:1;min-width:0;">
-                    <div style="font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ c.name }}</div>
-                    <div style="color:var(--silver);font-size:12px;">{{ c.phone }}</div>
-                </div>
-                {% if unread_by_user.get(c.id, 0) > 0 %}
-                <span style="background:var(--red);color:white;border-radius:50%;width:20px;height:20px;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700;">{{ unread_by_user[c.id] }}</span>
-                {% endif %}
+            <div id="customer-list" style="overflow-y:auto;flex:1;">
+                {% for customer in customers %}
+                <button type="button" class="customer-row" data-name="{{ customer.name|lower }}" onclick="setActiveThread({{ customer.id }}, {{ customer.name|tojson }})" id="cust-{{ customer.id }}">
+                    <div class="customer-avatar">{{ customer.name[0].upper() }}</div>
+                    <div class="customer-meta">
+                        <div class="customer-name">{{ customer.name }}</div>
+                        <div class="customer-phone" id="cust-preview-{{ customer.id }}">{{ customer.phone }}</div>
+                    </div>
+                    <span class="customer-badge" id="cust-badge-{{ customer.id }}" style="display:none;">0</span>
+                </button>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
+        </aside>
 
-        <!-- CHAT AREA -->
-        <div style="display:flex;flex-direction:column;">
-            <div id="chat-header-bar" style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;">
-                <div style="width:36px;height:36px;background:rgba(0,102,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:14px;font-family:'Orbitron';" id="chat-avatar">?</div>
-                <div><div id="chat-customer-name" style="font-weight:700;">Select a customer</div><div style="color:var(--silver);font-size:12px;">to start chatting</div></div>
+        <section class="chat-panel">
+            <div class="chat-panel-header">
+                <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+                    <div class="panel-avatar" id="chat-avatar">?</div>
+                    <div style="min-width:0;">
+                        <div id="chat-customer-name" style="font-weight:700;">Select a customer</div>
+                        <div style="color:var(--silver);font-size:12px;">Two-way live support</div>
+                    </div>
+                </div>
+                <div style="color:var(--silver);font-size:12px;">Socket connected</div>
             </div>
-            <div id="admin-chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--dark);">
-                <div style="text-align:center;color:var(--silver);font-size:14px;margin:auto;">Select a customer from the list</div>
+            <div id="admin-chat-messages" class="chat-messages-area">
+                <div class="empty-state">Select a customer from the list to start.</div>
             </div>
-            <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:10px;" id="admin-input-area">
-                <input type="text" id="admin-msg-input" placeholder="Type a reply..." class="form-control" style="border-radius:20px;" disabled onkeydown="if(event.key==='Enter') sendAdminReply()">
-                <button class="btn btn-primary" style="border-radius:20px;padding:10px 20px;" onclick="sendAdminReply()" id="admin-send-btn" disabled><i class="fa fa-paper-plane"></i></button>
+            <div class="chat-input-bar">
+                <input type="text" id="admin-msg-input" class="form-control" placeholder="Type your reply..." disabled onkeydown="if(event.key==='Enter') sendAdminReply()">
+                <button class="btn btn-primary" id="admin-send-btn" disabled onclick="sendAdminReply()"><i class="fa fa-paper-plane"></i></button>
             </div>
-        </div>
+        </section>
     </div>
 </div>
+
+<style>
+    .chat-shell{display:grid;grid-template-columns:320px 1fr;gap:0;border:1px solid var(--border);border-radius:22px;overflow:hidden;background:rgba(12,18,34,0.78);backdrop-filter:blur(18px);min-height:72vh;box-shadow:0 20px 60px rgba(0,0,0,0.25);} 
+    .chat-sidebar{display:flex;flex-direction:column;border-right:1px solid var(--border);background:linear-gradient(180deg,rgba(8,13,26,0.95),rgba(10,16,32,0.9));}
+    .customer-row{width:100%;display:flex;align-items:center;gap:12px;padding:14px 16px;border:none;border-bottom:1px solid var(--border);background:transparent;color:var(--white);text-align:left;cursor:pointer;transition:background 0.2s ease;}
+    .customer-row:hover,.customer-row.active{background:rgba(0,102,255,0.11);} 
+    .customer-avatar,.panel-avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:15px;color:white;background:linear-gradient(135deg,rgba(0,102,255,0.95),rgba(64,217,255,0.65));box-shadow:0 0 20px rgba(0,102,255,0.25);flex-shrink:0;}
+    .customer-meta{flex:1;min-width:0;}
+    .customer-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .customer-phone{color:var(--silver);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .customer-badge{background:var(--red);color:white;border-radius:999px;min-width:22px;height:22px;padding:0 7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+    .chat-panel{display:flex;flex-direction:column;min-width:0;}
+    .chat-panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;background:rgba(8,13,26,0.72);} 
+    .chat-messages-area{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;background:radial-gradient(circle at top, rgba(0,102,255,0.08), transparent 35%), var(--dark);} 
+    .chat-input-bar{display:flex;gap:10px;padding:14px;border-top:1px solid var(--border);background:rgba(8,13,26,0.82);} 
+    .chat-input-bar .form-control{border-radius:16px;}
+    .message-row{display:flex;flex-direction:column;max-width:min(78%, 560px);} 
+    .message-row.customer{align-self:flex-start;align-items:flex-start;}
+    .message-row.admin{align-self:flex-end;align-items:flex-end;}
+    .message-bubble{padding:12px 14px;border-radius:16px;line-height:1.5;font-size:14px;box-shadow:0 10px 24px rgba(0,0,0,0.18);} 
+    .customer .message-bubble{background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--white);border-bottom-left-radius:4px;}
+    .admin .message-bubble{background:linear-gradient(135deg,rgba(0,102,255,0.96),rgba(26,127,255,0.82));border:1px solid rgba(26,127,255,0.55);color:white;border-bottom-right-radius:4px;}
+    .message-time{margin-top:5px;font-size:10px;color:var(--silver);}
+    .empty-state{margin:auto;color:var(--silver);font-size:14px;text-align:center;}
+    @media(max-width:900px){.chat-shell{grid-template-columns:1fr;min-height:76vh;}.chat-sidebar{max-height:280px;border-right:none;border-bottom:1px solid var(--border);} }
+</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
 <script>
 var socket = io();
 var activeCustId = null;
-socket.emit('join', {room: 'admin_room'});
+var activeCustName = '';
+var threadMap = {};
 
-socket.on('new_customer_message', function(data){
-    if(activeCustId == data.user_id){
-        appendAdminChatMsg(data.message, 'customer', data.time);
+socket.emit('join_chat');
+refreshThreads();
+
+socket.on('chat_message', function(data){
+    var threadUserId = parseInt(data.user_id, 10);
+    if(activeCustId && parseInt(activeCustId, 10) === threadUserId){
+        appendMessage(data.message, data.sender, data.time);
     }
-    // flash the customer row
-    var row = document.getElementById('cust-' + data.user_id);
-    if(row) row.style.background = 'rgba(0,102,255,0.12)';
+    if(data.sender === 'customer' && (!activeCustId || parseInt(activeCustId, 10) !== threadUserId)){
+        incrementUnread(threadUserId);
+    }
+    refreshThreads();
 });
 
-function loadChat(userId, name){
+socket.on('chat_thread_update', function(data){
+    if(!data || !data.user_id) return;
+    threadMap[parseInt(data.user_id, 10)] = data;
+    renderThreadMeta(data);
+});
+
+function filterCustomers(){
+    var value = document.getElementById('customer-search').value.toLowerCase();
+    document.querySelectorAll('.customer-row').forEach(function(row){
+        row.style.display = row.dataset.name.indexOf(value) !== -1 ? 'flex' : 'none';
+    });
+}
+
+function setActiveThread(userId, name){
     activeCustId = userId;
+    activeCustName = name;
     document.getElementById('chat-customer-name').textContent = name;
-    document.getElementById('chat-avatar').textContent = name[0].toUpperCase();
+    document.getElementById('chat-avatar').textContent = name.charAt(0).toUpperCase();
     document.getElementById('admin-msg-input').disabled = false;
     document.getElementById('admin-send-btn').disabled = false;
-    // highlight selected
-    document.querySelectorAll('[id^="cust-"]').forEach(function(el){ el.style.background=''; });
-    document.getElementById('cust-'+userId).style.background = 'rgba(0,102,255,0.1)';
+    document.querySelectorAll('.customer-row').forEach(function(row){ row.classList.remove('active'); });
+    var currentRow = document.getElementById('cust-' + userId);
+    if(currentRow){ currentRow.classList.add('active'); }
 
-    fetch('/admin/chat/messages/' + userId).then(r=>r.json()).then(function(msgs){
-        var c = document.getElementById('admin-chat-messages');
-        c.innerHTML = '';
-        if(msgs.length === 0){
-            c.innerHTML = '<div style="text-align:center;color:var(--silver);margin:auto;">No messages yet.</div>';
+    markThreadRead(userId);
+
+    fetch('/admin/chat/messages/' + userId).then(function(r){ return r.json(); }).then(function(msgs){
+        var container = document.getElementById('admin-chat-messages');
+        container.innerHTML = '';
+        if(!msgs.length){
+            container.innerHTML = '<div class="empty-state">No messages yet. Start the conversation.</div>';
             return;
         }
         msgs.forEach(function(m){
-            appendAdminChatMsg(m.message, m.sender, m.time);
+            appendMessage(m.message, m.sender, m.time);
         });
     });
 }
 
-function appendAdminChatMsg(msg, sender, time){
-    var c = document.getElementById('admin-chat-messages');
-    var isAdmin = sender === 'admin';
-    var wrap = document.createElement('div');
-    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:' + (isAdmin?'flex-end':'flex-start') + ';';
-    wrap.innerHTML = '<div style="max-width:75%;padding:10px 14px;border-radius:14px;font-size:14px;font-family:Rajdhani;background:' +
-        (isAdmin?'var(--blue)':'rgba(0,102,255,0.12)') + ';color:' + (isAdmin?'white':'var(--white)') +
-        ';border-bottom-' + (isAdmin?'right':'left') + '-radius:4px;">' + msg +
-        '<div style="font-size:10px;color:' + (isAdmin?'rgba(255,255,255,0.6)':'var(--silver)') + ';margin-top:4px;">' + time + '</div></div>';
-    c.appendChild(wrap);
-    c.scrollTop = c.scrollHeight;
+function refreshThreads(){
+    fetch('/admin/chat/customers').then(function(r){ return r.json(); }).then(function(threads){
+        threads.forEach(function(thread){
+            threadMap[parseInt(thread.id, 10)] = {
+                user_id: thread.id,
+                name: thread.name,
+                unread: thread.unread || 0,
+                latest_message: thread.latest_message || '',
+                latest_sender: thread.latest_sender || null,
+                latest_time: thread.latest_time || ''
+            };
+            renderThreadMeta(threadMap[parseInt(thread.id, 10)]);
+        });
+    });
+}
+
+function renderThreadMeta(thread){
+    var userId = parseInt(thread.user_id || thread.id, 10);
+    var row = document.getElementById('cust-' + userId);
+    var preview = document.getElementById('cust-preview-' + userId);
+    var badge = document.getElementById('cust-badge-' + userId);
+    if(!row || !preview || !badge) return;
+
+    var lastText = (thread.latest_message || '').trim();
+    var sender = thread.latest_sender === 'admin' ? 'You: ' : '';
+    preview.textContent = lastText ? sender + lastText.substring(0, 28) : (thread.phone || 'No messages yet');
+    preview.title = lastText || '';
+
+    var unread = parseInt(thread.unread || 0, 10);
+    if(unread > 0){
+        badge.style.display = 'flex';
+        badge.textContent = unread;
+    } else {
+        badge.style.display = 'none';
+        badge.textContent = '0';
+    }
+
+    if(activeCustId && parseInt(activeCustId, 10) === userId){
+        row.classList.add('active');
+    }
+}
+
+function incrementUnread(userId){
+    var thread = threadMap[userId];
+    if(!thread) return;
+    thread.unread = (thread.unread || 0) + 1;
+    renderThreadMeta(thread);
+}
+
+function markThreadRead(userId){
+    var thread = threadMap[parseInt(userId, 10)];
+    if(!thread) return;
+    thread.unread = 0;
+    renderThreadMeta(thread);
+}
+
+function resetLiveChat(){
+    if(!confirm('Reset all live chat messages for all users?')) return;
+    fetch('/admin/chat/reset', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'}
+    }).then(function(r){ return r.json(); }).then(function(res){
+        if(!res.success){
+            alert('Unable to reset chat history right now.');
+            return;
+        }
+        threadMap = {};
+        document.getElementById('admin-chat-messages').innerHTML = '<div class="empty-state">Chat history reset. Select a customer to start again.</div>';
+        document.querySelectorAll('.customer-row').forEach(function(row){
+            var id = parseInt(row.id.replace('cust-', ''), 10);
+            var badge = document.getElementById('cust-badge-' + id);
+            var preview = document.getElementById('cust-preview-' + id);
+            if(badge){
+                badge.style.display = 'none';
+                badge.textContent = '0';
+            }
+            if(preview){
+                preview.textContent = 'No messages yet';
+            }
+        });
+        refreshThreads();
+    });
 }
 
 function sendAdminReply(){
     if(!activeCustId) return;
     var input = document.getElementById('admin-msg-input');
-    var msg = input.value.trim();
-    if(!msg) return;
-    socket.emit('admin_reply', {user_id: activeCustId, message: msg});
-    appendAdminChatMsg(msg, 'admin', new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}));
+    var message = input.value.trim();
+    if(!message) return;
+    socket.emit('admin_send_message', {user_id: activeCustId, message: message});
+    appendMessage(message, 'admin', new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}));
     input.value = '';
+
+    var thread = threadMap[parseInt(activeCustId, 10)];
+    if(thread){
+        thread.latest_message = message;
+        thread.latest_sender = 'admin';
+        thread.latest_time = new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+        renderThreadMeta(thread);
+    }
+}
+
+function appendMessage(message, sender, time){
+    var container = document.getElementById('admin-chat-messages');
+    var row = document.createElement('div');
+    row.className = 'message-row ' + (sender === 'admin' ? 'admin' : 'customer');
+    row.innerHTML = '<div class="message-bubble">' + escapeHtml(message) + '</div><div class="message-time">' + time + '</div>';
+    container.appendChild(row);
+    container.scrollTop = container.scrollHeight;
+}
+
+function escapeHtml(text){
+    return text.replace(/[&<>"]+/g, function(char){
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[char] || char);
+    });
 }
 </script>
 {% endblock %}

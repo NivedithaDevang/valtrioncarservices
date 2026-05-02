@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VALTRION - Expert Care for Every Car</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='logos/valtrion-icon.svg') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -22,8 +23,10 @@
         ::-webkit-scrollbar-thumb { background:var(--blue); border-radius:3px; }
 
         nav { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(5,8,16,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 40px; height:70px; display:flex; align-items:center; justify-content:space-between; }
-        .nav-logo { font-family:'Orbitron',monospace; font-weight:900; font-size:22px; letter-spacing:6px; color:var(--white); text-decoration:none; }
+        .nav-logo { display:flex; align-items:center; gap:10px; font-family:'Orbitron',monospace; font-weight:900; font-size:22px; letter-spacing:4px; color:var(--white); text-decoration:none; }
+        .nav-logo img { width:32px; height:32px; border-radius:7px; }
         .nav-logo span { color:var(--blue); }
+        .nav-menu-btn { display:none; background:transparent; color:var(--silver-light); border:1px solid var(--border); width:38px; height:38px; border-radius:8px; }
         .nav-links { display:flex; gap:8px; align-items:center; }
         .nav-links a { color:var(--silver); text-decoration:none; font-size:14px; font-weight:600; letter-spacing:1px; padding:8px 16px; border-radius:6px; transition:all 0.3s; text-transform:uppercase; }
         .nav-links a:hover { color:var(--white); background:rgba(0,102,255,0.15); }
@@ -96,55 +99,150 @@
         .branch-info a { color:var(--blue); text-decoration:none; }
         .footer-bottom { border-top:1px solid var(--border); margin-top:40px; padding-top:20px; text-align:center; color:var(--silver); font-size:13px; }
 
-        /* ====== FLOATING CHAT WIDGET ====== */
-        #chatbot-btn {
-            position:fixed; bottom:30px; right:30px;
-            width:auto; height:auto;
-            background:var(--blue); color:white;
-            border:1px solid var(--blue); border-radius:999px; cursor:pointer;
-            padding:12px 18px;
-            z-index:5001;
-            box-shadow:0 12px 28px rgba(0,102,255,0.25);
+        .chat-launcher-wrap { position:fixed; right:24px; bottom:24px; z-index:5001; }
+        .chat-launcher {
+            position:relative; width:72px; height:72px; border:none; padding:0; border-radius:50%;
+            background:transparent; cursor:pointer; overflow:visible; box-shadow:0 18px 40px rgba(0,0,0,0.45);
+            animation:chatFloat 4s ease-in-out infinite;
         }
-        #chatbot-btn:hover { background:var(--blue-bright); transform:translateY(-2px); }
+        .chat-launcher::before {
+            content:''; position:absolute; inset:0; border-radius:50%;
+            padding:3px;
+            background:conic-gradient(from 160deg, rgba(129,238,255,0.95), rgba(0,168,255,0.95), rgba(0,92,255,0.94), rgba(90,214,255,0.95));
+            animation:orbSpin 8.8s linear infinite;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            box-shadow:0 0 18px rgba(0,132,255,0.45), 0 0 34px rgba(0,190,255,0.20);
+        }
+        .chat-launcher::after {
+            content:''; position:absolute; inset:8px; border-radius:50%;
+            border:1px solid rgba(116,214,255,0.38);
+            box-shadow: inset 0 0 0 1px rgba(10,86,190,0.25), 0 0 14px rgba(0,148,255,0.2);
+        }
+        .chat-launcher-inner {
+            position:absolute; inset:13px; z-index:2; border-radius:50%;
+            border:1px solid rgba(93,195,255,0.22);
+            background:transparent;
+        }
+        @keyframes orbSpin { to { transform:rotate(360deg); } }
+        @keyframes chatFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
 
-        #chatbot-window { position:fixed; bottom:96px; right:30px; width:340px; height:460px; background:var(--card); border:1px solid var(--border); border-radius:16px; display:none; flex-direction:column; z-index:5000; box-shadow:0 20px 50px rgba(0,0,0,0.35); overflow:hidden; }
-        #chatbot-window.open { display:flex; }
-        .chat-header { background:var(--dark); padding:14px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
-        .chat-header-left { display:flex; align-items:center; gap:10px; }
-        .chat-orb-mini { width:34px; height:34px; border-radius:50%; background:rgba(0,102,255,0.15); display:flex; align-items:center; justify-content:center; }
-        .chat-header h4 { font-family:'Rajdhani'; font-size:15px; letter-spacing:1px; font-weight:700; }
-        .chat-header p { font-size:11px; color:var(--silver); margin-top:2px; }
-        .chat-close { background:none; border:none; color:var(--silver); cursor:pointer; font-size:18px; opacity:0.8; }
-        .chat-close:hover { opacity:1; }
-        .chat-messages { flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px; background:rgba(8,13,26,0.65); }
-        .chat-msg { max-width:88%; padding:10px 12px; border-radius:12px; font-size:14px; line-height:1.5; }
-        .chat-msg.bot { background:rgba(255,255,255,0.04); border:1px solid var(--border); color:var(--white); align-self:flex-start; }
-        .chat-msg.user { background:rgba(0,102,255,0.16); border:1px solid rgba(0,102,255,0.35); color:var(--white); align-self:flex-end; }
-        .chat-msg.admin-msg { background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.25); color:var(--green); align-self:flex-start; }
-        .chat-time { font-size:10px; color:var(--silver); margin-top:4px; }
-        .chat-input-row { padding:12px; display:flex; gap:8px; border-top:1px solid var(--border); background:var(--dark); }
-        .chat-input-row input { flex:1; background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 14px; color:var(--white); font-family:'Rajdhani'; font-size:14px; }
-        .chat-input-row input:focus { outline:none; border-color:var(--blue); }
-        .chat-send { background:var(--blue); border:none; color:white; padding:10px 14px; border-radius:12px; cursor:pointer; transition:all 0.2s; }
-        .chat-send:hover { background:var(--blue-bright); }
-        .chat-tabs { display:flex; border-bottom:1px solid var(--border); }
-        .chat-tab { flex:1; padding:10px; text-align:center; font-family:'Rajdhani'; font-size:13px; font-weight:600; cursor:pointer; color:var(--silver); letter-spacing:1px; border-bottom:2px solid transparent; transition:all 0.2s; }
-        .chat-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+        .chat-drawer {
+            position:fixed; right:24px; top:84px; bottom:108px; width:390px; height:auto; z-index:5000;
+            display:none; flex-direction:column; overflow:hidden; border-radius:24px;
+            border:1px solid rgba(145,177,255,0.34);
+            background:#080f1f;
+            box-shadow:0 28px 70px rgba(0,0,0,0.55); backdrop-filter:blur(10px);
+        }
+        .chat-drawer.open { display:flex; }
+        .chat-drawer-head {
+            display:flex; align-items:center; justify-content:space-between; gap:12px;
+            padding:16px 16px; border-bottom:1px solid rgba(145,177,255,0.22);
+            background:linear-gradient(135deg, rgba(0,102,255,0.28), rgba(0,160,255,0.12));
+        }
+        .chat-drawer-title { display:flex; align-items:center; gap:12px; min-width:0; }
+        .chat-drawer-badge {
+            width:38px; height:38px; border-radius:50%; flex-shrink:0;
+            background:radial-gradient(circle at 30% 28%, rgba(255,255,255,0.85), rgba(255,255,255,0.1) 26%, rgba(0,255,234,0.12) 46%, rgba(0,102,255,0.35) 100%);
+            box-shadow:0 0 20px rgba(0,102,255,0.3); display:flex; align-items:center; justify-content:center;
+            border:1px solid rgba(255,255,255,0.16);
+        }
+        .chat-drawer-badge i { color:white; font-size:16px; }
+        .chat-drawer-sub { font-size:12px; color:var(--silver-light); margin-top:2px; }
+        .chat-drawer-close { background:none; border:none; color:var(--white); font-size:18px; cursor:pointer; opacity:0.9; }
+        .chat-drawer-messages {
+            flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px;
+            background:radial-gradient(circle at top, rgba(0,102,255,0.10), transparent 40%), #070c18;
+        }
+        .chat-drawer-messages::-webkit-scrollbar { width:6px; }
+        .chat-drawer-messages::-webkit-scrollbar-thumb { background:#2a3f66; border-radius:3px; }
+        .chat-msg-row { display:flex; flex-direction:column; max-width:84%; }
+        .chat-msg-row.customer { align-self:flex-end; align-items:flex-end; }
+        .chat-msg-row.admin { align-self:flex-start; align-items:flex-start; }
+        .chat-bubble {
+            padding:12px 14px; border-radius:16px; line-height:1.55; font-size:15px;
+            box-shadow:0 10px 24px rgba(0,0,0,0.18); word-break:break-word;
+        }
+        .chat-msg-row.customer .chat-bubble {
+            color:white; background:linear-gradient(135deg, rgba(0,102,255,0.96), rgba(27,128,255,0.76));
+            border:1px solid rgba(255,255,255,0.14); border-bottom-right-radius:4px;
+        }
+        .chat-msg-row.admin .chat-bubble {
+            color:var(--white); background:rgba(255,255,255,0.08); border:1px solid rgba(145,177,255,0.24); border-bottom-left-radius:4px;
+        }
+        .chat-time { margin-top:5px; font-size:11px; color:var(--silver-light); }
+        .chat-drawer-input {
+            display:flex; gap:10px; padding:12px; border-top:1px solid rgba(145,177,255,0.14);
+            background:#0a1223;
+        }
+        .chat-drawer-input .form-control {
+            border-radius:16px;
+            background:#061022;
+            border-color:#23406e;
+            color:var(--white);
+            font-size:15px;
+        }
+        .chat-drawer-input .form-control::placeholder { color:#93a9c9; }
+        .chat-drawer-input .btn { min-width:54px; justify-content:center; padding:12px 0; }
+        .chat-drawer-empty { margin:auto; text-align:center; color:var(--silver); font-size:14px; line-height:1.7; }
 
-        @media(max-width:768px) {
+        @media(max-width:900px) {
             nav { padding:0 16px; }
-            .nav-links a:not(.nav-btn) { display:none; }
+            .nav-menu-btn { display:inline-flex; align-items:center; justify-content:center; }
+            .nav-links { position:absolute; top:70px; left:0; right:0; background:rgba(5,8,16,0.98); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:10px 14px; flex-wrap:wrap; gap:8px; display:none; }
+            .nav-links.open { display:flex; }
+            .nav-links a { width:calc(50% - 6px); text-align:center; }
             .footer-grid { grid-template-columns:1fr 1fr; }
-            #chatbot-window { width:calc(100vw - 40px); right:20px; bottom:100px; height:470px; }
-            #chatbot-btn { right:18px; bottom:20px; }
+            .chat-launcher-wrap { right:14px; bottom:14px; }
+            .chat-drawer { right:12px; top:82px; bottom:94px; width:calc(100vw - 24px); height:auto; }
         }
+        @media(max-width:560px) {
+            .footer-grid { grid-template-columns:1fr; }
+            .nav-links a { width:100%; }
+        }
+    </style>
+    <style>
+    /* --- Mobile Responsive Styles --- */
+    @media (max-width: 900px) {
+        .container { max-width: 98vw; padding: 0 8px; }
+        .section { padding: 40px 0; }
+        .footer-grid { grid-template-columns:1fr 1fr; gap:20px; }
+    }
+    @media (max-width: 600px) {
+        .container { max-width: 100vw; padding: 0 2vw; }
+        .section-title { font-size: 20px; }
+        .section-label, .section-sub { font-size: 12px; }
+        .hero-content { padding: 18px 0 0 0; }
+        .hero-title { font-size: 28px !important; }
+        .hero-badge { font-size: 12px; }
+        .hero-tagline { font-size: 13px; }
+        .hero-actions { flex-direction: column; gap: 10px; }
+        .hero-stats { flex-wrap: wrap; gap: 8px; }
+        .stat, .stat-div { font-size: 12px; }
+        .why-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+        .footer-grid { grid-template-columns:1fr; gap:12px; }
+        nav { padding: 0 8px; height: 54px; }
+        .nav-logo { font-size: 15px; }
+        .nav-links a { font-size: 11px; padding: 6px 8px; }
+        .btn, .btn-primary, .btn-outline { font-size: 12px; padding: 10px 16px; }
+        .card { padding: 12px; }
+        .vt th, .vt td { padding: 8px 6px; font-size: 11px; }
+    }
+    /* Responsive video */
+    .hero-video-wrap { position:relative; width:100vw; max-width:100%; height:48vw; min-height:180px; max-height:340px; overflow:hidden; border-radius:0 0 24px 24px; }
+    @media (max-width: 600px) {
+        .hero-video-wrap { height: 38vw; min-height: 120px; max-height: 180px; border-radius:0 0 12px 12px; }
+    }
+    #hero-video { width:100vw; min-width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
     </style>
 </head>
 <body>
 <nav>
-    <a href="{{ url_for('main.index') }}" class="nav-logo">VAL<span>T</span>RION</a>
-    <div class="nav-links">
+    <a href="{{ url_for('main.index') }}" class="nav-logo"><img src="{{ url_for('static', filename='logos/valtrion-icon.svg') }}" alt="Valtrion">VAL<span>T</span>RION</a>
+    <button class="nav-menu-btn" onclick="toggleNavMenu()"><i class="fa fa-bars"></i></button>
+    <div class="nav-links" id="nav-links">
         <a href="{{ url_for('main.index') }}">Home</a>
         <a href="{{ url_for('main.services') }}">Services</a>
         <a href="{{ url_for('main.packages') }}">Packages</a>
@@ -209,147 +307,123 @@
             <div class="footer-col">
                 <h4>Branches</h4>
                 <button class="branch-toggle" onclick="toggleBranch('blr',this)">Bengaluru</button>
-                <div class="branch-info" id="blr">#12, 1st Cross, Koramangala<br><a href="tel:+919876543210">+91 9876543210</a><br><a href="mailto:valtrionblore@gmail.com">valtrionblore@gmail.com</a></div>
+                <div class="branch-info" id="blr">#12, 1st Cross, Koramangala<br><a href="tel:+919686681036">+91 9686681036</a><br><a href="mailto:valtrionbookings@gmail.com">valtrionbookings@gmail.com</a></div>
                 <button class="branch-toggle" onclick="toggleBranch('hyd',this)">Hyderabad</button>
-                <div class="branch-info" id="hyd">#32/1, BDA Layout, Kadapa<br><a href="tel:+918765432190">+91 8765432190</a><br><a href="mailto:valtrionhyd@gmail.com">valtrionhyd@gmail.com</a></div>
+                <div class="branch-info" id="hyd">#32/1, BDA Layout, Kadapa<br><a href="tel:+919686681036">+91 9686681036</a><br><a href="mailto:valtrionbookings@gmail.com">valtrionbookings@gmail.com</a></div>
                 <button class="branch-toggle" onclick="toggleBranch('chn',this)">Chennai</button>
-                <div class="branch-info" id="chn">#15A, Dollars Colony, Mylapore<br><a href="tel:+917654321890">+91 7654321890</a><br><a href="mailto:valtrionchen@gmail.com">valtrionchen@gmail.com</a></div>
+                <div class="branch-info" id="chn">#15A, Dollars Colony, Mylapore<br><a href="tel:+919686681036">+91 9686681036</a><br><a href="mailto:valtrionbookings@gmail.com">valtrionbookings@gmail.com</a></div>
                 <button class="branch-toggle" onclick="toggleBranch('pun',this)">Pune</button>
-                <div class="branch-info" id="pun">#54, Viman Nagar<br><a href="tel:+918928371522">+91 8928371522</a><br><a href="mailto:valtrionpune@gmail.com">valtrionpune@gmail.com</a></div>
+                <div class="branch-info" id="pun">#54, Viman Nagar<br><a href="tel:+919686681036">+91 9686681036</a><br><a href="mailto:valtrionbookings@gmail.com">valtrionbookings@gmail.com</a></div>
             </div>
         </div>
         <div class="footer-bottom"><p>2024 Valtrion Automotive. All rights reserved.</p></div>
     </div>
 </footer>
 
-<!-- FLOATING ORB CHATBOT -->
-<button id="chatbot-btn" onclick="toggleChat()" title="Chat with Valtrion AI">
-    <i class="fa fa-comment-dots"></i> Chat
-</button>
-
-<div id="chatbot-window">
-    <div class="chat-header">
-        <div class="chat-header-left">
-            <div class="chat-orb-mini"><i class="fa fa-comment" style="color:var(--blue);font-size:16px;"></i></div>
-            <div>
-                    <h4>Valtrion Chat</h4>
-                    <p>Online now</p>
-            </div>
-        </div>
-        <button class="chat-close" onclick="toggleChat()"><i class="fa fa-xmark"></i></button>
-    </div>
-    <div class="chat-tabs">
-            <div class="chat-tab active" onclick="switchTab('ai',this)">Chat</div>
-        <div class="chat-tab" onclick="switchTab('live',this)">Live Support</div>
-    </div>
-    <div id="tab-ai">
-        <div class="chat-messages" id="chat-messages-ai">
-                <div class="chat-msg bot">Hi, how can I help you today?</div>
-        </div>
-        <div class="chat-input-row">
-                <input type="text" id="chat-input-ai" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendAIChat()">
-            <button class="chat-send" onclick="sendAIChat()"><i class="fa fa-paper-plane"></i></button>
-        </div>
-    </div>
-    <div id="tab-live" style="display:none;display:flex;flex-direction:column;flex:1;">
-        <div class="chat-messages" id="chat-messages-live" style="flex:1;"></div>
-        <div class="chat-input-row">
-                <input type="text" id="chat-input-live" placeholder="Type your message..." onkeydown="if(event.key==='Enter') sendLiveChat()">
-            <button class="chat-send" onclick="sendLiveChat()"><i class="fa fa-paper-plane"></i></button>
-        </div>
-    </div>
+<div id="chat-config" data-enabled="1" data-current-user-id="{% if current_user.is_authenticated %}{{ current_user.id }}{% else %}guest{% endif %}" data-role="{% if current_user.is_authenticated %}{{ current_user.role }}{% else %}guest{% endif %}"></div>
+<div class="chat-launcher-wrap">
+    <button class="chat-launcher" type="button" onclick="toggleChatDrawer()" aria-label="Open live chat">
+        <div class="chat-launcher-inner"></div>
+    </button>
 </div>
 
+{% if current_user.is_authenticated and current_user.role != 'admin' %}
+<div class="chat-drawer" id="chat-drawer">
+    <div class="chat-drawer-head">
+        <div class="chat-drawer-title">
+            <div class="chat-drawer-badge"><i class="fa fa-sparkles"></i></div>
+            <div style="min-width:0;">
+                <div style="font-weight:700;letter-spacing:0.8px;">Valtrion Live Support</div>
+                <div class="chat-drawer-sub">Message the admin in real time</div>
+            </div>
+        </div>
+        <button class="chat-drawer-close" type="button" onclick="toggleChatDrawer()"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="chat-drawer-messages" id="chat-messages">
+        <div class="chat-drawer-empty">Say hello. A member of the Valtrion team will reply here.</div>
+    </div>
+    <div class="chat-drawer-input">
+        <input type="text" id="chat-input" class="form-control" placeholder="Type your message..." onkeydown="if(event.key==='Enter') sendClientMessage()">
+        <button class="btn btn-primary" type="button" onclick="sendClientMessage()"><i class="fa fa-paper-plane"></i></button>
+    </div>
+</div>
+{% endif %}
+
+{% if current_user.is_authenticated and current_user.role != 'admin' %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+{% endif %}
 <script>
-// ===== CHAT =====
+function toggleNavMenu(){
+    document.getElementById('nav-links').classList.toggle('open');
+}
+
+function escapeHtml(text){
+    return String(text).replace(/[&<>"']/g, function(char){
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[char] || char);
+    });
+}
+
+var chatConfig = document.getElementById('chat-config');
+var currentUserRole = chatConfig ? chatConfig.dataset.role : null;
+var currentUserId = chatConfig ? parseInt(chatConfig.dataset.currentUserId, 10) : null;
+
+function toggleChatDrawer(){
+    if(!chatConfig) return;
+    if(currentUserRole === 'admin'){
+        window.location.href = '{{ url_for("admin.dashboard") }}#admin-live-chat';
+        return;
+    }
+    if(typeof window.__toggleClientChatDrawer === 'function'){
+        window.__toggleClientChatDrawer();
+    }
+}
+
+if(chatConfig && currentUserRole !== 'admin' && currentUserRole !== 'guest' && typeof io === 'function'){
 var socket = io();
 var chatOpen = false;
-var activeTab = 'ai';
-var currentUserId = {{ current_user.id if current_user.is_authenticated else 'null' }};
 
-if(currentUserId) {
-    socket.emit('join', {room: 'user_' + currentUserId});
-    socket.on('admin_message', function(data){
-        appendLiveMsg(data.message, 'admin-msg', data.time);
-    });
-}
+socket.emit('join_chat');
+socket.on('chat_message', function(data){
+    if(parseInt(data.user_id, 10) !== currentUserId) return;
+    appendChatMessage(data.message, data.sender, data.time);
+});
 
-function toggleChat(){
+window.__toggleClientChatDrawer = function(){
     chatOpen = !chatOpen;
-    document.getElementById('chatbot-window').classList.toggle('open', chatOpen);
-    if(chatOpen && activeTab === 'live') loadLiveHistory();
-}
+    document.getElementById('chat-drawer').classList.toggle('open', chatOpen);
+    if(chatOpen){ loadChatHistory(); }
+};
 
-function switchTab(tab, el){
-    activeTab = tab;
-    document.querySelectorAll('.chat-tab').forEach(function(t){ t.classList.remove('active'); });
-    el.classList.add('active');
-    document.getElementById('tab-ai').style.display = tab==='ai' ? 'flex' : 'none';
-    document.getElementById('tab-live').style.display = tab==='live' ? 'flex' : 'none';
-    document.getElementById('tab-ai').style.flexDirection = 'column';
-    document.getElementById('tab-live').style.flexDirection = 'column';
-    if(tab === 'live') loadLiveHistory();
-}
-
-function loadLiveHistory(){
-    if(!currentUserId) return;
-    fetch('/chat/history/' + currentUserId).then(function(r){ return r.json(); }).then(function(msgs){
-        var container = document.getElementById('chat-messages-live');
+function loadChatHistory(){
+    fetch('/chat/history').then(function(r){ return r.json(); }).then(function(msgs){
+        var container = document.getElementById('chat-messages');
         container.innerHTML = '';
-        if(msgs.length === 0){
-            container.innerHTML = '<div class="chat-msg bot" style="margin:16px;">Our support team will respond shortly!</div>';
+        if(!msgs.length){
+            container.innerHTML = '<div class="chat-drawer-empty">Start the conversation. We are online and ready to help.</div>';
+            return;
         }
-        msgs.forEach(function(m){
-            var cls = m.sender === 'customer' ? 'user' : 'admin-msg';
-            appendLiveMsgHTML(m.message, cls, m.time);
-        });
+        msgs.forEach(function(m){ appendChatMessage(m.message, m.sender, m.time); });
     });
 }
 
-function appendLiveMsg(msg, cls, time){
-    appendLiveMsgHTML(msg, cls, time);
-}
-
-function appendLiveMsgHTML(msg, cls, time){
-    var container = document.getElementById('chat-messages-live');
-    var wrap = document.createElement('div');
-    wrap.innerHTML = '<div class="chat-msg '+cls+'">'+msg+'<div class="chat-time">'+time+'</div></div>';
-    container.appendChild(wrap);
+function appendChatMessage(message, sender, time){
+    var container = document.getElementById('chat-messages');
+    var row = document.createElement('div');
+    row.className = 'chat-msg-row ' + (sender === 'admin' ? 'admin' : 'customer');
+    row.innerHTML = '<div class="chat-bubble">' + escapeHtml(message) + '</div><div class="chat-time">' + time + '</div>';
+    container.appendChild(row);
     container.scrollTop = container.scrollHeight;
 }
 
-function sendLiveChat(){
-    if(!currentUserId){ alert('Please login to use live chat.'); return; }
-    var input = document.getElementById('chat-input-live');
-    var msg = input.value.trim();
-    if(!msg) return;
-    appendLiveMsgHTML(msg, 'user', new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}));
-    socket.emit('customer_message', {user_id: currentUserId, message: msg});
+function sendClientMessage(){
+    var input = document.getElementById('chat-input');
+    var message = input.value.trim();
+    if(!message) return;
+    appendChatMessage(message, 'customer', new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}));
+    socket.emit('customer_send_message', {message: message});
     input.value = '';
 }
 
-function sendAIChat(){
-    var input = document.getElementById('chat-input-ai');
-    var msg = input.value.trim();
-    if(!msg) return;
-    var msgs = document.getElementById('chat-messages-ai');
-    var userDiv = document.createElement('div');
-    userDiv.className = 'chat-msg user';
-    userDiv.textContent = msg;
-    msgs.appendChild(userDiv);
-    input.value = '';
-    msgs.scrollTop = msgs.scrollHeight;
-    fetch('/api/chatbot', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({message: msg})
-    }).then(function(r){ return r.json(); }).then(function(d){
-        var botDiv = document.createElement('div');
-        botDiv.className = 'chat-msg bot';
-        botDiv.textContent = d.reply;
-        msgs.appendChild(botDiv);
-        msgs.scrollTop = msgs.scrollHeight;
-    });
 }
 
 function toggleBranch(id,btn){
@@ -359,11 +433,6 @@ function toggleBranch(id,btn){
     el.classList.toggle('show'); btn.classList.toggle('active');
 }
 setTimeout(function(){ document.querySelectorAll('.flash').forEach(function(f){ f.remove(); }); }, 4000);
-
-// fix tab display
-document.getElementById('tab-ai').style.display = 'flex';
-document.getElementById('tab-ai').style.flexDirection = 'column';
-document.getElementById('tab-live').style.display = 'none';
 </script>
 {% block scripts %}{% endblock %}
 </body>

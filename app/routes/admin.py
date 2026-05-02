@@ -2,10 +2,42 @@ from flask import Blueprint, render_template, request, jsonify, redirect, url_fo
 from flask_login import login_required, current_user
 from app import db
 from app.models import Booking, Service, User, Mechanic, ChatMessage
-from datetime import datetime, date, timedelta
+import os
+from werkzeug.utils import secure_filename
+from datetime import datetime, date, timedelta, timezone, timedelta as td
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from functools import wraps
 
 admin = Blueprint('admin', __name__)
+try:
+    IST = ZoneInfo('Asia/Kolkata')
+except ZoneInfoNotFoundError:
+    IST = timezone(td(hours=5, minutes=30))
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role != 'admin':
+            flash('Admin access required.', 'danger')
+            return redirect(url_for('auth.login'))
+        return f(*args, **kwargs)
+    return decorated
+
+from datetime import datetime, date, timedelta, timezone, timedelta as td
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+from functools import wraps
+
+admin = Blueprint('admin', __name__)
+try:
+    IST = ZoneInfo('Asia/Kolkata')
+except ZoneInfoNotFoundError:
+    IST = timezone(td(hours=5, minutes=30))
+
+
+def _format_chat_time(dt):
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(IST).strftime('%I:%M %p')
 
 def admin_required(f):
     @wraps(f)
@@ -212,20 +244,56 @@ def admin_invoice(booking_id):
 @login_required
 @admin_required
 def chat():
-    customers = User.query.filter_by(role='customer').all()
-    unread_by_user = {}
-    for c in customers:
-        unread_by_user[c.id] = ChatMessage.query.filter_by(user_id=c.id, sender='customer', is_read=False).count()
-    return render_template('admin/chat.html', customers=customers, unread_by_user=unread_by_user)
+    return redirect(url_for('admin.dashboard') + '#admin-live-chat')
+
+
+def _build_thread_for_user(user):
+    latest = ChatMessage.query.filter_by(user_id=user.id).order_by(ChatMessage.created_at.desc()).first()
+    unread = ChatMessage.query.filter_by(user_id=user.id, sender='customer', is_read=False).count()
+    return {
+        'id': user.id,
+        'name': user.name,
+        'phone': user.phone,
+        'latest_message': latest.message if latest else '',
+        'latest_sender': latest.sender if latest else None,
+        'latest_time': _format_chat_time(latest.created_at) if latest else '',
+        'unread': unread
+    }
 
 @admin.route('/chat/messages/<int:user_id>')
 @login_required
 @admin_required
-def get_messages(user_id):
+def chat_messages(user_id):
     msgs = ChatMessage.query.filter_by(user_id=user_id).order_by(ChatMessage.created_at.asc()).all()
     ChatMessage.query.filter_by(user_id=user_id, sender='customer', is_read=False).update({'is_read': True})
     db.session.commit()
-    return jsonify([{'sender': m.sender, 'message': m.message, 'time': m.created_at.strftime('%I:%M %p')} for m in msgs])
+    return jsonify([
+        {
+            'id': m.id,
+            'user_id': m.user_id,
+            'sender': m.sender,
+            'message': m.message,
+            'time': _format_chat_time(m.created_at),
+            'created_at': m.created_at.isoformat()
+        }
+        for m in msgs
+    ])
+
+@admin.route('/chat/customers')
+@login_required
+@admin_required
+def chat_customers():
+    customers = User.query.filter_by(role='customer').order_by(User.name.asc()).all()
+    return jsonify([_build_thread_for_user(customer) for customer in customers])
+
+
+@admin.route('/chat/reset', methods=['POST'])
+@login_required
+@admin_required
+def reset_chat():
+    ChatMessage.query.delete()
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Chat history reset successfully.'})
 
 # ========== MECHANICS ==========
 @admin.route('/mechanics')

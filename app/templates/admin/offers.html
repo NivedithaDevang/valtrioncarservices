@@ -1,0 +1,47 @@
+{% extends 'admin/dashboard.html' %}
+{% block content %}
+<div class="container" style="max-width:700px;margin:40px auto;">
+    <h2 style="text-align:center;margin-bottom:32px;">Manage Offers</h2>
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('admin.offers') }}" class="card" style="padding:32px;margin-bottom:32px;">
+        <div style="display:flex;flex-direction:column;gap:18px;">
+            <input type="text" name="headline" class="form-control" placeholder="Offer Headline" required>
+            <input type="file" name="image" accept="image/*" class="form-control">
+            <textarea name="content" class="form-control" placeholder="Offer Content" rows="4" required></textarea>
+            <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" name="is_active" checked>
+                Active
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" name="published">
+                Publish (show to users)
+            </label>
+            <button type="submit" class="btn btn-primary">Add Offer</button>
+        </div>
+    </form>
+    <h3>Current Offers</h3>
+    <div style="display:flex;flex-direction:column;gap:18px;">
+        {% for offer in offers %}
+        <div class="card" style="padding:18px;display:flex;align-items:flex-start;gap:18px;">
+            {% if offer.image %}
+            <img src="{{ url_for('static', filename='offers/' ~ offer.image) }}" alt="Offer Image" style="width:100px;height:100px;object-fit:cover;border-radius:8px;">
+            {% endif %}
+            <div style="flex:1;">
+                <h4>{{ offer.headline }}</h4>
+                <p>{{ offer.content }}</p>
+                <small>Created: {{ offer.created_at.strftime('%d %b %Y') }}</small><br>
+                <span class="badge" style="background:{{ 'var(--green)' if offer.is_active else 'var(--red)' }};color:#000;padding:4px 10px;border-radius:6px;">{{ 'Active' if offer.is_active else 'Inactive' }}</span>
+                <div style="margin-top:8px;">
+                    <form method="POST" action="{{ url_for('admin.publish_offer', offer_id=offer.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-sm" style="background:{{ 'var(--blue)' if offer.published else 'var(--silver)' }};color:#fff;">{{ 'Unpublish' if offer.published else 'Publish' }}</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('admin.delete_offer', offer_id=offer.id) }}" style="display:inline;margin-left:8px;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this offer?')">Delete</button>
+                    </form>
+                </div>
+        </div>
+        {% else %}
+        <p>No offers yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

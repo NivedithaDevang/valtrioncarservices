@@ -1,9 +1,21 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db, bcrypt
-from app.models import Booking
+from app.models import Booking, ChatMessage
+from datetime import timezone, timedelta
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 profile = Blueprint('profile', __name__)
+try:
+    IST = ZoneInfo('Asia/Kolkata')
+except ZoneInfoNotFoundError:
+    IST = timezone(timedelta(hours=5, minutes=30))
+
+
+def _format_chat_time(dt):
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(IST).strftime('%I:%M %p')
 
 @profile.route('/profile')
 @login_required
@@ -32,9 +44,21 @@ def change_password():
     db.session.commit()
     return jsonify({'success': True})
 
-@profile.route('/chat/history/<int:user_id>')
+@profile.route('/chat/history')
 @login_required
-def chat_history(user_id):
-    from app.models import ChatMessage
-    msgs = ChatMessage.query.filter_by(user_id=user_id).order_by(ChatMessage.created_at.asc()).all()
-    return jsonify([{'sender': m.sender, 'message': m.message, 'time': m.created_at.strftime('%I:%M %p')} for m in msgs])
+def chat_history():
+    msgs = ChatMessage.query.filter_by(user_id=current_user.id).order_by(ChatMessage.created_at.asc()).all()
+    ChatMessage.query.filter_by(user_id=current_user.id, sender='admin', is_read=False).update({'is_read': True})
+    db.session.commit()
+    return jsonify([
+        {
+            'id': m.id,
+            'user_id': m.user_id,
+            'sender': m.sender,
+            'message': m.message,
+            'time': _format_chat_time(m.created_at),
+            'created_at': m.created_at.isoformat()
+        }
+        for m in msgs
+    ])
+

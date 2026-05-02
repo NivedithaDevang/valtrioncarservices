@@ -1,53 +1,112 @@
-from flask_socketio import emit, join_room
 from flask_login import current_user
-from app.models import ChatMessage, User
+from flask_socketio import emit, join_room
+from datetime import timezone, timedelta
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from app import db
-from datetime import datetime
+from app.models import ChatMessage, User
+
+
+try:
+    IST = ZoneInfo('Asia/Kolkata')
+except ZoneInfoNotFoundError:
+    # Fallback for environments where tzdata package is missing.
+    IST = timezone(timedelta(hours=5, minutes=30))
+
 
 def register_sockets(socketio):
 
+    def _format_chat_time(dt):
+        # Chat timestamps are stored as naive UTC in DB; render consistently in IST.
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(IST).strftime('%I:%M %p')
+
+    def _format_message(msg):
+        return {
+            'id': msg.id,
+            'user_id': msg.user_id,
+            'sender': msg.sender,
+            'message': msg.message,
+            'time': _format_chat_time(msg.created_at),
+            'created_at': msg.created_at.isoformat()
+        }
+
+    def _thread_preview(user_id):
+        user = User.query.get(user_id)
+        if not user:
+            return None
+
+        latest = ChatMessage.query.filter_by(user_id=user_id).order_by(ChatMessage.created_at.desc()).first()
+        unread = ChatMessage.query.filter_by(user_id=user_id, sender='customer', is_read=False).count()
+
+        return {
+            'user_id': user.id,
+            'name': user.name,
+            'phone': user.phone,
+            'latest_message': latest.message if latest else '',
+            'latest_sender': latest.sender if latest else None,
+            'latest_time': _format_chat_time(latest.created_at) if latest else '',
+            'unread': unread
+        }
+
     @socketio.on('join')
     def on_join(data):
-        room = data.get('room')
-        join_room(room)
+        room = (data or {}).get('room')
+        if room:
+            join_room(room)
 
-    @socketio.on('customer_message')
-    def handle_customer_msg(data):
-        user_id = data.get('user_id')
-        msg_text = data.get('message', '').strip()
-        if not msg_text:
+    @socketio.on('join_chat')
+    def join_chat():
+        if not current_user.is_authenticated:
             return
-        msg = ChatMessage(user_id=user_id, message=msg_text, sender='customer')
+
+        if current_user.role == 'admin':
+            join_room('admins')
+        else:
+            join_room(f'user_{current_user.id}')
+
+    @socketio.on('customer_send_message')
+    def handle_customer_message(data):
+        if not current_user.is_authenticated or current_user.role == 'admin':
+            return
+
+        user_id = current_user.id
+        message_text = ((data or {}).get('message') or '').strip()
+        if not message_text:
+            return
+
+        msg = ChatMessage(user_id=user_id, message=message_text, sender='customer', is_read=False)
         db.session.add(msg)
         db.session.commit()
-        emit('new_customer_message', {
-            'user_id': user_id,
-            'message': msg_text,
-            'time': datetime.utcnow().strftime('%I:%M %p'),
-            'msg_id': msg.id
-        }, room='admin_room')
-        emit('message_sent', {
-            'message': msg_text,
-            'time': datetime.utcnow().strftime('%I:%M %p'),
-            'msg_id': msg.id
-        }, room=f'user_{user_id}')
 
-    @socketio.on('admin_reply')
+        payload = _format_message(msg)
+        preview = _thread_preview(user_id)
+        emit('chat_message', payload, room=f'user_{user_id}')
+        emit('chat_message', payload, room='admins')
+        if preview:
+            emit('chat_thread_update', preview, room='admins')
+
+    @socketio.on('admin_send_message')
     def handle_admin_reply(data):
-        user_id = data.get('user_id')
-        msg_text = data.get('message', '').strip()
-        if not msg_text:
+        if not current_user.is_authenticated or current_user.role != 'admin':
             return
-        msg = ChatMessage(user_id=user_id, message=msg_text, sender='admin')
+
+        user_id = (data or {}).get('user_id')
+        message_text = ((data or {}).get('message') or '').strip()
+        if not user_id or not message_text:
+            return
+
+        user = User.query.get(user_id)
+        if not user:
+            return
+
+        msg = ChatMessage(user_id=user_id, message=message_text, sender='admin', is_read=False)
         db.session.add(msg)
         db.session.commit()
-        emit('admin_message', {
-            'message': msg_text,
-            'time': datetime.utcnow().strftime('%I:%M %p'),
-            'msg_id': msg.id
-        }, room=f'user_{user_id}')
-        emit('reply_sent', {
-            'user_id': user_id,
-            'message': msg_text,
-            'time': datetime.utcnow().strftime('%I:%M %p')
-        }, room='admin_room')
+
+        payload = _format_message(msg)
+        preview = _thread_preview(user_id)
+        emit('chat_message', payload, room=f'user_{user_id}')
+        emit('chat_message', payload, room='admins')
+        if preview:
+            emit('chat_thread_update', preview, room='admins')

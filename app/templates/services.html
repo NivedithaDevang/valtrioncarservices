@@ -26,15 +26,11 @@
                 </div>
             </div>
             <div style="border-bottom:1px solid var(--border);margin-bottom:16px;"></div>
-            <div style="display:flex;border-bottom:1px solid var(--border);margin-bottom:14px;">
-                <button class="stab active" onclick="swTab(this,'sd{{ service.id }}','sp{{ service.id }}')">Description</button>
-                <button class="stab" onclick="swTab(this,'sp{{ service.id }}','sd{{ service.id }}')">Price</button>
-            </div>
-            <div id="sd{{ service.id }}" style="min-height:70px;">
+            <div style="min-height:70px;">
                 <p style="color:var(--silver);font-size:14px;line-height:1.6;">{{ service.description }}</p>
                 <p style="color:var(--silver);font-size:13px;margin-top:8px;"><i class="fa fa-clock" style="color:var(--blue);"></i> {{ service.duration }}</p>
             </div>
-            <div id="sp{{ service.id }}" style="display:none;min-height:70px;">
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);min-height:70px;">
                 <div style="font-family:'Orbitron';font-size:32px;font-weight:700;color:var(--blue);">Rs.{{ "%.0f"|format(service.price) }}</div>
                 <p style="color:var(--silver);font-size:13px;margin-top:6px;"><i class="fa fa-check-circle" style="color:var(--green);"></i> Includes all taxes</p>
                 <p style="color:var(--silver);font-size:13px;"><i class="fa fa-check-circle" style="color:var(--green);"></i> No hidden charges</p>
@@ -54,8 +50,6 @@
     .cat-tab.active, .cat-tab:hover { background:var(--blue);border-color:var(--blue);color:white; }
     .scard { transition:all 0.3s; }
     .scard:hover { border-color:var(--blue);transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,102,255,0.12); }
-    .stab { background:none;border:none;color:var(--silver);padding:6px 14px;cursor:pointer;font-family:'Rajdhani';font-size:13px;font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s; }
-    .stab.active { color:var(--blue);border-bottom-color:var(--blue); }
     @media(max-width:900px){ #sg{grid-template-columns:repeat(2,1fr);} }
     @media(max-width:600px){ #sg{grid-template-columns:1fr;} }
 </style>
@@ -66,13 +60,6 @@
         document.querySelectorAll('#sg .scard').forEach(function(c) {
             c.style.display = (cat === 'all' || c.dataset.cat === cat) ? 'block' : 'none';
         });
-    }
-    function swTab(btn, showId, hideId) {
-        var card = btn.closest('.scard');
-        card.querySelectorAll('.stab').forEach(function(t) { t.classList.remove('active'); });
-        btn.classList.add('active');
-        document.getElementById(showId).style.display = 'block';
-        document.getElementById(hideId).style.display = 'none';
     }
 </script>
 {% endblock %}

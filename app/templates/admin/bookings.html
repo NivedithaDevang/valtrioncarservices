@@ -41,14 +41,14 @@
                     <span class="badge badge-{{ 'paid' if b.payment_status=='Paid' else 'cod' }}">{{ b.payment_method or b.payment_status }}</span>
                 </td>
                 <td>
-                    <select class="form-control" style="width:130px;padding:6px;" onchange="updateStatus({{ b.id }}, this.value)">
+                    <select class="form-control js-status-select" data-booking-id="{{ b.id }}" style="width:130px;padding:6px;">
                         {% for s in ['Pending','Confirmed','In Progress','Completed','Cancelled'] %}
                         <option value="{{ s }}" {% if b.status==s %}selected{% endif %}>{{ s }}</option>
                         {% endfor %}
                     </select>
                 </td>
                 <td>
-                    <select class="form-control" style="width:130px;padding:6px;" onchange="assignMechanic({{ b.id }}, this.value)">
+                    <select class="form-control js-mechanic-select" data-booking-id="{{ b.id }}" style="width:130px;padding:6px;">
                         <option value="">Assign...</option>
                         {% for m in mechanics %}
                         <option value="{{ m.id }}" {% if b.mechanic_id==m.id %}selected{% endif %}>{{ m.name }}</option>
@@ -101,5 +101,17 @@ function showToast(msg, isError){
     t.textContent=msg; document.body.appendChild(t);
     setTimeout(function(){ t.remove(); }, 2500);
 }
+
+document.querySelectorAll('.js-status-select').forEach(function(el){
+    el.addEventListener('change', function(){
+        updateStatus(parseInt(el.dataset.bookingId, 10), el.value);
+    });
+});
+
+document.querySelectorAll('.js-mechanic-select').forEach(function(el){
+    el.addEventListener('change', function(){
+        assignMechanic(parseInt(el.dataset.bookingId, 10), el.value);
+    });
+});
 </script>
 {% endblock %}

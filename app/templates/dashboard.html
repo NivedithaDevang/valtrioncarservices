@@ -7,12 +7,12 @@
         <i class="fa fa-circle-check" style="color:var(--green);font-size:28px;"></i>
         <div>
             <div style="font-weight:700;color:var(--green);font-size:18px;">Booking Confirmed!</div>
-            <div style="color:var(--silver);font-size:14px;">You will receive an SMS with booking details. Our team will contact you shortly.</div>
+            <div style="color:var(--silver);font-size:14px;">You will receive an SMS and email with booking details. Our team will contact you shortly.</div>
         </div>
     </div>
     {% endif %}
 
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
+    <div class="dash-head" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
         <div>
             <p class="section-label">MY ACCOUNT</p>
             <h2 class="section-title">Welcome, <span>{{ current_user.name }}</span></h2>
@@ -20,7 +20,7 @@
         <a href="{{ url_for('main.services') }}" class="btn btn-primary"><i class="fa fa-plus"></i> Book Service</a>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;">
+    <div class="dash-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;">
         {% set total = bookings|length %}
         {% set completed = bookings|selectattr('status','eq','Completed')|list|length %}
         {% set pending = bookings|selectattr('status','in',['Pending','Confirmed'])|list|length %}
@@ -109,4 +109,14 @@
     </div>
 </div>
 </section>
+<style>
+    @media(max-width:900px){
+        .dash-stats { grid-template-columns:repeat(2,1fr) !important; }
+    }
+    @media(max-width:640px){
+        .dash-head { flex-direction:column; align-items:flex-start !important; gap:12px; }
+        .dash-stats { grid-template-columns:1fr !important; }
+        .vt th, .vt td { padding:10px 8px; font-size:12px; }
+    }
+</style>
 {% endblock %}

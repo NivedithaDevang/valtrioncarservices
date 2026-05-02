@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.models import Service, Booking
 from datetime import date, timedelta
+from urllib.parse import quote
 
 main = Blueprint('main', __name__)
 
@@ -40,6 +41,159 @@ PACKAGE_DEFINITIONS = [
         'icon': 'fa-gem'
     }
 ]
+
+
+CUSTOM_CAR_SERVICES = [
+    {
+        'name': 'Exterior',
+        'description': 'Visual and body styling upgrades for a sharper and more personalized exterior look.',
+        'examples': [
+            'Paint, vinyl wrap, or PPF',
+            'Body kit (bumpers, skirts, diffuser)',
+            'Spoiler / wing',
+            'Bonnet (vented, carbon)',
+            'Widebody fenders / arch flares',
+            'Window tints',
+            'Headlights (LED, HID, projector)',
+            'Taillights (LED, smoked)',
+            'Mirrors (carbon, heated)'
+        ],
+        'accent': '#4f8cff',
+        'subtitle': 'Style and finish'
+    },
+    {
+        'name': 'Wheels & Tyres',
+        'description': 'Wheel and tyre enhancements for grip, stance, and road presence.',
+        'examples': [
+            'Alloy wheels',
+            'Performance tyres',
+            'Wheel spacers',
+            'Coloured brake calipers',
+            'Tyre lettering'
+        ],
+        'accent': '#22c55e',
+        'subtitle': 'Grip and stance'
+    },
+    {
+        'name': 'Performance',
+        'description': 'Engine and drivetrain upgrades focused on power, response, and stopping performance.',
+        'examples': [
+            'Cold air intake',
+            'Exhaust (cat-back, axle-back)',
+            'ECU remap / tune',
+            'Intercooler upgrade',
+            'Turbo / supercharger',
+            'Downpipe / headers',
+            'Fuel system (injectors, pump)',
+            'Brake upgrade (big brake kit)',
+            'Clutch upgrade'
+        ],
+        'accent': '#ef4444',
+        'subtitle': 'Power and response'
+    },
+    {
+        'name': 'Suspension & Handling',
+        'description': 'Chassis and geometry tuning for improved handling precision and cornering confidence.',
+        'examples': [
+            'Coilovers / lowering springs',
+            'Sway bars',
+            'Polyurethane bushings',
+            'Strut brace',
+            'Alignment (camber, toe, caster)'
+        ],
+        'accent': '#f59e0b',
+        'subtitle': 'Control and stability'
+    },
+    {
+        'name': 'Interior',
+        'description': 'Cabin-focused enhancements for comfort, style, and driver feel.',
+        'examples': [
+            'Steering wheel (Alcantara, carbon)',
+            'Sport / bucket seats',
+            'Custom upholstery',
+            'Shift knob',
+            'Pedals & footrest',
+            'Dashboard trim inserts',
+            'Roll cage / bar',
+            'Custom carpet & mats'
+        ],
+        'accent': '#ec4899',
+        'subtitle': 'Cabin comfort'
+    },
+    {
+        'name': 'Audio & Tech',
+        'description': 'Infotainment, monitoring, and audio upgrades for a smarter in-car experience.',
+        'examples': [
+            'Touchscreen head unit (CarPlay / Android Auto)',
+            'Speaker & tweeter upgrade',
+            'Amplifier',
+            'Subwoofer',
+            'Sound deadening',
+            'Dash cam',
+            'Reverse camera',
+            'OBD2 gauge display'
+        ],
+        'accent': '#14b8a6',
+        'subtitle': 'Smart features'
+    },
+    {
+        'name': 'Lighting',
+        'description': 'Ambient and accent lighting solutions for cabin, underbody, and engine bay.',
+        'examples': [
+            'Interior ambient / footwell LEDs',
+            'Underbody lighting',
+            'Engine bay LEDs'
+        ],
+        'accent': '#8b5cf6',
+        'subtitle': 'Visibility and mood'
+    },
+    {
+        'name': 'Safety & Track',
+        'description': 'Track-oriented safety equipment for higher-speed and motorsport applications.',
+        'examples': [
+            'Racing harness & harness bar',
+            'Tow hooks',
+            'Fire extinguisher',
+            'HANS device'
+        ],
+        'accent': '#64748b',
+        'subtitle': 'Safety and compliance'
+    }
+]
+
+
+def build_service_image(title, accent, subtitle):
+    initials = ''.join(part[0] for part in title.split()[:2]).upper()
+    svg = f'''
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="{title}">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="{accent}" stop-opacity="0.96" />
+          <stop offset="100%" stop-color="#0f172a" stop-opacity="1" />
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="35%" r="70%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28" />
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <rect width="800" height="500" rx="36" fill="url(#bg)" />
+      <circle cx="650" cy="110" r="140" fill="url(#glow)" />
+      <circle cx="132" cy="388" r="168" fill="#ffffff" fill-opacity="0.08" />
+      <circle cx="650" cy="388" r="110" fill="#ffffff" fill-opacity="0.08" />
+      <text x="56" y="116" fill="#ffffff" font-size="54" font-weight="700" font-family="Arial, Helvetica, sans-serif">{title}</text>
+      <text x="56" y="166" fill="#dbeafe" font-size="22" font-weight="400" font-family="Arial, Helvetica, sans-serif">{subtitle}</text>
+      <rect x="56" y="214" width="218" height="8" rx="4" fill="#ffffff" fill-opacity="0.42" />
+      <rect x="508" y="136" width="172" height="172" rx="36" fill="#ffffff" fill-opacity="0.16" />
+      <text x="594" y="235" text-anchor="middle" fill="#ffffff" font-size="78" font-weight="700" font-family="Arial, Helvetica, sans-serif">{initials}</text>
+      <text x="56" y="346" fill="#ffffff" font-size="24" font-weight="600" font-family="Arial, Helvetica, sans-serif">Custom car service</text>
+      <text x="56" y="384" fill="#e2e8f0" font-size="18" font-weight="400" font-family="Arial, Helvetica, sans-serif">Tailored upgrades, expert fitment, and support</text>
+    </svg>
+    '''
+    return 'data:image/svg+xml;charset=UTF-8,' + quote(svg)
+
+
+for service in CUSTOM_CAR_SERVICES:
+    service['image'] = build_service_image(service['name'], service['accent'], service['subtitle'])
 
 
 def ensure_packages_exist():
@@ -86,7 +240,11 @@ def index():
 @main.route('/services')
 def services():
     ensure_packages_exist()
-    all_services = Service.query.filter(Service.category != 'Packages').all()
+    # Exclude packages - only show services with a category that isn't 'Packages'
+    all_services = Service.query.filter(
+        Service.category.isnot(None),
+        Service.category != 'Packages'
+    ).all()
     categories = list(set(service.category for service in all_services if service.category))
     return render_template('services.html', services=all_services, categories=categories)
 
@@ -162,7 +320,12 @@ def packages():
             'addons': []
         }
     }
-    return render_template('packages.html', packages=package_services, package_map=package_map)
+    return render_template(
+        'packages.html',
+        packages=package_services,
+        package_map=package_map,
+        custom_car_services=CUSTOM_CAR_SERVICES
+    )
 
 
 @main.route('/estimator')
@@ -217,42 +380,3 @@ def api_estimate():
     return jsonify({'estimate': round(base), 'service': service_type, 'brand': brand})
 
 
-@main.route('/api/chatbot', methods=['POST'])
-def chatbot():
-    data = request.json or {}
-    msg = (data.get('message', '') or '').lower()
-
-    responses = {
-        'package': 'We have four packages: Prime Care, Elite Care, Prestige Care, and Platinum Elite.',
-        'prime': 'Prime Care is Rs.2,999.',
-        'elite': 'Elite Care is Rs.5,999.',
-        'prestige': 'Prestige Care is Rs.9,999.',
-        'platinum': 'Platinum Elite is Rs.14,999.',
-        'oil': 'Oil Change starts at Rs.1,299.',
-        'ac': 'AC Service is Rs.2,499.',
-        'brake': 'Brake Service is Rs.1,999.',
-        'wash': 'Basic Car Wash starts at Rs.499 and Premium Wash starts at Rs.999.',
-        'battery': 'Battery Replacement is Rs.3,499.',
-        'tyre': 'Tyre Rotation is Rs.599 and Wheel Alignment is Rs.899.',
-        'price': 'Our services start from Rs.499.',
-        'book': 'You can book from the Services or Packages page.',
-        'location': 'We serve Bengaluru, Hyderabad, Chennai, and Pune.',
-        'pickup': 'Yes, pickup and delivery are included.',
-        'warranty': 'We provide a 30-day service warranty.',
-        'time': 'Service time depends on the selected service or package.',
-        'payment': 'We accept online payments and COD where available.',
-        'hello': 'Hello, how can I help you?',
-        'hi': 'Hi, how can I help?',
-        'help': 'I can help with pricing, booking, locations, pickup, and payment.',
-        'inspection': 'Full Car Inspection is Rs.799.',
-        'engine': 'Engine Tune-Up is Rs.3,999.',
-        'periodic': 'Periodic Service starts at Rs.2,999.',
-    }
-
-    reply = 'I am not sure about that. Try asking about services, prices, booking, locations, or pickup.'
-    for key, response in responses.items():
-        if key in msg:
-            reply = response
-            break
-
-    return jsonify({'reply': reply})

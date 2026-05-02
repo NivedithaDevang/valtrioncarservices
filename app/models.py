@@ -57,18 +57,21 @@ class Booking(db.Model):
     service          = db.relationship('Service', backref='bookings')
     mechanic         = db.relationship('Mechanic', backref='bookings')
 
-class ChatMessage(db.Model):
-    id         = db.Column(db.Integer, primary_key=True)
-    user_id    = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    message    = db.Column(db.Text, nullable=False)
-    sender     = db.Column(db.String(20))  # 'customer' or 'admin'
-    is_read    = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+# ========== REVIEW MODEL ==========
 class Review(db.Model):
     id         = db.Column(db.Integer, primary_key=True)
     user_id    = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     booking_id = db.Column(db.Integer, db.ForeignKey('booking.id'), nullable=False)
     rating     = db.Column(db.Integer, nullable=False)
     comment    = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class ChatMessage(db.Model):
+    id         = db.Column(db.Integer, primary_key=True)
+    user_id    = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    message    = db.Column(db.Text, nullable=False)
+    sender     = db.Column(db.String(20), nullable=False)  # customer or admin
+    is_read    = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

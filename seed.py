@@ -33,18 +33,18 @@ with app.app_context():
         db.session.bulk_save_objects(services)
         print("Added " + str(len(services)) + " services!")
 
-    if not User.query.filter_by(email='admin@valtrion.com').first():
+    if not User.query.filter_by(email='valtrionbookings@gmail.com').first():
         admin = User(
             name='Valtrion Admin',
-            email='admin@valtrion.com',
+            email='valtrionbookings@gmail.com',
             phone='9876543210',
-            password=bcrypt.generate_password_hash('admin123').decode('utf-8'),
+            password=bcrypt.generate_password_hash('valtrion@123').decode('utf-8'),
             role='admin'
         )
         db.session.add(admin)
         print("Admin created!")
-        print("Email: admin@valtrion.com")
-        print("Password: admin123")
+        print("Email: valtrionbookings@gmail.com")
+        print("Password: valtrion@123")
 
     db.session.commit()
     print("Database seeded successfully!")

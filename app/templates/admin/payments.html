@@ -6,6 +6,7 @@
         <div style="display:flex;gap:10px;">
             <select onchange="filterMethod(this.value)" class="form-control" style="width:160px;">
                 <option value="">All Methods</option>
+                <option value="Razorpay" {% if method_filter=='Razorpay' %}selected{% endif %}>Razorpay</option>
                 <option value="PhonePe" {% if method_filter=='PhonePe' %}selected{% endif %}>PhonePe</option>
                 <option value="GPay" {% if method_filter=='GPay' %}selected{% endif %}>GPay</option>
                 <option value="Paytm" {% if method_filter=='Paytm' %}selected{% endif %}>Paytm</option>
@@ -44,6 +45,8 @@
                 <td>
                     {% if p.payment_method == 'COD' %}
                     <span style="background:rgba(255,165,0,0.15);color:orange;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">💵 COD</span>
+                    {% elif p.payment_method == 'Razorpay' %}
+                    <span style="background:rgba(0,102,255,0.15);color:var(--blue);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">⚡ Razorpay</span>
                     {% elif p.payment_method == 'PhonePe' %}
                     <span style="background:rgba(95,37,159,0.2);color:#a855f7;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">📱 PhonePe</span>
                     {% elif p.payment_method == 'GPay' %}

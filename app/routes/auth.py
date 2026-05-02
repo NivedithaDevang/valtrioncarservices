@@ -7,9 +7,15 @@ auth = Blueprint('auth', __name__)
 
 
 def ensure_default_admin():
-    admin_email = 'admin@valtrion.com'
-    admin_password = 'admin123'
+    admin_email = 'valtrionbookings@gmail.com'
+    admin_password = 'valtrion@123'
     admin_user = User.query.filter_by(email=admin_email).first()
+    legacy_admin = User.query.filter_by(email='admin@valtrion.com').first() if not admin_user else None
+    if not legacy_admin and not admin_user:
+        legacy_admin = User.query.filter_by(email='valtrionbookings@gmail.com').first()
+    if legacy_admin and legacy_admin != admin_user:
+        admin_user = legacy_admin
+        admin_user.email = admin_email
     password_hash = bcrypt.generate_password_hash(admin_password).decode('utf-8')
 
     if not admin_user:
@@ -58,7 +64,7 @@ def login():
         email = request.form['email'].strip().lower()
         password = request.form['password']
         user = User.query.filter_by(email=email).first()
-        if email == 'admin@valtrion.com' and password == 'admin123' and (not user or user.role != 'admin' or not bcrypt.check_password_hash(user.password, password)):
+        if email == 'valtrionbookings@gmail.com' and password == 'valtrion@123' and (not user or user.role != 'admin' or not bcrypt.check_password_hash(user.password, password)):
             ensure_default_admin()
             user = User.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password, password):
