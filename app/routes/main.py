@@ -1,6 +1,15 @@
 from app.models import Service, User
 from app import db, bcrypt
 
+from flask import Blueprint, render_template, jsonify, request
+from flask_login import login_required, current_user
+from app import db
+from app.models import Service, Booking
+from datetime import date, timedelta
+from urllib.parse import quote
+
+main = Blueprint('main', __name__)
+
 # --- TEMPORARY SEED ROUTE FOR VERCEL ---
 @main.route('/seed')
 def seed():
