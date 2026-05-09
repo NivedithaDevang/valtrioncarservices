@@ -16,3 +16,4 @@ eventlet
 gunicorn
 gevent
 gevent-websocket
+eventlet
