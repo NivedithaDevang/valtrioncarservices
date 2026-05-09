@@ -1,15 +1,12 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "run.py",
-      "use": "@vercel/python"
-    }
+    { "src": "tools/render_templates.py", "use": "@vercel/python" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "run.py"
-    }
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
+    { "handle": "filesystem" },
+    { "src": "(.*)", "dest": "/$1" }
   ]
 }

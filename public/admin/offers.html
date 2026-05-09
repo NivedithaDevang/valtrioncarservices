@@ -1,0 +1,47 @@
+
+
+<div class="container" style="max-width:700px;margin:40px auto;">
+    <h2 style="text-align:center;margin-bottom:32px;">Manage Offers</h2>
+    <form method="POST" enctype="multipart/form-data" action="" class="card" style="padding:32px;margin-bottom:32px;">
+        <div style="display:flex;flex-direction:column;gap:18px;">
+            <input type="text" name="headline" class="form-control" placeholder="Offer Headline" required>
+            <input type="file" name="image" accept="image/*" class="form-control">
+            <textarea name="content" class="form-control" placeholder="Offer Content" rows="4" required></textarea>
+            <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" name="is_active" checked>
+                Active
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" name="published">
+                Publish (show to users)
+            </label>
+            <button type="submit" class="btn btn-primary">Add Offer</button>
+        </div>
+    </form>
+    <h3>Current Offers</h3>
+    <div style="display:flex;flex-direction:column;gap:18px;">
+        
+        <div class="card" style="padding:18px;display:flex;align-items:flex-start;gap:18px;">
+            
+            <img src="" alt="Offer Image" style="width:100px;height:100px;object-fit:cover;border-radius:8px;">
+            
+            <div style="flex:1;">
+                <h4></h4>
+                <p></p>
+                <small>Created: </small><br>
+                <span class="badge" style="background:;color:#000;padding:4px 10px;border-radius:6px;"></span>
+                <div style="margin-top:8px;">
+                    <form method="POST" action="" style="display:inline;">
+                        <button type="submit" class="btn btn-sm" style="background:;color:#fff;"></button>
+                    </form>
+                    <form method="POST" action="" style="display:inline;margin-left:8px;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this offer?')">Delete</button>
+                    </form>
+                </div>
+        </div>
+        
+        <p>No offers yet.</p>
+        
+    </div>
+</div>
+

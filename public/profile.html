@@ -1,0 +1,148 @@
+
+
+<section class="section">
+<div class="container" style="max-width:900px;">
+    <div style="margin-bottom:32px;">
+        <p class="section-label">ACCOUNT</p>
+        <h2 class="section-title">My <span>Profile</span></h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;">
+        <!-- PROFILE DETAILS -->
+        <div class="card">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+                <div style="width:64px;height:64px;background:rgba(0,102,255,0.15);border:2px solid var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Orbitron';font-size:22px;color:var(--blue);">
+                    
+                </div>
+                <div>
+                    <h3 style="font-family:'Orbitron';font-size:16px;letter-spacing:2px;"></h3>
+                    <p style="color:var(--silver);font-size:13px;">Customer since </p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="p_name" class="form-control" value="">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="p_email" class="form-control" value="">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="p_phone" class="form-control" value="">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" id="p_address" class="form-control" value="" placeholder="Your home/office address">
+            </div>
+            <div id="profile-msg" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;"></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="saveProfile()">
+                <i class="fa fa-save"></i> Save Changes
+            </button>
+        </div>
+
+        <!-- CHANGE PASSWORD -->
+        <div>
+            <div class="card" style="margin-bottom:24px;">
+                <h3 style="font-family:'Orbitron';font-size:14px;letter-spacing:2px;margin-bottom:20px;color:var(--blue);">CHANGE PASSWORD</h3>
+                <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input type="password" id="p_cur" class="form-control" placeholder="Current password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" id="p_new" class="form-control" placeholder="New password">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" id="p_cnf" class="form-control" placeholder="Confirm new password">
+                </div>
+                <div id="pw-msg" style="display:none;margin-bottom:12px;padding:10px;border-radius:8px;"></div>
+                <button class="btn btn-outline" style="width:100%;justify-content:center;" onclick="changePassword()">
+                    <i class="fa fa-lock"></i> Update Password
+                </button>
+            </div>
+
+            <!-- STATS -->
+            <div class="card" style="background:rgba(0,102,255,0.05);border-color:rgba(0,102,255,0.3);">
+                <h3 style="font-family:'Orbitron';font-size:13px;letter-spacing:2px;margin-bottom:16px;color:var(--blue);">YOUR STATS</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div style="text-align:center;padding:14px;background:var(--card);border-radius:8px;">
+                        <div style="font-family:'Orbitron';font-size:24px;color:var(--blue);"></div>
+                        <div style="color:var(--silver);font-size:12px;margin-top:4px;">Total Bookings</div>
+                    </div>
+                    <div style="text-align:center;padding:14px;background:var(--card);border-radius:8px;">
+                        <div style="font-family:'Orbitron';font-size:24px;color:var(--green);"></div>
+                        <div style="color:var(--silver);font-size:12px;margin-top:4px;">Completed</div>
+                    </div>
+                    <div style="text-align:center;padding:14px;background:var(--card);border-radius:8px;">
+                        <div style="font-family:'Orbitron';font-size:24px;color:orange;"></div>
+                        <div style="color:var(--silver);font-size:12px;margin-top:4px;">Pending</div>
+                    </div>
+                    <div style="text-align:center;padding:14px;background:var(--card);border-radius:8px;">
+                        <div style="font-family:'Orbitron';font-size:20px;color:var(--blue);">Rs.</div>
+                        <div style="color:var(--silver);font-size:12px;margin-top:4px;">Total Spent</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOKING HISTORY -->
+    <div class="card">
+        <h3 style="font-family:'Orbitron';font-size:14px;letter-spacing:2px;margin-bottom:20px;">BOOKING HISTORY</h3>
+        
+        <div style="overflow-x:auto;">
+        <table class="vt">
+            <thead><tr><th>#</th><th>Service</th><th>Car</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody>
+            
+            <tr>
+                <td style="color:var(--blue);font-family:'Orbitron';font-size:12px;">#V</td>
+                <td></td>
+                <td> </td>
+                <td></td>
+                <td style="color:var(--blue);font-weight:700;">Rs.</td>
+                <td><span class="badge badge-"></span></td>
+            </tr>
+            
+            </tbody>
+        </table>
+        </div>
+        
+        <p style="color:var(--silver);text-align:center;padding:20px;">No bookings yet. <a href="" style="color:var(--blue);">Book a service</a></p>
+        
+    </div>
+</div>
+</section>
+<script>
+function saveProfile(){
+    fetch('/profile/update',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+            name:document.getElementById('p_name').value,
+            email:document.getElementById('p_email').value,
+            phone:document.getElementById('p_phone').value,
+            address:document.getElementById('p_address').value
+        })
+    }).then(r=>r.json()).then(d=>{
+        var m=document.getElementById('profile-msg');
+        m.style.display='block';
+        if(d.success){m.style.background='rgba(0,255,136,0.1)';m.style.color='var(--green)';m.style.border='1px solid var(--green)';m.textContent='Profile updated successfully!';}
+        else{m.style.background='rgba(255,51,85,0.1)';m.style.color='var(--red)';m.style.border='1px solid var(--red)';m.textContent='Update failed.';}
+    });
+}
+function changePassword(){
+    var cur=document.getElementById('p_cur').value;
+    var nw=document.getElementById('p_new').value;
+    var cnf=document.getElementById('p_cnf').value;
+    var m=document.getElementById('pw-msg');
+    m.style.display='block';
+    if(nw!==cnf){m.style.background='rgba(255,51,85,0.1)';m.style.color='var(--red)';m.style.border='1px solid var(--red)';m.textContent='Passwords do not match.';return;}
+    fetch('/profile/change-password',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({current_password:cur,new_password:nw})
+    }).then(r=>r.json()).then(d=>{
+        if(d.success){m.style.background='rgba(0,255,136,0.1)';m.style.color='var(--green)';m.style.border='1px solid var(--green)';m.textContent='Password changed!';}
+        else{m.style.background='rgba(255,51,85,0.1)';m.style.color='var(--red)';m.style.border='1px solid var(--red)';m.textContent=d.error||'Failed.';}
+    });
+}
+</script>

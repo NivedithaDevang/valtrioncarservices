@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VALTRION - Expert Care for Every Car</title>
+    <link rel="icon" type="image/svg+xml" href="">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --black: #050810; --dark: #080d1a; --card: #0c1222; --border: #1a2540;
+            --blue: #0066FF; --blue-bright: #1a7fff; --blue-glow: rgba(0,102,255,0.3);
+            --silver: #a8b8d0; --silver-light: #c8d8e8; --white: #e8f0ff;
+            --green: #00ff88; --red: #ff3355;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { background:var(--black); color:var(--white); font-family:'Rajdhani',sans-serif; font-size:16px; overflow-x:hidden; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--dark); }
+        ::-webkit-scrollbar-thumb { background:var(--blue); border-radius:3px; }
+
+        nav { position:fixed; top:0; left:0; right:0; z-index:1000; background:rgba(5,8,16,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:0 40px; height:70px; display:flex; align-items:center; justify-content:space-between; }
+        .nav-logo { display:flex; align-items:center; gap:10px; font-family:'Orbitron',monospace; font-weight:900; font-size:22px; letter-spacing:4px; color:var(--white); text-decoration:none; }
+        .nav-logo img { width:32px; height:32px; border-radius:7px; }
+        .nav-logo span { color:var(--blue); }
+        .nav-menu-btn { display:none; background:transparent; color:var(--silver-light); border:1px solid var(--border); width:38px; height:38px; border-radius:8px; }
+        .nav-links { display:flex; gap:8px; align-items:center; }
+        .nav-links a { color:var(--silver); text-decoration:none; font-size:14px; font-weight:600; letter-spacing:1px; padding:8px 16px; border-radius:6px; transition:all 0.3s; text-transform:uppercase; }
+        .nav-links a:hover { color:var(--white); background:rgba(0,102,255,0.15); }
+        .nav-links a.profile-link { padding:8px 12px; font-size:18px; color:var(--blue); text-transform:none; }
+        .nav-links a.profile-link:hover { color:var(--blue-bright); background:rgba(0,102,255,0.12); }
+        .nav-btn { background:var(--blue) !important; color:var(--white) !important; padding:8px 20px !important; }
+        .nav-btn:hover { background:var(--blue-bright) !important; box-shadow:0 0 20px var(--blue-glow); }
+        @media (max-width: 950px) {
+            .nav-menu-btn { display:inline-flex; align-items:center; justify-content:center; }
+            .nav-links { display:none; position:absolute; top:70px; left:0; right:0; background:rgba(5,8,16,0.98); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:10px 14px; flex-wrap:wrap; gap:8px; }
+            .nav-links.open { display:flex; flex-direction:column; }
+            .nav-links a { width:100%; text-align:center; }
+        }
+
+        .flash-container { position:fixed; top:80px; right:20px; z-index:2000; }
+        .flash { padding:12px 20px; border-radius:8px; margin-bottom:10px; font-weight:600; animation:slideIn 0.3s ease; border:1px solid; }
+        .flash.success { background:rgba(0,255,136,0.1); border-color:var(--green); color:var(--green); }
+        .flash.danger { background:rgba(255,51,85,0.1); border-color:var(--red); color:var(--red); }
+        .flash.info { background:rgba(0,102,255,0.1); border-color:var(--blue); color:var(--blue-bright); }
+        .flash.warning { background:rgba(255,165,0,0.1); border-color:orange; color:orange; }
+        @keyframes slideIn { from{transform:translateX(50px);opacity:0;} to{transform:translateX(0);opacity:1;} }
+
+        .page-wrapper { padding-top:70px; min-height:100vh; }
+
+        .btn { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; border-radius:8px; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:14px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; transition:all 0.3s; text-decoration:none; }
+        .btn-primary { background:var(--blue); color:white; }
+        .btn-primary:hover { background:var(--blue-bright); box-shadow:0 0 25px var(--blue-glow); transform:translateY(-2px); color:white; }
+        .btn-outline { background:transparent; color:var(--blue); border:1px solid var(--blue); }
+        .btn-outline:hover { background:var(--blue); color:white; }
+        .btn-silver { background:rgba(168,184,208,0.1); color:var(--silver-light); border:1px solid var(--border); }
+        .btn-silver:hover { background:rgba(168,184,208,0.2); color:white; }
+        .btn-danger { background:var(--red); color:white; }
+        .btn-success { background:var(--green); color:#000; font-weight:800; }
+        .btn-sm { padding:6px 14px; font-size:12px; }
+
+        .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:24px; transition:all 0.3s; }
+        .card:hover { border-color:var(--blue); box-shadow:0 0 30px rgba(0,102,255,0.1); }
+        .section { padding:80px 0; }
+        .container { max-width:1200px; margin:0 auto; padding:0 24px; }
+        .section-title { font-family:'Orbitron',monospace; font-size:28px; font-weight:700; letter-spacing:3px; color:var(--white); margin-bottom:8px; }
+        .section-title span { color:var(--blue); }
+        .section-label { font-size:11px; letter-spacing:4px; color:var(--blue); text-transform:uppercase; font-weight:700; margin-bottom:8px; }
+        .section-sub { color:var(--silver); font-size:15px; margin-bottom:50px; }
+        .glow-line { height:2px; background:linear-gradient(90deg,transparent,var(--blue),transparent); }
+
+        .form-group { margin-bottom:20px; }
+        .form-label { display:block; color:var(--silver-light); font-size:13px; font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+        .form-control { width:100%; background:var(--dark); border:1px solid var(--border); border-radius:8px; padding:12px 16px; color:var(--white); font-family:'Rajdhani'; font-size:15px; transition:border 0.3s; }
+        .form-control:focus { outline:none; border-color:var(--blue); box-shadow:0 0 15px rgba(0,102,255,0.15); }
+        select.form-control option { background:var(--dark); }
+
+        .badge { padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700; letter-spacing:0.5px; }
+        .badge-pending { background:rgba(255,165,0,0.15); color:orange; border:1px solid orange; }
+        .badge-confirmed { background:rgba(0,102,255,0.15); color:var(--blue-bright); border:1px solid var(--blue); }
+        .badge-completed { background:rgba(0,255,136,0.15); color:var(--green); border:1px solid var(--green); }
+        .badge-cancelled { background:rgba(255,51,85,0.15); color:var(--red); border:1px solid var(--red); }
+        .badge-cod { background:rgba(255,165,0,0.15); color:orange; border:1px solid orange; }
+        .badge-paid { background:rgba(0,255,136,0.15); color:var(--green); border:1px solid var(--green); }
+
+        .vt { width:100%; border-collapse:collapse; }
+        .vt thead tr { border-bottom:2px solid var(--blue); }
+        .vt th { padding:14px 16px; text-align:left; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--blue-bright); font-weight:700; }
+        .vt td { padding:14px 16px; border-bottom:1px solid var(--border); font-size:14px; color:var(--silver-light); }
+        .vt tbody tr:hover { background:rgba(0,102,255,0.05); }
+
+        footer { background:var(--dark); border-top:1px solid var(--border); padding:60px 0 30px; }
+        .footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; }
+        .footer-logo { font-family:'Orbitron',monospace; font-size:24px; font-weight:900; letter-spacing:6px; margin-bottom:12px; }
+        .footer-col h4 { color:var(--silver-light); font-size:12px; letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; font-weight:700; }
+        .footer-col ul { list-style:none; }
+        .footer-col ul li { margin-bottom:8px; }
+        .footer-col ul li a { color:var(--silver); text-decoration:none; font-size:14px; transition:color 0.2s; }
+        .footer-col ul li a:hover { color:var(--blue); }
+        .branch-toggle { background:none; border:1px solid var(--border); color:var(--silver); padding:8px 14px; border-radius:6px; cursor:pointer; font-family:'Rajdhani'; font-size:13px; margin-bottom:8px; width:100%; text-align:left; transition:all 0.2s; font-weight:600; letter-spacing:0.5px; }
+        .branch-toggle:hover,.branch-toggle.active { border-color:var(--blue); color:var(--blue); background:rgba(0,102,255,0.08); }
+        .branch-info { display:none; padding:12px; background:rgba(0,102,255,0.05); border-radius:6px; margin-bottom:8px; font-size:13px; color:var(--silver); line-height:1.8; }
+        .branch-info.show { display:block; }
+        .branch-info a { color:var(--blue); text-decoration:none; }
+        .footer-bottom { border-top:1px solid var(--border); margin-top:40px; padding-top:20px; text-align:center; color:var(--silver); font-size:13px; }
+
+        .chat-launcher-wrap { position:fixed; right:24px; bottom:24px; z-index:5001; }
+        .chat-launcher {
+            position:relative; width:72px; height:72px; border:none; padding:0; border-radius:50%;
+            background:transparent; cursor:pointer; overflow:visible; box-shadow:0 18px 40px rgba(0,0,0,0.45);
+            animation:chatFloat 4s ease-in-out infinite;
+        }
+        .chat-launcher::before {
+            content:''; position:absolute; inset:0; border-radius:50%;
+            padding:3px;
+            background:conic-gradient(from 160deg, rgba(129,238,255,0.95), rgba(0,168,255,0.95), rgba(0,92,255,0.94), rgba(90,214,255,0.95));
+            animation:orbSpin 8.8s linear infinite;
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            box-shadow:0 0 18px rgba(0,132,255,0.45), 0 0 34px rgba(0,190,255,0.20);
+        }
+        .chat-launcher::after {
+            content:''; position:absolute; inset:8px; border-radius:50%;
+            border:1px solid rgba(116,214,255,0.38);
+            box-shadow: inset 0 0 0 1px rgba(10,86,190,0.25), 0 0 14px rgba(0,148,255,0.2);
+        }
+        .chat-launcher-inner {
+            position:absolute; inset:13px; z-index:2; border-radius:50%;
+            border:1px solid rgba(93,195,255,0.22);
+            background:transparent;
+        }
+        @keyframes orbSpin { to { transform:rotate(360deg); } }
+        @keyframes chatFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-6px); } }
+
+        .chat-drawer {
+            position:fixed; right:24px; top:84px; bottom:108px; width:390px; height:auto; z-index:5000;
+            display:none; flex-direction:column; overflow:hidden; border-radius:24px;
+            border:1px solid rgba(145,177,255,0.34);
+            background:#080f1f;
+            box-shadow:0 28px 70px rgba(0,0,0,0.55); backdrop-filter:blur(10px);
+        }
+        .chat-drawer.open { display:flex; }
+        .chat-drawer-head {
+            display:flex; align-items:center; justify-content:space-between; gap:12px;
+            padding:16px 16px; border-bottom:1px solid rgba(145,177,255,0.22);
+            background:linear-gradient(135deg, rgba(0,102,255,0.28), rgba(0,160,255,0.12));
+        }
+        .chat-drawer-title { display:flex; align-items:center; gap:12px; min-width:0; }
+        .chat-drawer-badge {
+            width:38px; height:38px; border-radius:50%; flex-shrink:0;
+            background:radial-gradient(circle at 30% 28%, rgba(255,255,255,0.85), rgba(255,255,255,0.1) 26%, rgba(0,255,234,0.12) 46%, rgba(0,102,255,0.35) 100%);
+            box-shadow:0 0 20px rgba(0,102,255,0.3); display:flex; align-items:center; justify-content:center;
+            border:1px solid rgba(255,255,255,0.16);
+        }
+        .chat-drawer-badge i { color:white; font-size:16px; }
+        .chat-drawer-sub { font-size:12px; color:var(--silver-light); margin-top:2px; }
+        .chat-drawer-close { background:none; border:none; color:var(--white); font-size:18px; cursor:pointer; opacity:0.9; }
+        .chat-drawer-messages {
+            flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:10px;
+            background:radial-gradient(circle at top, rgba(0,102,255,0.10), transparent 40%), #070c18;
+        }
+        .chat-drawer-messages::-webkit-scrollbar { width:6px; }
+        .chat-drawer-messages::-webkit-scrollbar-thumb { background:#2a3f66; border-radius:3px; }
+        .chat-msg-row { display:flex; flex-direction:column; max-width:84%; }
+        .chat-msg-row.customer { align-self:flex-end; align-items:flex-end; }
+        .chat-msg-row.admin { align-self:flex-start; align-items:flex-start; }
+        .chat-bubble {
+            padding:12px 14px; border-radius:16px; line-height:1.55; font-size:15px;
+            box-shadow:0 10px 24px rgba(0,0,0,0.18); word-break:break-word;
+        }
+        .chat-msg-row.customer .chat-bubble {
+            color:white; background:linear-gradient(135deg, rgba(0,102,255,0.96), rgba(27,128,255,0.76));
+            border:1px solid rgba(255,255,255,0.14); border-bottom-right-radius:4px;
+        }
+        .chat-msg-row.admin .chat-bubble {
+            color:var(--white); background:rgba(255,255,255,0.08); border:1px solid rgba(145,177,255,0.24); border-bottom-left-radius:4px;
+        }
+        .chat-time { margin-top:5px; font-size:11px; color:var(--silver-light); }
+        .chat-drawer-input {
+            display:flex; gap:10px; padding:12px; border-top:1px solid rgba(145,177,255,0.14);
+            background:#0a1223;
+        }
+        .chat-drawer-input .form-control {
+            border-radius:16px;
+            background:#061022;
+            border-color:#23406e;
+            color:var(--white);
+            font-size:15px;
+        }
+        .chat-drawer-input .form-control::placeholder { color:#93a9c9; }
+        .chat-drawer-input .btn { min-width:54px; justify-content:center; padding:12px 0; }
+        .chat-drawer-empty { margin:auto; text-align:center; color:var(--silver); font-size:14px; line-height:1.7; }
+
+        @media(max-width:900px) {
+            nav { padding:0 16px; }
+            .nav-menu-btn { display:inline-flex; align-items:center; justify-content:center; }
+            .nav-links { position:absolute; top:70px; left:0; right:0; background:rgba(5,8,16,0.98); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:10px 14px; flex-wrap:wrap; gap:8px; display:none; }
+            .nav-links.open { display:flex; }
+            .nav-links a { width:calc(50% - 6px); text-align:center; }
+            .footer-grid { grid-template-columns:1fr 1fr; }
+            .chat-launcher-wrap { right:14px; bottom:14px; }
+            .chat-drawer { right:12px; top:82px; bottom:94px; width:calc(100vw - 24px); height:auto; }
+        }
+        @media(max-width:560px) {
+            .footer-grid { grid-template-columns:1fr; }
+            .nav-links a { width:100%; }
+        }
+    </style>
+    <style>
+    /* --- Mobile Responsive Styles --- */
+    @media (max-width: 900px) {
+        .container { max-width: 98vw; padding: 0 8px; }
+        .section { padding: 40px 0; }
+        .footer-grid { grid-template-columns:1fr 1fr; gap:20px; }
+    }
+    @media (max-width: 600px) {
+        .container { max-width: 100vw; padding: 0 2vw; }
+        .section-title { font-size: 20px; }
+        .section-label, .section-sub { font-size: 12px; }
+        .hero-content { padding: 18px 0 0 0; }
+        .hero-title { font-size: 28px !important; }
+        .hero-badge { font-size: 12px; }
+        .hero-tagline { font-size: 13px; }
+        .hero-actions { flex-direction: column; gap: 10px; }
+        .hero-stats { flex-wrap: wrap; gap: 8px; }
+        .stat, .stat-div { font-size: 12px; }
+        .why-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+        .footer-grid { grid-template-columns:1fr; gap:12px; }
+        nav { padding: 0 8px; height: 54px; }
+        .nav-logo { font-size: 15px; }
+        .nav-links a { font-size: 11px; padding: 6px 8px; }
+        .btn, .btn-primary, .btn-outline { font-size: 12px; padding: 10px 16px; }
+        .card { padding: 12px; }
+        .vt th, .vt td { padding: 8px 6px; font-size: 11px; }
+    }
+    /* Responsive video */
+    .hero-video-wrap { position:relative; width:100vw; max-width:100%; height:48vw; min-height:180px; max-height:340px; overflow:hidden; border-radius:0 0 24px 24px; }
+    @media (max-width: 600px) {
+        .hero-video-wrap { height: 38vw; min-height: 120px; max-height: 180px; border-radius:0 0 12px 12px; }
+    }
+    #hero-video { width:100vw; min-width:100%; height:100%; object-fit:cover; object-position:center; display:block; }
+    </style>
+</head>
+<body>
+<nav>
+    <a href="" class="nav-logo"><img src="" alt="Valtrion">VAL<span>T</span>RION</a>
+    <button class="nav-menu-btn" onclick="toggleNavMenu()"><i class="fa fa-bars"></i></button>
+    <div class="nav-links" id="nav-links">
+        <a href="">Home</a>
+        <a href="">Services</a>
+        <a href="">Packages</a>
+        <a href="">Estimator</a>
+        
+            
+                <a href="">Admin</a>
+            
+                <a href="">Dashboard</a>
+                <a href="" class="profile-link" title="Profile"><i class="fa fa-user-circle"></i></a>
+            
+            <a href="">Logout</a>
+        
+            <a href="">Login</a>
+            <a href="" class="nav-btn">Book Now</a>
+        
+    </div>
+</nav>
+
+<div class="flash-container">
+    
+        
+            <div class="flash "><i class="fa fa-circle-info"></i> </div>
+        
+    
+</div>
+
+<div class="page-wrapper"></div>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo">VAL<span style="color:var(--blue)">T</span>RION</div>
+                <p style="color:var(--silver);font-size:13px;margin-bottom:8px;">Expert Care for Every Car</p>
+                <p style="color:var(--silver);font-size:13px;line-height:1.8;">India's premium automotive care platform.</p>
+                <div style="margin-top:16px;display:flex;gap:12px;">
+                    <a href="#" style="color:var(--silver);font-size:18px;" onmouseover="this.style.color='#0066FF'" onmouseout="this.style.color='var(--silver)'"><i class="fab fa-instagram"></i></a>
+                    <a href="#" style="color:var(--silver);font-size:18px;" onmouseover="this.style.color='#0066FF'" onmouseout="this.style.color='var(--silver)'"><i class="fab fa-facebook"></i></a>
+                    <a href="#" style="color:var(--silver);font-size:18px;" onmouseover="this.style.color='#0066FF'" onmouseout="this.style.color='var(--silver)'"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="">All Services</a></li>
+                    <li><a href="">Packages</a></li>
+                    <li><a href="">Price Estimator</a></li>
+                    <li><a href="">My Bookings</a></li>
+                    <li><a href="">Create Account</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="">Car Wash</a></li>
+                    <li><a href="">Oil Change</a></li>
+                    <li><a href="">AC Service</a></li>
+                    <li><a href="">Brake Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Branches</h4>
+                <button class="branch-toggle" onclick="toggleBranch('blr',this)">Bengaluru</button>
+                <div class="branch-info" id="blr">#12, 1st Cross, Koramangala<br><a href="tel:+919686681036">+91 9686681036</a><br><a href="mailto:valtrionbookings@gmail.com">valtrionbookings@gmail.com</a></div>
+                <button class="branch-toggle" onclick="toggleBranch('hyd',this)">Hyderabad</button>
+                <div class="branch-info" id="hyd">#32/1, BDA Layout, Kadapa<br><a href="tel:+919686681036">+91 9686681036</a><br><a href="mailto:valtrionbookings@gmail.com">valtrionbookings@gmail.com</a></div>
+                <button class="branch-toggle" onclick="toggleBranch('chn',this)">Chennai</button>
+                <div class="branch-info" id="chn">#15A, Dollars Colony, Mylapore<br><a href="tel:+919686681036">+91 9686681036</a><br><a href="mailto:valtrionbookings@gmail.com">valtrionbookings@gmail.com</a></div>
+                <button class="branch-toggle" onclick="toggleBranch('pun',this)">Pune</button>
+                <div class="branch-info" id="pun">#54, Viman Nagar<br><a href="tel:+919686681036">+91 9686681036</a><br><a href="mailto:valtrionbookings@gmail.com">valtrionbookings@gmail.com</a></div>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>2024 Valtrion Automotive. All rights reserved.</p></div>
+    </div>
+</footer>
+
+<div id="chat-config" data-enabled="1" data-current-user-id="guest" data-role="guest"></div>
+<div class="chat-launcher-wrap">
+    <button class="chat-launcher" type="button" onclick="toggleChatDrawer()" aria-label="Open live chat">
+        <div class="chat-launcher-inner"></div>
+    </button>
+</div>
+
+
+<div class="chat-drawer" id="chat-drawer">
+    <div class="chat-drawer-head">
+        <div class="chat-drawer-title">
+            <div class="chat-drawer-badge"><i class="fa fa-sparkles"></i></div>
+            <div style="min-width:0;">
+                <div style="font-weight:700;letter-spacing:0.8px;">Valtrion Live Support</div>
+                <div class="chat-drawer-sub">Message the admin in real time</div>
+            </div>
+        </div>
+        <button class="chat-drawer-close" type="button" onclick="toggleChatDrawer()"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="chat-drawer-messages" id="chat-messages">
+        <div class="chat-drawer-empty">Say hello. A member of the Valtrion team will reply here.</div>
+    </div>
+    <div class="chat-drawer-input">
+        <input type="text" id="chat-input" class="form-control" placeholder="Type your message..." onkeydown="if(event.key==='Enter') sendClientMessage()">
+        <button class="btn btn-primary" type="button" onclick="sendClientMessage()"><i class="fa fa-paper-plane"></i></button>
+    </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.min.js"></script>
+
+<script>
+function toggleNavMenu(){
+    document.getElementById('nav-links').classList.toggle('open');
+}
+
+function escapeHtml(text){
+    return String(text).replace(/[&<>"']/g, function(char){
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[char] || char);
+    });
+}
+
+var chatConfig = document.getElementById('chat-config');
+var currentUserRole = chatConfig ? chatConfig.dataset.role : null;
+var currentUserId = chatConfig ? parseInt(chatConfig.dataset.currentUserId, 10) : null;
+
+function toggleChatDrawer(){
+    if(!chatConfig) return;
+    if(currentUserRole === 'admin'){
+        window.location.href = '#admin-live-chat';
+        return;
+    }
+    if(typeof window.__toggleClientChatDrawer === 'function'){
+        window.__toggleClientChatDrawer();
+    }
+}
+
+if(chatConfig && currentUserRole !== 'admin' && currentUserRole !== 'guest' && typeof io === 'function'){
+var socket = io();
+var chatOpen = false;
+
+socket.emit('join_chat');
+socket.on('chat_message', function(data){
+    if(parseInt(data.user_id, 10) !== currentUserId) return;
+    appendChatMessage(data.message, data.sender, data.time);
+});
+
+window.__toggleClientChatDrawer = function(){
+    chatOpen = !chatOpen;
+    document.getElementById('chat-drawer').classList.toggle('open', chatOpen);
+    if(chatOpen){ loadChatHistory(); }
+};
+
+function loadChatHistory(){
+    fetch('/chat/history').then(function(r){ return r.json(); }).then(function(msgs){
+        var container = document.getElementById('chat-messages');
+        container.innerHTML = '';
+        if(!msgs.length){
+            container.innerHTML = '<div class="chat-drawer-empty">Start the conversation. We are online and ready to help.</div>';
+            return;
+        }
+        msgs.forEach(function(m){ appendChatMessage(m.message, m.sender, m.time); });
+    });
+}
+
+function appendChatMessage(message, sender, time){
+    var container = document.getElementById('chat-messages');
+    var row = document.createElement('div');
+    row.className = 'chat-msg-row ' + (sender === 'admin' ? 'admin' : 'customer');
+    row.innerHTML = '<div class="chat-bubble">' + escapeHtml(message) + '</div><div class="chat-time">' + time + '</div>';
+    container.appendChild(row);
+    container.scrollTop = container.scrollHeight;
+}
+
+function sendClientMessage(){
+    var input = document.getElementById('chat-input');
+    var message = input.value.trim();
+    if(!message) return;
+    socket.emit('customer_send_message', {message: message});
+    input.value = '';
+}
+
+}
+
+function toggleBranch(id,btn){
+    var el=document.getElementById(id);
+    document.querySelectorAll('.branch-info').forEach(function(i){ if(i.id!==id) i.classList.remove('show'); });
+    document.querySelectorAll('.branch-toggle').forEach(function(b){ if(b!==btn) b.classList.remove('active'); });
+    el.classList.toggle('show'); btn.classList.toggle('active');
+}
+setTimeout(function(){ document.querySelectorAll('.flash').forEach(function(f){ f.remove(); }); }, 4000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,593 @@
+
+
+<section class="section">
+<div class="container" style="max-width:700px;">
+    <div style="margin-bottom:32px;">
+        <p class="section-label">SCHEDULE SERVICE</p>
+        <h2 class="section-title">Book <span></span></h2>
+        <p style="color:var(--silver);"></p>
+    </div>
+
+    <!-- SERVICE PRICE CARD -->
+    <div class="card" style="margin-bottom:24px;background:rgba(0,102,255,0.05);border-color:rgba(0,102,255,0.3);">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <div style="color:var(--silver);font-size:13px;letter-spacing:1px;">SERVICE AMOUNT</div>
+                <div style="font-family:'Orbitron';font-size:36px;font-weight:700;color:var(--blue);">Rs.</div>
+            </div>
+            <div style="text-align:right;">
+                <div style="color:var(--silver);font-size:13px;"><i class="fa fa-clock"></i> </div>
+                <div style="color:var(--green);font-size:13px;margin-top:4px;"><i class="fa fa-shield-halved"></i> 30-Day Warranty</div>
+                <div style="color:var(--silver);font-size:13px;margin-top:4px;"><i class="fa fa-truck"></i> Free Pickup & Delivery</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOKING FORM -->
+    <div class="card" id="booking-form-card">
+        <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="f_name" class="form-control" placeholder="Your full name">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" id="f_phone" class="form-control" placeholder="10-digit mobile number" maxlength="10">
+        </div>
+
+        <!-- CAR BRAND -->
+        <div class="form-group">
+            <label class="form-label">Car Brand</label>
+            <div style="position:relative;">
+                <div id="brand-box" onclick="toggleBrandDD()" style="display:flex;align-items:center;gap:12px;background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 16px;cursor:pointer;min-height:52px;">
+                    <span id="brand-ph" style="color:#6b7a99;font-size:15px;font-family:'Rajdhani';">Search or select brand...</span>
+                    <img id="brand-img" src="" style="display:none;width:40px;height:40px;object-fit:contain;border-radius:6px;background:white;padding:3px;">
+                    <span id="brand-txt" style="display:none;color:var(--white);font-size:15px;font-family:'Rajdhani';font-weight:600;"></span>
+                    <i class="fa fa-chevron-down" style="margin-left:auto;color:var(--silver);font-size:12px;"></i>
+                </div>
+                <input type="hidden" id="f_brand">
+                <div id="brand-dd" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0a1020;border:1px solid var(--blue);border-radius:10px;z-index:600;margin-top:4px;box-shadow:0 10px 40px rgba(0,102,255,0.25);overflow:hidden;">
+                    <div style="padding:10px;"><input type="text" id="brand-search" oninput="filterBrands()" placeholder="Type to search..." class="form-control" style="padding:8px 14px;font-size:14px;"></div>
+                    <div id="brand-list" style="max-height:300px;overflow-y:auto;padding:0 8px 8px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAR MODEL -->
+        <div class="form-group">
+            <label class="form-label">Car Model</label>
+            <div style="position:relative;">
+                <div id="model-box" onclick="toggleModelDD()" style="display:flex;align-items:center;gap:12px;background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:10px 16px;cursor:pointer;min-height:52px;">
+                    <span id="model-ph" style="color:#6b7a99;font-size:15px;font-family:'Rajdhani';">Select brand first...</span>
+                    <i class="fa fa-chevron-down" style="margin-left:auto;color:var(--silver);font-size:12px;"></i>
+                </div>
+                <input type="hidden" id="f_model">
+                <div id="model-dd" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0a1020;border:1px solid var(--blue);border-radius:10px;z-index:599;margin-top:4px;box-shadow:0 10px 40px rgba(0,102,255,0.25);overflow:hidden;">
+                    <div style="padding:10px;"><input type="text" id="model-search" oninput="filterModels()" placeholder="Type to search model..." class="form-control" style="padding:8px 14px;font-size:14px;"></div>
+                    <div id="model-list" style="max-height:260px;overflow-y:auto;padding:0 8px 8px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAR NUMBER PLATE -->
+        <div class="form-group">
+            <label class="form-label"><i class="fa fa-hashtag" style="color:var(--blue);margin-right:4px;"></i>Car Number Plate</label>
+            <input type="text" id="f_carnumber" class="form-control" placeholder="e.g. KA 01 AB 1234" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
+        </div>
+
+        <!-- FUEL TYPE -->
+        <div class="form-group">
+            <label class="form-label">Fuel Type</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button type="button" class="fuel-btn" onclick="selectFuel(this,'Petrol')"><i class="fa fa-gas-pump"></i> Petrol</button>
+                <button type="button" class="fuel-btn" onclick="selectFuel(this,'Diesel')"><i class="fa fa-gas-pump"></i> Diesel</button>
+                <button type="button" class="fuel-btn" onclick="selectFuel(this,'CNG')"><i class="fa fa-wind"></i> CNG</button>
+                <button type="button" class="fuel-btn" onclick="selectFuel(this,'Electric')"><i class="fa fa-bolt"></i> Electric</button>
+                <button type="button" class="fuel-btn" onclick="selectFuel(this,'Hybrid')"><i class="fa fa-leaf"></i> Hybrid</button>
+            </div>
+            <input type="hidden" id="f_fuel">
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="form-group">
+            <label class="form-label">Pickup Address</label>
+            <input type="text" id="f_address" class="form-control" placeholder="Full address for vehicle pickup">
+        </div>
+
+        <!-- DATE PICKER -->
+        <div class="form-group">
+            <label class="form-label"><i class="fa fa-calendar" style="color:var(--blue);margin-right:6px;"></i>Preferred Date</label>
+            <div style="position:relative;">
+                <div id="date-box" onclick="toggleCal()" style="display:flex;align-items:center;gap:12px;background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;min-height:50px;">
+                    <i class="fa fa-calendar-days" style="color:var(--blue);"></i>
+                    <span id="date-txt" style="color:#6b7a99;font-family:'Rajdhani';font-size:15px;">Click to pick date</span>
+                </div>
+                <input type="hidden" id="f_date">
+                <div id="cal-popup" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:#0a1020;border:1px solid var(--blue);border-radius:14px;z-index:700;padding:16px;box-shadow:0 12px 40px rgba(0,102,255,0.3);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                        <button type="button" onclick="calShift(-1)" style="background:rgba(0,102,255,0.15);border:1px solid var(--blue);color:var(--blue);cursor:pointer;font-size:16px;padding:6px 14px;border-radius:8px;">&#8249;</button>
+                        <span id="cal-title" style="font-family:'Orbitron';font-size:13px;color:var(--white);letter-spacing:1px;"></span>
+                        <button type="button" onclick="calShift(1)" style="background:rgba(0,102,255,0.15);border:1px solid var(--blue);color:var(--blue);cursor:pointer;font-size:16px;padding:6px 14px;border-radius:8px;">&#8250;</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;">
+                        <div class="cal-hdr">Su</div><div class="cal-hdr">Mo</div><div class="cal-hdr">Tu</div>
+                        <div class="cal-hdr">We</div><div class="cal-hdr">Th</div><div class="cal-hdr">Fr</div><div class="cal-hdr">Sa</div>
+                    </div>
+                    <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIME SLOT PICKER -->
+        <div class="form-group">
+            <label class="form-label"><i class="fa fa-clock" style="color:var(--blue);margin-right:6px;"></i>Preferred Time</label>
+            <select id="f_time" class="form-control" onchange="onTimeSlotChange(this.value)">
+                <option value="">Select a time slot</option>
+                <option value="11:00">11:00am</option>
+                <option value="13:00">1:00pm</option>
+                <option value="15:00">3:00pm</option>
+                <option value="17:00">5:00pm</option>
+            </select>
+        </div>
+
+        <div id="booking-error" style="display:none;color:var(--red);margin-bottom:16px;padding:10px;background:rgba(255,51,85,0.1);border-radius:8px;border:1px solid var(--red);"></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px;" onclick="goToPayment()">
+            <i class="fa fa-credit-card"></i> Continue to Payment — Rs.
+        </button>
+    </div>
+
+    <!-- ======= PAYMENT PAGE ======= -->
+    <div id="payment-card" style="display:none;">
+        <!-- AMOUNT HEADER -->
+        <div class="card" style="margin-bottom:16px;background:rgba(0,102,255,0.06);border-color:rgba(0,102,255,0.3);display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <div style="color:var(--silver);font-size:12px;letter-spacing:1px;">TOTAL PAYABLE</div>
+                <div style="font-family:'Orbitron';font-size:32px;font-weight:700;color:var(--blue);">Rs.</div>
+            </div>
+            <div style="text-align:right;font-size:13px;color:var(--silver);">
+                <div></div>
+                <div style="color:var(--green);margin-top:4px;"><i class="fa fa-shield-halved"></i> 100% Secure</div>
+            </div>
+        </div>
+
+        <!-- PAYMENT METHODS GRID -->
+        <div class="card" id="payment-methods-card">
+            <h3 style="font-family:'Orbitron';font-size:13px;letter-spacing:2px;color:var(--blue);margin-bottom:20px;">CHOOSE PAYMENT METHOD</h3>
+
+            <!-- OTHER OPTIONS -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button class="pay-opt-large" onclick="selectPayOpt('Razorpay',this)">
+                    <i class="fa fa-bolt" style="font-size:22px;color:#ff9800;margin-bottom:6px;display:block;"></i>
+                    <span style="font-size:14px;font-weight:700;">Pay with Razorpay</span>
+                    <span style="font-size:11px;color:var(--silver);display:block;margin-top:2px;">Cards, UPI apps, Netbanking</span>
+                </button>
+                <button class="pay-opt-large" onclick="selectPayOpt('QR Code',this)">
+                    <i class="fa fa-qrcode" style="font-size:22px;color:var(--blue);margin-bottom:6px;display:block;"></i>
+                    <span style="font-size:14px;font-weight:700;">Scan QR Code</span>
+                    <span style="font-size:11px;color:var(--silver);display:block;margin-top:2px;">Any UPI app</span>
+                </button>
+                <button class="pay-opt-large" onclick="selectPayOpt('UPI ID',this)">
+                    <i class="fa fa-at" style="font-size:22px;color:var(--blue);margin-bottom:6px;display:block;"></i>
+                    <span style="font-size:14px;font-weight:700;">Enter UPI ID</span>
+                    <span style="font-size:11px;color:var(--silver);display:block;margin-top:2px;">Send directly</span>
+                </button>
+                <button class="pay-opt-large" onclick="selectPayOpt('COD',this)" style="grid-column:1/-1;">
+                    <i class="fa fa-money-bill-wave" style="font-size:22px;color:var(--green);margin-bottom:6px;display:block;"></i>
+                    <span style="font-size:14px;font-weight:700;">Cash on Delivery</span>
+                    <span style="font-size:11px;color:var(--silver);display:block;margin-top:2px;">Pay when service is done</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- QR CODE PANEL -->
+        <div id="qr-panel" class="card" style="display:none;text-align:center;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;cursor:pointer;" onclick="backToMethods()">
+                <i class="fa fa-arrow-left" style="color:var(--blue);"></i>
+                <span style="color:var(--blue);font-size:13px;font-weight:600;">Back to payment methods</span>
+            </div>
+            <h3 style="font-family:'Orbitron';font-size:14px;letter-spacing:2px;margin-bottom:20px;">SCAN & PAY</h3>
+            <div style="background:rgba(0,102,255,0.05);border:1px solid rgba(0,102,255,0.2);border-radius:10px;padding:14px;margin-bottom:20px;text-align:left;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="color:var(--silver);font-size:13px;">Amount</span><span style="font-family:'Orbitron';color:var(--blue);font-weight:700;">Rs.</span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--silver);font-size:13px;">UPI ID</span><span style="color:var(--green);font-weight:600;font-size:13px;">dhanushkoti08-3@okicici</span></div>
+            </div>
+            <div style="background:white;border-radius:16px;padding:20px;display:inline-block;box-shadow:0 0 30px rgba(0,102,255,0.3);margin-bottom:16px;">
+                <div id="qr-container"></div>
+            </div>
+            <p style="color:var(--silver);font-size:13px;margin-bottom:20px;">Amount is pre-filled. Works with any UPI app.</p>
+            <button class="btn btn-success" style="width:100%;justify-content:center;font-size:16px;padding:16px;" onclick="confirmCODorQR()">
+                <i class="fa fa-circle-check"></i> I've Paid — Confirm Booking
+            </button>
+        </div>
+
+        <!-- UPI ID PANEL -->
+        <div id="upi-panel" class="card" style="display:none;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;cursor:pointer;" onclick="backToMethods()">
+                <i class="fa fa-arrow-left" style="color:var(--blue);"></i>
+                <span style="color:var(--blue);font-size:13px;font-weight:600;">Back to payment methods</span>
+            </div>
+            <h3 style="font-family:'Orbitron';font-size:14px;letter-spacing:2px;margin-bottom:20px;">ENTER UPI ID</h3>
+            <div style="background:rgba(0,102,255,0.05);border:1px solid rgba(0,102,255,0.2);border-radius:10px;padding:14px;margin-bottom:20px;">
+                <div style="text-align:center;margin-bottom:8px;"><span style="color:var(--silver);font-size:12px;">PAYING TO</span></div>
+                <div style="text-align:center;font-family:'Orbitron';font-size:14px;color:var(--green);">dhanushkoti08-3@okicici</div>
+                <div style="text-align:center;color:var(--silver);font-size:12px;margin-top:4px;">Valtrion Automotive Services</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Your UPI ID</label>
+                <input type="text" id="upi-id-input" class="form-control" placeholder="e.g. yourname@upi" style="font-size:16px;">
+                <p style="color:var(--silver);font-size:12px;margin-top:6px;"><i class="fa fa-info-circle"></i> A payment request will be sent to your UPI app</p>
+            </div>
+            <div style="background:rgba(0,102,255,0.06);border-radius:10px;padding:14px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="color:var(--silver);">Amount</span>
+                <span style="font-family:'Orbitron';color:var(--blue);font-size:20px;font-weight:700;">Rs.</span>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;font-size:16px;padding:16px;margin-bottom:10px;" onclick="sendUPIRequest()">
+                <i class="fa fa-paper-plane"></i> Send Payment Request
+            </button>
+            <div id="upi-pending" style="display:none;text-align:center;padding:20px;">
+                <div style="width:56px;height:56px;border:3px solid var(--blue);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px;"></div>
+                <p style="color:var(--silver);">Waiting for payment on your UPI app...</p>
+                <p style="color:var(--silver);font-size:12px;margin-top:4px;">Open <strong style="color:var(--white);"></strong> to approve</p>
+                <button class="btn btn-success" style="margin-top:20px;width:100%;justify-content:center;" onclick="sendUPIRequest()">
+                    <i class="fa fa-rotate-right"></i> Retry Payment Request
+                </button>
+            </div>
+        </div>
+
+        <!-- COD PANEL -->
+        <div id="cod-panel" class="card" style="display:none;text-align:center;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;cursor:pointer;" onclick="backToMethods()">
+                <i class="fa fa-arrow-left" style="color:var(--blue);"></i>
+                <span style="color:var(--blue);font-size:13px;font-weight:600;">Back to payment methods</span>
+            </div>
+            <div style="width:72px;height:72px;background:rgba(0,255,136,0.1);border:2px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+                <i class="fa fa-money-bill-wave" style="color:var(--green);font-size:28px;"></i>
+            </div>
+            <h3 style="font-family:'Orbitron';font-size:16px;letter-spacing:2px;color:var(--white);margin-bottom:12px;">CASH ON DELIVERY</h3>
+            <p style="color:var(--silver);margin-bottom:24px;line-height:1.7;">Pay in cash when our technician completes the service at your location. No advance payment needed.</p>
+            <div style="background:rgba(0,255,136,0.05);border:1px solid rgba(0,255,136,0.2);border-radius:10px;padding:16px;margin-bottom:24px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:var(--silver);">Service</span><span></span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--silver);">Amount to Pay</span><span style="font-family:'Orbitron';color:var(--green);font-size:18px;font-weight:700;">Rs.</span></div>
+            </div>
+            <button class="btn btn-success" style="width:100%;justify-content:center;font-size:16px;padding:16px;" onclick="confirmCODorQR()">
+                <i class="fa fa-calendar-check"></i> Confirm Booking (Pay Later)
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<div id="payment-config"
+     data-service-price=""
+     data-service-name=""
+     data-service-id=""
+     data-razorpay-key-id=""
+     style="display:none;"></div>
+</section>
+
+<style>
+    .fuel-btn{background:var(--card);border:1px solid var(--border);color:var(--silver);padding:10px 18px;border-radius:8px;cursor:pointer;font-family:'Rajdhani';font-size:14px;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px;}
+    .fuel-btn:hover{border-color:var(--blue);color:var(--blue);}
+    .fuel-btn.active{background:rgba(0,102,255,0.15);border-color:var(--blue);color:var(--blue);}
+    .pay-opt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 8px;border-radius:12px;cursor:pointer;background:var(--dark);border:1px solid var(--border);transition:all 0.2s;font-family:'Rajdhani';font-size:13px;font-weight:600;color:var(--silver);}
+    .pay-opt:hover{border-color:var(--blue);background:rgba(0,102,255,0.08);color:var(--white);}
+    .pay-opt.selected{border-color:var(--blue);background:rgba(0,102,255,0.15);color:var(--white);}
+    .pay-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .pay-opt-large{display:flex;flex-direction:column;align-items:center;padding:20px 12px;border-radius:12px;cursor:pointer;background:var(--dark);border:1px solid var(--border);transition:all 0.2s;font-family:'Rajdhani';color:var(--silver);width:100%;}
+    .pay-opt-large:hover{border-color:var(--blue);background:rgba(0,102,255,0.08);}
+    .pay-opt-large.selected{border-color:var(--blue);background:rgba(0,102,255,0.15);}
+    .b-item{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background 0.15s;margin-bottom:2px;}
+    .b-item:hover{background:rgba(0,102,255,0.12);}
+    .b-item .blogo{width:42px;height:42px;object-fit:contain;border-radius:6px;background:white;padding:4px;flex-shrink:0;}
+    .b-item .bfb{width:42px;height:42px;border-radius:6px;background:var(--border);display:flex;align-items:center;justify-content:center;color:var(--blue);font-family:'Orbitron';font-size:14px;font-weight:700;flex-shrink:0;}
+    .b-item span{color:var(--white);font-family:'Rajdhani';font-size:15px;font-weight:600;}
+    .m-item{padding:10px 14px;border-radius:8px;cursor:pointer;color:var(--silver-light);font-family:'Rajdhani';font-size:14px;transition:background 0.15s;margin-bottom:2px;}
+    .m-item:hover{background:rgba(0,102,255,0.12);color:var(--white);}
+    .cal-hdr{text-align:center;font-size:11px;color:var(--blue);font-weight:700;padding:4px;}
+    .cal-day{text-align:center;padding:7px 2px;border-radius:7px;cursor:pointer;font-family:'Rajdhani';font-size:14px;color:var(--silver);transition:all 0.15s;}
+    .cal-day:hover{background:rgba(0,102,255,0.2);color:var(--white);}
+    .cal-day.today{border:1px solid var(--blue);color:var(--blue);}
+    .cal-day.selected{background:var(--blue)!important;color:white!important;}
+    .cal-day.disabled{color:#2a3550;cursor:default;pointer-events:none;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+</style>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+var paymentConfig = document.getElementById('payment-config');
+var SERVICE_PRICE = parseInt(paymentConfig.dataset.servicePrice, 10);
+var SERVICE_NAME  = paymentConfig.dataset.serviceName;
+var SERVICE_ID    = parseInt(paymentConfig.dataset.serviceId, 10);
+var selectedPayMethod = '';
+var RAZORPAY_KEY_ID = paymentConfig.dataset.razorpayKeyId;
+
+// ===================== BRANDS =====================
+var brands = [
+  {name:"Maruti Suzuki", urls:["/static/logos/maruti.png","https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Maruti_Suzuki_Logo.svg/320px-Maruti_Suzuki_Logo.svg.png"]},
+  {name:"Tata", urls:["https://www.carlogos.org/logo/Tata-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Tata_logo.svg/200px-Tata_logo.svg.png"]},
+  {name:"Hyundai", urls:["https://www.carlogos.org/logo/Hyundai-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Hyundai_Motor_Company_logo.svg/200px-Hyundai_Motor_Company_logo.svg.png"]},
+  {name:"Mahindra", urls:["https://www.carlogos.org/logo/Mahindra-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Mahindra_Logo.svg/200px-Mahindra_Logo.svg.png"]},
+  {name:"Toyota", urls:["https://www.carlogos.org/logo/Toyota-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Toyota_logo_%28Red%29.svg/200px-Toyota_logo_%28Red%29.svg.png"]},
+  {name:"Honda", urls:["https://www.carlogos.org/logo/Honda-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Honda.svg/200px-Honda.svg.png"]},
+  {name:"Kia", urls:["https://www.carlogos.org/logo/Kia-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.svg/200px-Kia-logo.svg.png"]},
+  {name:"Volkswagen", urls:["https://www.carlogos.org/logo/Volkswagen-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/200px-Volkswagen_logo_2019.svg.png"]},
+  {name:"Skoda", urls:["https://www.carlogos.org/logo/Skoda-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Skoda_Auto_logo.svg/200px-Skoda_Auto_logo.svg.png"]},
+  {name:"MG", urls:["https://www.carlogos.org/logo/MG-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/MG_Motor_logo.svg/200px-MG_Motor_logo.svg.png"]},
+  {name:"Renault", urls:["https://www.carlogos.org/logo/Renault-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/g/g3/Renault_2021_Text.svg/200px-Renault_2021_Text.svg.png"]},
+  {name:"Nissan", urls:["https://www.carlogos.org/logo/Nissan-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Nissan_2020_logo.svg/200px-Nissan_2020_logo.svg.png"]},
+  {name:"Ford", urls:["https://www.carlogos.org/logo/Ford-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/200px-Ford_logo_flat.svg.png"]},
+  {name:"Jeep", urls:["https://www.carlogos.org/logo/Jeep-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Jeep_wordmark.svg/200px-Jeep_wordmark.svg.png"]},
+  {name:"BMW", urls:["https://www.carlogos.org/logo/BMW-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/200px-BMW.svg.png"]},
+  {name:"Mercedes-Benz", urls:["https://www.carlogos.org/logo/Mercedes-Benz-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/200px-Mercedes-Logo.svg.png"]},
+  {name:"Audi", urls:["https://www.carlogos.org/logo/Audi-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/200px-Audi-Logo_2016.svg.png"]},
+  {name:"Volvo", urls:["https://www.carlogos.org/logo/Volvo-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Volvo_Cars_logo.svg/200px-Volvo_Cars_logo.svg.png"]},
+  {name:"Jaguar", urls:["https://www.carlogos.org/logo/Jaguar-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Jaguar_Cars_logo.svg/200px-Jaguar_Cars_logo.svg.png"]},
+  {name:"Land Rover", urls:["https://www.carlogos.org/logo/Land-Rover-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Land_Rover_logo.svg/200px-Land_Rover_logo.svg.png"]},
+  {name:"Porsche", urls:["https://www.carlogos.org/logo/Porsche-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Porsche_logo.svg/200px-Porsche_logo.svg.png"]},
+  {name:"Citroen", urls:["https://www.carlogos.org/logo/Citroen-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Citro%C3%ABn_2022_logo.svg/200px-Citro%C3%ABn_2022_logo.svg.png"]},
+  {name:"Isuzu", urls:["https://www.carlogos.org/logo/Isuzu-logo.png","https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Isuzu_logo.svg/200px-Isuzu_logo.svg.png"]},
+  {name:"Force", urls:["https://www.carlogos.org/logo/Force-Motors-logo-1920x1080.png"]}
+];
+var carModels={
+  "Maruti Suzuki":["Alto K10","S-Presso","Celerio","WagonR","Swift","Dzire","Baleno","Ignis","FRONX","Brezza","Grand Vitara","Ertiga","XL6","Ciaz","Jimny","Invicto"],
+  "Tata":["Tiago","Tiago EV","Tigor","Tigor EV","Altroz","Nexon","Nexon EV","Punch","Punch EV","Harrier","Safari","Curvv","Curvv EV","Sierra"],
+  "Hyundai":["Grand i10 Nios","i20","Exter","Venue","Creta","Creta EV","Alcazar","Tucson","Ioniq 5","Verna","Aura"],
+  "Mahindra":["Bolero","Bolero Neo","Thar","Thar Roxx","Scorpio Classic","Scorpio N","XUV 3XO","XUV400","XUV700","BE 6","XEV 9e","Marazzo"],
+  "Toyota":["Glanza","Urban Cruiser Hyryder","Rumion","Innova Crysta","Innova HyCross","Fortuner","Fortuner Legender","Land Cruiser","Camry","Vellfire"],
+  "Honda":["Amaze","City","City Hybrid","Elevate","WR-V"],
+  "Kia":["Sonet","Seltos","Carens","EV6","EV9"],
+  "Volkswagen":["Polo","Virtus","Taigun","Tiguan"],
+  "Skoda":["Slavia","Kushaq","Kodiaq","Superb","Kylaq","Octavia"],
+  "MG":["Hector","Hector Plus","Astor","ZS EV","Comet EV","Gloster","Windsor EV"],
+  "Renault":["Kwid","Triber","Kiger","Duster"],
+  "Nissan":["Magnite","X-Trail"],
+  "Ford":["EcoSport","Endeavour","Figo","Aspire"],
+  "Jeep":["Compass","Meridian","Wrangler","Grand Cherokee"],
+  "BMW":["2 Series","3 Series","5 Series","7 Series","X1","X3","X5","X7","iX","i4","i7"],
+  "Mercedes-Benz":["A-Class","C-Class","E-Class","S-Class","GLA","GLC","GLE","GLS","EQS","EQB","EQE"],
+  "Audi":["A4","A6","A8","Q3","Q5","Q7","Q8","e-tron","RS5","TT"],
+  "Volvo":["XC40","XC60","XC90","S60","S90","C40 Recharge"],
+  "Jaguar":["XE","XF","F-Pace","E-Pace","I-Pace"],
+  "Land Rover":["Defender","Discovery","Discovery Sport","Range Rover","Range Rover Sport","Range Rover Evoque","Range Rover Velar"],
+  "Porsche":["Cayenne","Macan","Panamera","911","Taycan"],
+  "Citroen":["C3","C3 Aircross","C5 Aircross"],
+  "Isuzu":["D-Max V-Cross","MU-X"],
+  "Force":["Gurkha","Trax"]
+};
+var selBrand='', selModel='';
+
+function tryLoadLogo(img,urls,idx){
+  if(!urls||idx>=urls.length){ var fb=document.createElement("div"); fb.className="bfb"; fb.textContent=img.getAttribute("data-init"); img.parentNode.replaceChild(fb,img); return; }
+  img.onerror=function(){ tryLoadLogo(img,urls,idx+1); };
+  img.src=urls[idx];
+}
+function renderBrands(filter){
+  var list=document.getElementById("brand-list"); list.innerHTML="";
+  var filtered=brands.filter(function(b){ return !filter||b.name.toLowerCase().includes(filter.toLowerCase()); });
+  if(!filtered.length){ list.innerHTML='<div style="padding:14px;color:var(--silver);text-align:center;font-family:Rajdhani">No brands found</div>'; return; }
+  filtered.forEach(function(b){
+    var div=document.createElement("div"); div.className="b-item";
+    var img=document.createElement("img"); img.className="blogo"; img.setAttribute("data-init",b.name[0]); tryLoadLogo(img,b.urls,0);
+    var sp=document.createElement("span"); sp.textContent=b.name;
+    div.appendChild(img); div.appendChild(sp); div.onclick=function(){ pickBrand(b); };
+    list.appendChild(div);
+  });
+}
+function toggleBrandDD(){ var dd=document.getElementById("brand-dd"); var open=dd.style.display==="block"; closeAllDD(); if(!open){ dd.style.display="block"; renderBrands(""); setTimeout(function(){ document.getElementById("brand-search").focus(); },50); } }
+function filterBrands(){ renderBrands(document.getElementById("brand-search").value); }
+function pickBrand(b){
+  selBrand=b.name; document.getElementById("f_brand").value=b.name;
+  document.getElementById("brand-ph").style.display="none";
+  var bi=document.getElementById("brand-img"); bi.setAttribute("data-init",b.name[0]); bi.style.display="inline"; tryLoadLogo(bi,b.urls,0);
+  document.getElementById("brand-txt").textContent=b.name; document.getElementById("brand-txt").style.display="inline";
+  document.getElementById("brand-box").style.borderColor="var(--blue)";
+  document.getElementById("brand-dd").style.display="none"; document.getElementById("brand-search").value="";
+  selModel=""; document.getElementById("f_model").value="";
+  document.getElementById("model-ph").textContent="Search model..."; document.getElementById("model-ph").style.color="#6b7a99";
+}
+function renderModels(filter){
+  var list=document.getElementById("model-list"); list.innerHTML="";
+  if(!selBrand){ list.innerHTML='<div style="padding:14px;color:var(--silver);text-align:center;">Select a brand first</div>'; return; }
+  var models=carModels[selBrand]||[]; var filtered=models.filter(function(m){ return !filter||m.toLowerCase().includes(filter.toLowerCase()); });
+  if(!filtered.length){ list.innerHTML='<div style="padding:14px;color:var(--silver);text-align:center;">No models found</div>'; return; }
+  filtered.forEach(function(m){ var div=document.createElement("div"); div.className="m-item"; div.textContent=m; div.onclick=function(){ pickModel(m); }; list.appendChild(div); });
+}
+function toggleModelDD(){ if(!selBrand){ showErr("Please select a car brand first."); return; } var dd=document.getElementById("model-dd"); var open=dd.style.display==="block"; closeAllDD(); if(!open){ dd.style.display="block"; renderModels(""); setTimeout(function(){ document.getElementById("model-search").focus(); },50); } }
+function filterModels(){ renderModels(document.getElementById("model-search").value); }
+function pickModel(m){ selModel=m; document.getElementById("f_model").value=m; document.getElementById("model-ph").textContent=m; document.getElementById("model-ph").style.color="var(--white)"; document.getElementById("model-box").style.borderColor="var(--blue)"; document.getElementById("model-dd").style.display="none"; document.getElementById("model-search").value=""; }
+function closeAllDD(){ ["brand-dd","model-dd","cal-popup"].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display="none"; }); }
+document.addEventListener("click",function(e){
+  if(!e.target.closest("#brand-box")&&!e.target.closest("#brand-dd")) document.getElementById("brand-dd").style.display="none";
+  if(!e.target.closest("#model-box")&&!e.target.closest("#model-dd")) document.getElementById("model-dd").style.display="none";
+  if(!e.target.closest("#date-box")&&!e.target.closest("#cal-popup")) { var c=document.getElementById("cal-popup"); if(c) c.style.display="none"; }
+});
+function selectFuel(btn,f){ document.querySelectorAll(".fuel-btn").forEach(function(b){ b.classList.remove("active"); }); btn.classList.add("active"); document.getElementById("f_fuel").value=f; }
+function onTimeSlotChange(value){
+    var el = document.getElementById('f_time');
+    if(value){ el.style.borderColor = 'var(--blue)'; }
+}
+
+// ===================== CALENDAR =====================
+var calView=new Date(); calView.setDate(1);
+var selDateObj=null;
+var MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
+function toggleCal(){ var p=document.getElementById("cal-popup"); var o=p.style.display==="block"; document.getElementById("brand-dd").style.display="none"; document.getElementById("model-dd").style.display="none"; if(o){p.style.display="none";return;} drawCal(); p.style.display="block"; }
+function drawCal(){ var now=new Date(); now.setHours(0,0,0,0); document.getElementById("cal-title").textContent=MN[calView.getMonth()]+" "+calView.getFullYear(); var g=document.getElementById("cal-grid"); g.innerHTML=""; var first=new Date(calView.getFullYear(),calView.getMonth(),1).getDay(); var days=new Date(calView.getFullYear(),calView.getMonth()+1,0).getDate(); for(var i=0;i<first;i++){ g.appendChild(document.createElement("div")); } for(var d=1;d<=days;d++){ var el=document.createElement("div"); el.className="cal-day"; el.textContent=d; var dt=new Date(calView.getFullYear(),calView.getMonth(),d); if(dt<now){ el.classList.add("disabled"); } else{ if(dt.getTime()===now.getTime()) el.classList.add("today"); if(selDateObj&&dt.getTime()===selDateObj.getTime()) el.classList.add("selected"); (function(dd,dt2){ el.onclick=function(){ pickDate(dd,dt2); }; })(d,dt); } g.appendChild(el); } }
+function calShift(dir){ calView.setMonth(calView.getMonth()+dir); drawCal(); }
+function pickDate(d,dt){ selDateObj=dt; var y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,"0"),ds=String(d).padStart(2,"0"); document.getElementById("f_date").value=y+"-"+m+"-"+ds; document.getElementById("date-txt").textContent=ds+" "+MN[dt.getMonth()]+" "+y; document.getElementById("date-txt").style.color="var(--white)"; document.getElementById("date-box").style.borderColor="var(--blue)"; document.getElementById("cal-popup").style.display="none"; }
+
+// ===================== FORM VALIDATION =====================
+function showErr(msg){ var e=document.getElementById("booking-error"); e.textContent=msg; e.style.display="block"; e.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+function getValidationError(){
+    var d=getFormData();
+    if(!d.name){ return 'Please enter your full name.'; }
+    if(!d.phone || d.phone.length !== 10){ return 'Please enter a valid 10-digit phone number.'; }
+    if(!d.brand){ return 'Please select your car brand.'; }
+    if(!d.model){ return 'Please select your car model.'; }
+    if(!d.fuel){ return 'Please select fuel type.'; }
+    if(!d.address){ return 'Please enter your pickup address.'; }
+    if(!d.date){ return 'Please select a preferred date.'; }
+    if(!d.time){ return 'Please select a preferred time.'; }
+    return '';
+}
+function getFormData(){
+  return {
+    name: document.getElementById("f_name").value.trim(),
+    phone: document.getElementById("f_phone").value.trim(),
+    brand: document.getElementById("f_brand").value,
+    model: document.getElementById("f_model").value,
+    car_number: document.getElementById("f_carnumber").value.trim(),
+    fuel: document.getElementById("f_fuel").value,
+    address: document.getElementById("f_address").value.trim(),
+    date: document.getElementById("f_date").value,
+    time: document.getElementById("f_time").value
+  };
+}
+function goToPayment(){
+    var validationError = getValidationError();
+    if(validationError){ showErr(validationError); return; }
+  document.getElementById("booking-error").style.display="none";
+  document.getElementById("booking-form-card").style.display="none";
+  document.getElementById("payment-card").style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+// ===================== PAYMENT =====================
+function selectPayOpt(method, btn){
+  selectedPayMethod = method;
+    document.querySelectorAll('.pay-opt-large').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+    if(method === 'Razorpay'){
+        startRazorpayCheckout();
+        return;
+    }
+  hidePanels();
+  if(method === 'QR Code'){
+    document.getElementById('payment-methods-card').style.display='none';
+    document.getElementById('qr-panel').style.display='block';
+    generateQR();
+  } else if(method === 'UPI ID'){
+    document.getElementById('payment-methods-card').style.display='none';
+    document.getElementById('upi-panel').style.display='block';
+  } else if(method === 'COD'){
+    document.getElementById('payment-methods-card').style.display='none';
+    document.getElementById('cod-panel').style.display='block';
+  }
+}
+function hidePanels(){ ['qr-panel','upi-panel','cod-panel'].forEach(function(id){ document.getElementById(id).style.display='none'; }); }
+function backToMethods(){ hidePanels(); document.getElementById('payment-methods-card').style.display='block'; selectedPayMethod=''; document.querySelectorAll('.pay-opt-large').forEach(function(b){ b.classList.remove('selected'); }); }
+function generateQR(){
+  var upi="upi://pay?pa=dhanushkoti08-3@okicici&pn=Valtrion&am="+SERVICE_PRICE+"&cu=INR&tn="+encodeURIComponent("Valtrion "+SERVICE_NAME);
+  document.getElementById("qr-container").innerHTML="";
+  new QRCode(document.getElementById("qr-container"),{text:upi,width:220,height:220,colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.H});
+}
+function sendUPIRequest(){
+  var upiId=document.getElementById('upi-id-input').value.trim();
+  if(!upiId||!upiId.includes('@')){ alert("Please enter a valid UPI ID (e.g. yourname@upi)"); return; }
+    document.getElementById('upi-pending').style.display='block';
+    startRazorpayCheckout(upiId);
+}
+var _bookingInProgress = false;
+async function confirmCODorQR(){
+  if(_bookingInProgress) return;
+  _bookingInProgress = true;
+  var confirmBtns = document.querySelectorAll('#qr-panel .btn-success, #cod-panel .btn-success');
+  confirmBtns.forEach(function(b){ b.disabled=true; b.style.opacity='0.6'; });
+  var d=getFormData();
+  var ref = selectedPayMethod==='COD' ? 'COD' : (selectedPayMethod==='UPI ID' ? document.getElementById('upi-id-input').value : selectedPayMethod+'-'+Date.now());
+  try{
+    var res=await fetch('/confirm-booking',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({service_id:SERVICE_ID,name:d.name,phone:d.phone,car_brand:d.brand,car_model:d.model,
+        car_number:d.car_number,fuel_type:d.fuel,address:d.address,date:d.date+" "+d.time,
+        payment_method:selectedPayMethod,payment_ref:ref,amount:SERVICE_PRICE})});
+    var data=await res.json();
+    if(data.success){ window.location.href='/payment/success/'+data.booking_id; }
+    else{ alert("Something went wrong. Please try again."); _bookingInProgress=false; confirmBtns.forEach(function(b){ b.disabled=false; b.style.opacity=''; }); }
+  } catch(e){ alert("Error. Please try again."); _bookingInProgress=false; confirmBtns.forEach(function(b){ b.disabled=false; b.style.opacity=''; }); }
+}
+async function startRazorpayCheckout(upiId){
+    var validationError = getValidationError();
+    if(validationError){ showErr(validationError); return; }
+    try{
+        var d = getFormData();
+        var orderResponse = await fetch('/razorpay/create-order', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ service_id: SERVICE_ID })
+        });
+        var orderData = await orderResponse.json();
+        if(!orderData.success){
+            alert(orderData.error || 'Unable to start Razorpay payment.');
+            backToMethods();
+            return;
+        }
+
+        var options = {
+            key: orderData.key_id || RAZORPAY_KEY_ID,
+            amount: orderData.amount,
+            currency: orderData.currency || 'INR',
+            name: 'Valtrion Automotive Services',
+            description: SERVICE_NAME,
+            order_id: orderData.order_id,
+            method: {
+                upi: true,
+                card: true,
+                netbanking: true,
+                wallet: true,
+                paylater: true,
+                emi: true
+            },
+            prefill: {
+                name: d.name,
+                email: orderData.customer_email || '',
+                contact: d.phone,
+                vpa: upiId || undefined
+            },
+            theme: { color: '#0066FF' },
+            handler: async function(response){
+                var verifyResponse = await fetch('/razorpay/verify-payment', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({
+                        service_id: SERVICE_ID,
+                        name: d.name,
+                        phone: d.phone,
+                        car_brand: d.brand,
+                        car_model: d.model,
+                        car_number: d.car_number,
+                        fuel_type: d.fuel,
+                        address: d.address,
+                        date: d.date + ' ' + d.time,
+                        payment_method: 'Razorpay',
+                        payment_ref: response.razorpay_payment_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                });
+                var verifyData = await verifyResponse.json();
+                if(verifyData.success){
+                    window.location.href = '/payment/success/' + verifyData.booking_id;
+                } else {
+                    alert(verifyData.error || 'Payment verification failed.');
+                }
+            },
+            modal: {
+                ondismiss: function(){ backToMethods(); }
+            }
+        };
+
+        if(window.Razorpay){
+            var rzp = new Razorpay(options);
+            rzp.open();
+        } else {
+            alert('Razorpay checkout failed to load. Please try again.');
+            backToMethods();
+        }
+    } catch(error){
+        console.error(error);
+        alert('Unable to start Razorpay payment. Please try again.');
+        backToMethods();
+    }
+}
+function goBack(){ document.getElementById('payment-card').style.display='none'; document.getElementById('booking-form-card').style.display='block'; }
+</script>

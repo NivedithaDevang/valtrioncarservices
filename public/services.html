@@ -1,0 +1,68 @@
+
+
+<section class="section">
+<div class="container">
+    <div style="text-align:center;margin-bottom:50px;">
+        <p class="section-label">WHAT WE OFFER</p>
+        <h2 class="section-title">All <span>Services</span></h2>
+        <p style="color:var(--silver);">Premium automotive care with transparent pricing and no hidden charges</p>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;">
+        <button class="cat-tab active" onclick="filterCat('all',this)">All</button>
+        
+        <button class="cat-tab" onclick="filterCat('',this)"></button>
+        
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;" id="sg">
+        
+        <div class="scard card" data-cat="">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+                <div style="width:56px;height:56px;min-width:56px;background:linear-gradient(135deg,rgba(0,102,255,0.2),rgba(0,102,255,0.05));border:1px solid rgba(0,102,255,0.3);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;color:var(--blue);">
+                    <i class="fa "></i>
+                </div>
+                <div>
+                    <h3 style="font-size:17px;font-weight:700;color:var(--white);"></h3>
+                    <span style="display:inline-block;background:rgba(0,102,255,0.1);border:1px solid rgba(0,102,255,0.3);color:var(--blue-bright);font-size:11px;letter-spacing:1px;padding:2px 10px;border-radius:20px;text-transform:uppercase;font-weight:600;"></span>
+                </div>
+            </div>
+            <div class="service-body">
+                <div style="border-bottom:1px solid var(--border);margin-bottom:16px;"></div>
+                <div style="min-height:88px;">
+                    <p style="color:var(--silver);font-size:14px;line-height:1.6;"></p>
+                    <p style="color:var(--silver);font-size:13px;margin-top:8px;"><i class="fa fa-clock" style="color:var(--blue);"></i> </p>
+                </div>
+                <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);min-height:126px;">
+                    <div style="font-family:'Orbitron';font-size:32px;font-weight:700;color:var(--blue);">Rs.</div>
+                    <p style="color:var(--silver);font-size:13px;margin-top:6px;"><i class="fa fa-check-circle" style="color:var(--green);"></i> Includes all taxes</p>
+                    <p style="color:var(--silver);font-size:13px;"><i class="fa fa-check-circle" style="color:var(--green);"></i> No hidden charges</p>
+                    <p style="color:var(--silver);font-size:13px;"><i class="fa fa-check-circle" style="color:var(--green);"></i> 30-day warranty</p>
+                </div>
+            </div>
+            <a href="" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px;">
+                <i class="fa fa-calendar-check"></i> Book Now
+            </a>
+        </div>
+        
+    </div>
+</div>
+</section>
+
+<style>
+    .cat-tab { background:var(--card);border:1px solid var(--border);color:var(--silver);padding:8px 18px;border-radius:30px;cursor:pointer;font-family:'Rajdhani';font-size:14px;font-weight:600;transition:all 0.2s; }
+    .cat-tab.active, .cat-tab:hover { background:var(--blue);border-color:var(--blue);color:white; }
+    #sg { align-items:stretch; }
+    .scard { transition:all 0.3s; display:flex; flex-direction:column; height:100%; min-height:460px; }
+    .service-body { display:flex; flex-direction:column; flex:1; }
+    .scard:hover { border-color:var(--blue);transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,102,255,0.12); }
+    @media(max-width:900px){ #sg{grid-template-columns:repeat(2,1fr);} }
+    @media(max-width:600px){ #sg{grid-template-columns:1fr;} }
+</style>
+<script>
+    function filterCat(cat, btn) {
+        document.querySelectorAll('.cat-tab').forEach(function(t) { t.classList.remove('active'); });
+        btn.classList.add('active');
+        document.querySelectorAll('#sg .scard').forEach(function(c) {
+            c.style.display = (cat === 'all' || c.dataset.cat === cat) ? '' : 'none';
+        });
+    }
+</script>

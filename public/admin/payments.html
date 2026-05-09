@@ -1,0 +1,73 @@
+
+
+<div style="padding:30px;max-width:1400px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+        <div><p class="section-label">ADMIN</p><h2 class="section-title">Payment <span>Records</span></h2></div>
+        <div style="display:flex;gap:10px;">
+            <select onchange="filterMethod(this.value)" class="form-control" style="width:160px;">
+                <option value="">All Methods</option>
+                <option value="Razorpay" selected>Razorpay</option>
+                <option value="PhonePe" selected>PhonePe</option>
+                <option value="GPay" selected>GPay</option>
+                <option value="Paytm" selected>Paytm</option>
+                <option value="QR Code" selected>QR Code</option>
+                <option value="UPI ID" selected>UPI ID</option>
+                <option value="COD" selected>Cash on Delivery</option>
+            </select>
+            <a href="" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px;">
+        <div class="card" style="text-align:center;background:rgba(0,102,255,0.05);">
+            <div style="font-family:'Orbitron';font-size:24px;color:var(--blue);">Rs.</div>
+            <div style="color:var(--silver);font-size:12px;margin-top:4px;">UPI / Digital</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(255,165,0,0.05);">
+            <div style="font-family:'Orbitron';font-size:24px;color:orange;">Rs.</div>
+            <div style="color:var(--silver);font-size:12px;margin-top:4px;">Cash on Delivery</div>
+        </div>
+        <div class="card" style="text-align:center;background:rgba(0,255,136,0.05);">
+            <div style="font-family:'Orbitron';font-size:24px;color:var(--green);">Rs.</div>
+            <div style="color:var(--silver);font-size:12px;margin-top:4px;">Total</div>
+        </div>
+    </div>
+
+    <div class="card" style="overflow-x:auto;">
+        <table class="vt">
+            <thead><tr><th>#</th><th>Customer</th><th>Service</th><th>Method</th><th>Ref / UPI</th><th>Amount</th><th>Status</th><th>Date</th><th>Invoice</th></tr></thead>
+            <tbody>
+            
+            <tr>
+                <td style="color:var(--blue);font-family:'Orbitron';font-size:11px;">#V</td>
+                <td><div style="font-weight:600;"></div><div style="color:var(--silver);font-size:12px;"></div></td>
+                <td></td>
+                <td>
+                    
+                    <span style="background:rgba(255,165,0,0.15);color:orange;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">💵 COD</span>
+                    
+                    <span style="background:rgba(0,102,255,0.15);color:var(--blue);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">⚡ Razorpay</span>
+                    
+                    <span style="background:rgba(95,37,159,0.2);color:#a855f7;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">📱 PhonePe</span>
+                    
+                    <span style="background:rgba(0,168,107,0.2);color:#00a86b;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">G GPay</span>
+                    
+                    <span style="background:rgba(0,102,255,0.15);color:var(--blue);padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;">⚡ </span>
+                    
+                </td>
+                <td style="font-size:12px;color:var(--silver);"></td>
+                <td style="color:var(--blue);font-weight:700;font-family:'Orbitron';font-size:14px;">Rs.</td>
+                <td><span class="badge badge-"></span></td>
+                <td style="font-size:12px;"></td>
+                <td><a href="" target="_blank" class="btn btn-outline btn-sm"><i class="fa fa-file-invoice"></i></a></td>
+            </tr>
+            
+            <tr><td colspan="9" style="text-align:center;color:var(--silver);padding:40px;">No payment records.</td></tr>
+            
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+function filterMethod(v){ window.location.href='?method='+v; }
+</script>

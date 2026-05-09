@@ -1,0 +1,144 @@
+
+
+<div style="padding:30px;max-width:1200px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+        <div><p class="section-label">ADMIN</p><h2 class="section-title">Manage <span>Services</span></h2></div>
+        <div style="display:flex;gap:10px;">
+            <button class="btn btn-primary" onclick="openAddModal()"><i class="fa fa-plus"></i> Add Service</button>
+            <a href="" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;">
+    
+    <div class="card" id="svc-">
+        <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;">
+            <div style="width:44px;height:44px;background:rgba(0,102,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                <i class="fa " style="color:var(--blue);font-size:18px;"></i>
+            </div>
+            <div style="display:flex;gap:6px;">
+                <button class="btn btn-outline btn-sm"
+                    data-id=""
+                    data-name=""
+                    data-description=""
+                    data-price=""
+                    data-duration=""
+                    data-category=""
+                    onclick="openEditFromRow(this)"><i class="fa fa-edit"></i></button>
+                <button class="btn btn-danger btn-sm" data-id="" onclick="deleteServiceFromRow(this)"><i class="fa fa-trash"></i></button>
+            </div>
+        </div>
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:6px;"></h3>
+        <p style="color:var(--silver);font-size:13px;margin-bottom:12px;">...</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-family:'Orbitron';font-size:20px;color:var(--blue);">Rs.</span>
+            <span style="color:var(--silver);font-size:13px;"><i class="fa fa-clock"></i> </span>
+        </div>
+        <div style="margin-top:8px;"><span style="background:rgba(0,102,255,0.1);color:var(--blue);padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;"></span></div>
+    </div>
+    
+    </div>
+</div>
+
+<!-- ADD MODAL -->
+<div id="add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;display:none;align-items:center;justify-content:center;">
+    <div class="card" style="width:500px;max-width:90vw;">
+        <h3 style="font-family:'Orbitron';font-size:15px;letter-spacing:2px;margin-bottom:20px;color:var(--blue);">ADD SERVICE</h3>
+        <div class="form-group"><label class="form-label">Service Name</label><input type="text" id="add-name" class="form-control"></div>
+        <div class="form-group"><label class="form-label">Description</label><textarea id="add-desc" class="form-control" rows="2"></textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group"><label class="form-label">Price (Rs.)</label><input type="number" id="add-price" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Duration</label><input type="text" id="add-dur" class="form-control" placeholder="e.g. 2 Hours"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Category</label><input type="text" id="add-cat" class="form-control" placeholder="e.g. Washing"></div>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+            <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="addService()"><i class="fa fa-check"></i> Add</button>
+            <button class="btn btn-silver" style="flex:1;justify-content:center;" onclick="closeModal('add-modal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;align-items:center;justify-content:center;">
+    <div class="card" style="width:500px;max-width:90vw;">
+        <h3 style="font-family:'Orbitron';font-size:15px;letter-spacing:2px;margin-bottom:20px;color:var(--blue);">EDIT SERVICE</h3>
+        <input type="hidden" id="edit-id">
+        <div class="form-group"><label class="form-label">Service Name</label><input type="text" id="edit-name" class="form-control"></div>
+        <div class="form-group"><label class="form-label">Description</label><textarea id="edit-desc" class="form-control" rows="2"></textarea></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="form-group"><label class="form-label">Price (Rs.)</label><input type="number" id="edit-price" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Duration</label><input type="text" id="edit-dur" class="form-control"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Category</label><input type="text" id="edit-cat" class="form-control"></div>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+            <button class="btn btn-primary" style="flex:1;justify-content:center;" onclick="saveEdit()"><i class="fa fa-save"></i> Save</button>
+            <button class="btn btn-silver" style="flex:1;justify-content:center;" onclick="closeModal('edit-modal')">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openAddModal(){ document.getElementById('add-modal').style.display='flex'; }
+function openEditModal(id,name,desc,price,dur,cat){
+    document.getElementById('edit-id').value=id;
+    document.getElementById('edit-name').value=name;
+    document.getElementById('edit-desc').value=desc;
+    document.getElementById('edit-price').value=price;
+    document.getElementById('edit-dur').value=dur;
+    document.getElementById('edit-cat').value=cat;
+    document.getElementById('edit-modal').style.display='flex';
+}
+function openEditFromRow(btn){
+    openEditModal(
+        btn.dataset.id,
+        btn.dataset.name || '',
+        btn.dataset.description || '',
+        btn.dataset.price || '',
+        btn.dataset.duration || '',
+        btn.dataset.category || ''
+    );
+}
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+function addService(){
+    var payload = {
+        name:document.getElementById('add-name').value.trim(),
+        description:document.getElementById('add-desc').value.trim(),
+        price:document.getElementById('add-price').value,
+        duration:document.getElementById('add-dur').value.trim(),
+        category:document.getElementById('add-cat').value.trim()
+    };
+    if(!payload.name){ alert('Service name is required.'); return; }
+    if(!payload.price || Number(payload.price) <= 0){ alert('Enter a valid service price.'); return; }
+    fetch('/admin/service/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        name:payload.name,description:payload.description,
+        price:payload.price,duration:payload.duration,
+        category:payload.category
+    })}).then(r=>r.json()).then(d=>{ if(d.success) location.reload(); else alert(d.error || 'Unable to add service.'); })
+    .catch(()=>alert('Unable to add service.'));
+}
+function saveEdit(){
+    var payload = {
+        id:document.getElementById('edit-id').value,
+        name:document.getElementById('edit-name').value.trim(),
+        description:document.getElementById('edit-desc').value.trim(),
+        price:document.getElementById('edit-price').value,
+        duration:document.getElementById('edit-dur').value.trim(),
+        category:document.getElementById('edit-cat').value.trim()
+    };
+    if(!payload.name){ alert('Service name is required.'); return; }
+    if(!payload.price || Number(payload.price) <= 0){ alert('Enter a valid service price.'); return; }
+    fetch('/admin/service/edit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        id:payload.id,name:payload.name,
+        description:payload.description,price:payload.price,
+        duration:payload.duration,category:payload.category
+    })}).then(r=>r.json()).then(d=>{ if(d.success) location.reload(); else alert(d.error || 'Unable to save service.'); })
+    .catch(()=>alert('Unable to save service.'));
+}
+function deleteService(id){
+    if(!confirm('Delete this service?')) return;
+    fetch('/admin/service/delete/'+id,{method:'POST'}).then(r=>r.json()).then(d=>{ if(d.success) document.getElementById('svc-'+id).remove(); });
+}
+function deleteServiceFromRow(btn){
+    deleteService(btn.dataset.id);
+}
+</script>

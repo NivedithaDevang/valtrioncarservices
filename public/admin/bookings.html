@@ -1,0 +1,116 @@
+
+
+<div style="padding:30px;max-width:1400px;margin:0 auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;">
+        <div>
+            <p class="section-label">ADMIN</p>
+            <h2 class="section-title">All <span>Bookings</span></h2>
+        </div>
+        <div style="display:flex;gap:10px;">
+            <select onchange="filterStatus(this.value)" class="form-control" style="width:160px;">
+                <option value="">All Status</option>
+                <option value="Pending" selected>Pending</option>
+                <option value="Confirmed" selected>Confirmed</option>
+                <option value="Completed" selected>Completed</option>
+                <option value="Cancelled" selected>Cancelled</option>
+            </select>
+            <input type="date" id="date-filter" class="form-control" style="width:180px;" value="" onchange="filterDate()">
+            <a href="" class="btn btn-silver btn-sm"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
+    </div>
+
+    <div class="card" style="overflow-x:auto;">
+        <table class="vt">
+            <thead><tr><th>#</th><th>Customer</th><th>Car</th><th>Service</th><th>Date</th><th>Amount</th><th>Payment</th><th>Status</th><th>Mechanic</th><th>Actions</th></tr></thead>
+            <tbody>
+            
+            <tr id="row-">
+                <td style="color:var(--blue);font-family:'Orbitron';font-size:11px;">#V</td>
+                <td>
+                    <div style="font-weight:600;"></div>
+                    <div style="color:var(--silver);font-size:12px;"></div>
+                </td>
+                <td>
+                    <div> </div>
+                    <div style="color:var(--silver);font-size:12px;"> • </div>
+                </td>
+                <td></td>
+                <td style="font-size:12px;"></td>
+                <td style="color:var(--blue);font-weight:700;">Rs.</td>
+                <td>
+                    <span class="badge badge-"></span>
+                </td>
+                <td>
+                    <select class="form-control js-status-select" data-booking-id="" style="width:130px;padding:6px;">
+                        
+                        <option value="" selected></option>
+                        
+                    </select>
+                </td>
+                <td>
+                    <select class="form-control js-mechanic-select" data-booking-id="" style="width:130px;padding:6px;">
+                        <option value="">Assign...</option>
+                        
+                        <option value="" selected></option>
+                        
+                    </select>
+                </td>
+                <td>
+                    <div style="display:flex;gap:6px;">
+                        <a href="" target="_blank" class="btn btn-outline btn-sm" title="Invoice"><i class="fa fa-file-invoice"></i></a>
+                    </div>
+                </td>
+            </tr>
+            
+            <tr><td colspan="10" style="text-align:center;color:var(--silver);padding:40px;">No bookings found.</td></tr>
+            
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+function filterStatus(v){
+    var params = new URLSearchParams();
+    if (v) params.set('status', v);
+    var df = '';
+    if (df) params.set('date', df);
+    window.location.href = '?' + params.toString();
+}
+function filterDate(){
+    var d = document.getElementById('date-filter').value;
+    var params = new URLSearchParams();
+    var sf = '';
+    if (sf) params.set('status', sf);
+    if (d) params.set('date', d);
+    window.location.href = '?' + params.toString();
+}
+function updateStatus(id,status){
+    fetch('/admin/booking/update-status',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({booking_id:id,status:status})})
+    .then(r=>r.json()).then(d=>{ if(d.success) showToast('Status updated to '+status); else showToast(d.error || 'Failed to update status', true); })
+    .catch(()=>showToast('Failed to update status', true));
+}
+function assignMechanic(id,mechId){
+    var mechanicId = mechId ? parseInt(mechId, 10) : null;
+    fetch('/admin/booking/assign-mechanic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({booking_id:id,mechanic_id:mechanicId})})
+    .then(r=>r.json()).then(d=>{ if(d.success) showToast(mechanicId ? 'Mechanic assigned!' : 'Mechanic unassigned.'); else showToast(d.error || 'Failed to assign mechanic', true); })
+    .catch(()=>showToast('Failed to assign mechanic', true));
+}
+function showToast(msg, isError){
+    var t=document.createElement('div');
+    t.style.cssText='position:fixed;top:80px;right:20px;background:'+ (isError ? 'rgba(255,51,85,0.15)' : 'rgba(0,255,136,0.15)') +';border:1px solid '+ (isError ? 'var(--red)' : 'var(--green)') +';color:'+ (isError ? 'var(--red)' : 'var(--green)') +';padding:12px 20px;border-radius:8px;z-index:9999;font-family:Rajdhani;font-weight:600;';
+    t.textContent=msg; document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 2500);
+}
+
+document.querySelectorAll('.js-status-select').forEach(function(el){
+    el.addEventListener('change', function(){
+        updateStatus(parseInt(el.dataset.bookingId, 10), el.value);
+    });
+});
+
+document.querySelectorAll('.js-mechanic-select').forEach(function(el){
+    el.addEventListener('change', function(){
+        assignMechanic(parseInt(el.dataset.bookingId, 10), el.value);
+    });
+});
+</script>
