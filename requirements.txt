@@ -12,3 +12,7 @@ chardet
 razorpay
 qrcode[pil]
 pillow
+eventlet
+gunicorn
+gevent
+gevent-websocket

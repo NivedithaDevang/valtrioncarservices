@@ -1,6 +1,14 @@
+import os
+
+try:
+    from gevent import monkey
+    monkey.patch_all()
+except Exception:
+    # Render will still boot, but websocket support is best when gevent is available.
+    pass
+
 from app import create_app, socketio, db
 from app.sockets import register_sockets
-import os
 
 app = create_app()
 register_sockets(socketio)

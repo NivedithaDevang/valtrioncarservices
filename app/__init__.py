@@ -16,11 +16,19 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    async_mode = 'threading'
+    try:
+        import gevent  # noqa: F401
+        async_mode = 'gevent'
+    except Exception:
+        pass
+
     db.init_app(app)
     login_manager.init_app(app)
     bcrypt.init_app(app)
     mail.init_app(app)
-    socketio.init_app(app, cors_allowed_origins="*", async_mode='threading')
+    # Prefer gevent on Render; fall back to threading for local/dev environments.
+    socketio.init_app(app, cors_allowed_origins="*", async_mode=async_mode)
 
     login_manager.login_view = 'auth.login'
     login_manager.login_message_category = 'info'
