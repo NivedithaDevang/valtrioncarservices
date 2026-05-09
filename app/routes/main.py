@@ -1,16 +1,12 @@
-from app.models import Service, User
-from app import db, bcrypt
-
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required, current_user
-from app import db
-from app.models import Service, Booking
+from app import db, bcrypt
+from app.models import Service, User, Booking
 from datetime import date, timedelta
 from urllib.parse import quote
 
 main = Blueprint('main', __name__)
 
-# --- TEMPORARY SEED ROUTE FOR VERCEL ---
 @main.route('/seed')
 def seed():
     if Service.query.count() == 0:
@@ -42,14 +38,6 @@ def seed():
         db.session.commit()
         return "Services seeded!"
     return "Services already exist."
-from flask import Blueprint, render_template, jsonify, request
-from flask_login import login_required, current_user
-from app import db
-from app.models import Service, Booking
-from datetime import date, timedelta
-from urllib.parse import quote
-
-main = Blueprint('main', __name__)
 
 PACKAGE_DEFINITIONS = [
     {
@@ -87,123 +75,6 @@ PACKAGE_DEFINITIONS = [
 ]
 
 
-CUSTOM_CAR_SERVICES = [
-    {
-        'name': 'Exterior',
-        'description': 'Visual and body styling upgrades for a sharper and more personalized exterior look.',
-        'examples': [
-            'Paint, vinyl wrap, or PPF',
-            'Body kit (bumpers, skirts, diffuser)',
-            'Spoiler / wing',
-            'Bonnet (vented, carbon)',
-            'Widebody fenders / arch flares',
-            'Window tints',
-            'Headlights (LED, HID, projector)',
-            'Taillights (LED, smoked)',
-            'Mirrors (carbon, heated)'
-        ],
-        'accent': '#4f8cff',
-        'subtitle': 'Style and finish'
-    },
-    {
-        'name': 'Wheels & Tyres',
-        'description': 'Wheel and tyre enhancements for grip, stance, and road presence.',
-        'examples': [
-            'Alloy wheels',
-            'Performance tyres',
-            'Wheel spacers',
-            'Coloured brake calipers',
-            'Tyre lettering'
-        ],
-        'accent': '#22c55e',
-        'subtitle': 'Grip and stance'
-    },
-    {
-        'name': 'Performance',
-        'description': 'Engine and drivetrain upgrades focused on power, response, and stopping performance.',
-        'examples': [
-            'Cold air intake',
-            'Exhaust (cat-back, axle-back)',
-            'ECU remap / tune',
-            'Intercooler upgrade',
-            'Turbo / supercharger',
-            'Downpipe / headers',
-            'Fuel system (injectors, pump)',
-            'Brake upgrade (big brake kit)',
-            'Clutch upgrade'
-        ],
-        'accent': '#ef4444',
-        'subtitle': 'Power and response'
-    },
-    {
-        'name': 'Suspension & Handling',
-        'description': 'Chassis and geometry tuning for improved handling precision and cornering confidence.',
-        'examples': [
-            'Coilovers / lowering springs',
-            'Sway bars',
-            'Polyurethane bushings',
-            'Strut brace',
-            'Alignment (camber, toe, caster)'
-        ],
-        'accent': '#f59e0b',
-        'subtitle': 'Control and stability'
-    },
-    {
-        'name': 'Interior',
-        'description': 'Cabin-focused enhancements for comfort, style, and driver feel.',
-        'examples': [
-            'Steering wheel (Alcantara, carbon)',
-            'Sport / bucket seats',
-            'Custom upholstery',
-            'Shift knob',
-            'Pedals & footrest',
-            'Dashboard trim inserts',
-            'Roll cage / bar',
-            'Custom carpet & mats'
-        ],
-        'accent': '#ec4899',
-        'subtitle': 'Cabin comfort'
-    },
-    {
-        'name': 'Audio & Tech',
-        'description': 'Infotainment, monitoring, and audio upgrades for a smarter in-car experience.',
-        'examples': [
-            'Touchscreen head unit (CarPlay / Android Auto)',
-            'Speaker & tweeter upgrade',
-            'Amplifier',
-            'Subwoofer',
-            'Sound deadening',
-            'Dash cam',
-            'Reverse camera',
-            'OBD2 gauge display'
-        ],
-        'accent': '#14b8a6',
-        'subtitle': 'Smart features'
-    },
-    {
-        'name': 'Lighting',
-        'description': 'Ambient and accent lighting solutions for cabin, underbody, and engine bay.',
-        'examples': [
-            'Interior ambient / footwell LEDs',
-            'Underbody lighting',
-            'Engine bay LEDs'
-        ],
-        'accent': '#8b5cf6',
-        'subtitle': 'Visibility and mood'
-    },
-    {
-        'name': 'Safety & Track',
-        'description': 'Track-oriented safety equipment for higher-speed and motorsport applications.',
-        'examples': [
-            'Racing harness & harness bar',
-            'Tow hooks',
-            'Fire extinguisher',
-            'HANS device'
-        ],
-        'accent': '#64748b',
-        'subtitle': 'Safety and compliance'
-    }
-]
 
 
 def build_service_image(title, accent, subtitle):
@@ -236,8 +107,6 @@ def build_service_image(title, accent, subtitle):
     return 'data:image/svg+xml;charset=UTF-8,' + quote(svg)
 
 
-for service in CUSTOM_CAR_SERVICES:
-    service['image'] = build_service_image(service['name'], service['accent'], service['subtitle'])
 
 
 def ensure_packages_exist():
@@ -284,13 +153,12 @@ def index():
 @main.route('/services')
 def services():
     ensure_packages_exist()
-    # Exclude packages - only show services with a category that isn't 'Packages'
-    all_services = Service.query.filter(
+    filtered_services = Service.query.filter(
         Service.category.isnot(None),
         Service.category != 'Packages'
     ).all()
-    categories = list(set(service.category for service in all_services if service.category))
-    return render_template('services.html', services=all_services, categories=categories)
+    categories = list(set(service.category for service in filtered_services if service.category))
+    return render_template('services.html', services=filtered_services, categories=categories)
 
 
 @main.route('/packages')
@@ -368,7 +236,7 @@ def packages():
         'packages.html',
         packages=package_services,
         package_map=package_map,
-        custom_car_services=CUSTOM_CAR_SERVICES
+        # ...existing code...
     )
 
 

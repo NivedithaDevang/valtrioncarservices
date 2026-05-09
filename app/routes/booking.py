@@ -1,16 +1,16 @@
-﻿from datetime import datetime
+﻿
+from datetime import datetime
 
 import razorpay
 from flask import Blueprint, current_app, flash, jsonify, make_response, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from flask_mail import Message
 from razorpay.errors import SignatureVerificationError
-
 from app import db, mail
 from app.models import Booking, Service
 
-
 booking = Blueprint('booking', __name__)
+
 
 
 def _get_razorpay_client():

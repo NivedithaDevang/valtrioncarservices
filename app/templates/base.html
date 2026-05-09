@@ -30,8 +30,16 @@
         .nav-links { display:flex; gap:8px; align-items:center; }
         .nav-links a { color:var(--silver); text-decoration:none; font-size:14px; font-weight:600; letter-spacing:1px; padding:8px 16px; border-radius:6px; transition:all 0.3s; text-transform:uppercase; }
         .nav-links a:hover { color:var(--white); background:rgba(0,102,255,0.15); }
+        .nav-links a.profile-link { padding:8px 12px; font-size:18px; color:var(--blue); text-transform:none; }
+        .nav-links a.profile-link:hover { color:var(--blue-bright); background:rgba(0,102,255,0.12); }
         .nav-btn { background:var(--blue) !important; color:var(--white) !important; padding:8px 20px !important; }
         .nav-btn:hover { background:var(--blue-bright) !important; box-shadow:0 0 20px var(--blue-glow); }
+        @media (max-width: 950px) {
+            .nav-menu-btn { display:inline-flex; align-items:center; justify-content:center; }
+            .nav-links { display:none; position:absolute; top:70px; left:0; right:0; background:rgba(5,8,16,0.98); border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:10px 14px; flex-wrap:wrap; gap:8px; }
+            .nav-links.open { display:flex; flex-direction:column; }
+            .nav-links a { width:100%; text-align:center; }
+        }
 
         .flash-container { position:fixed; top:80px; right:20px; z-index:2000; }
         .flash { padding:12px 20px; border-radius:8px; margin-bottom:10px; font-weight:600; animation:slideIn 0.3s ease; border:1px solid; }
@@ -252,7 +260,7 @@
                 <a href="{{ url_for('admin.dashboard') }}">Admin</a>
             {% else %}
                 <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
-                <a href="{{ url_for('profile.view_profile') }}"><i class="fa fa-user"></i></a>
+                <a href="{{ url_for('profile.view_profile') }}" class="profile-link" title="Profile"><i class="fa fa-user-circle"></i></a>
             {% endif %}
             <a href="{{ url_for('auth.logout') }}">Logout</a>
         {% else %}
@@ -419,7 +427,6 @@ function sendClientMessage(){
     var input = document.getElementById('chat-input');
     var message = input.value.trim();
     if(!message) return;
-    appendChatMessage(message, 'customer', new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}));
     socket.emit('customer_send_message', {message: message});
     input.value = '';
 }

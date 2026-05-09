@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<section class="hero" style="position:relative;">
+
+<section class="hero" style="position:relative;display:flex;align-items:center;justify-content:center;min-height:100vh;">
     <div class="hero-video-wrap">
         <video autoplay muted loop playsinline id="hero-video" poster="{{ url_for('static', filename='logos/valtrion-icon.svg') }}">
             <source src="{{ url_for('static', filename='car.mp4') }}" type="video/mp4">
         </video>
         <div class="hero-overlay"></div>
     </div>
-    <div class="hero-content" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+    <div class="hero-content" style="position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:72px 24px 0;max-width:1100px;margin:auto;">
         <div class="hero-badge"><span class="dot"></span> Premium Automotive Care</div>
-        <h1 class="hero-title">
+        <h1 class="hero-title" style="display:flex;justify-content:center;align-items:center;">
             <span class="title-letter" style="animation-delay:0s">V</span>
             <span class="title-letter" style="animation-delay:0.08s">A</span>
             <span class="title-letter" style="animation-delay:0.16s">L</span>
@@ -82,26 +83,28 @@
         </div>
         <div class="services-grid" id="services-grid">
             {% for service in services %}
-            <div class="service-card" data-cat="{{ service.category }}">
-                <div class="service-icon-wrap"><i class="fa {{ service.icon or 'fa-wrench' }}"></i></div>
-                <h3 class="service-name">{{ service.name }}</h3>
-                <span class="service-cat-badge">{{ service.category }}</span>
-                <p class="service-duration"><i class="fa fa-clock"></i> {{ service.duration }}</p>
-                <div class="s-tabs">
-                    <button class="s-tab active" onclick="switchTab(this, 'desc-{{ service.id }}')">Description</button>
-                    <button class="s-tab" onclick="switchTab(this, 'price-{{ service.id }}')">Price</button>
+                {% if service.category != 'Packages' and service.category != 'Custom' %}
+                <div class="service-card" data-cat="{{ service.category }}">
+                    <div class="service-icon-wrap"><i class="fa {{ service.icon or 'fa-wrench' }}"></i></div>
+                    <h3 class="service-name">{{ service.name }}</h3>
+                    <span class="service-cat-badge">{{ service.category }}</span>
+                    <p class="service-duration"><i class="fa fa-clock"></i> {{ service.duration }}</p>
+                    <div class="s-tabs">
+                        <button class="s-tab active" onclick="switchTab(this, 'desc-{{ service.id }}')">Description</button>
+                        <button class="s-tab" onclick="switchTab(this, 'price-{{ service.id }}')">Price</button>
+                    </div>
+                    <div class="s-content" id="desc-{{ service.id }}">
+                        <p class="service-desc">{{ service.description }}</p>
+                    </div>
+                    <div class="s-content" id="price-{{ service.id }}" style="display:none;">
+                        <div class="price-display">Rs.{{ "%.0f"|format(service.price) }}</div>
+                        <p style="color:var(--silver);font-size:13px;margin-top:4px;">Inclusive of all taxes. No hidden charges.</p>
+                    </div>
+                    <a href="{{ url_for('booking.book_service', service_id=service.id) }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px;">
+                        <i class="fa fa-calendar-check"></i> Book Now
+                    </a>
                 </div>
-                <div class="s-content" id="desc-{{ service.id }}">
-                    <p class="service-desc">{{ service.description }}</p>
-                </div>
-                <div class="s-content" id="price-{{ service.id }}" style="display:none;">
-                    <div class="price-display">Rs.{{ "%.0f"|format(service.price) }}</div>
-                    <p style="color:var(--silver);font-size:13px;margin-top:4px;">Inclusive of all taxes. No hidden charges.</p>
-                </div>
-                <a href="{{ url_for('booking.book_service', service_id=service.id) }}" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px;">
-                    <i class="fa fa-calendar-check"></i> Book Now
-                </a>
-            </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
