@@ -42,6 +42,7 @@ Environment variables you must set when deploying backend elsewhere
 - `SECRET_KEY` (Flask secret)
 - `MAIL_USERNAME`, `MAIL_PASSWORD`, `MAIL_SERVER`, `MAIL_PORT` (if using email)
 - `TWILIO_*`, `RAZORPAY_*`, etc. depending on features
+- `RAZORPAY_*`, etc. depending on features
 
 If you want, I can:
 - Add proxy API wrappers in `api/` for a subset of your Flask endpoints so you can migrate incrementally.
