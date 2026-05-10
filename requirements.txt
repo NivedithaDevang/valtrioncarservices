@@ -12,8 +12,7 @@ chardet
 razorpay
 qrcode[pil]
 pillow
-eventlet
 gunicorn
 gevent
 gevent-websocket
-eventlet
+# Use gevent + gevent-websocket in production on Render

@@ -1,0 +1,32 @@
+{
+  "count": 3,
+  "users": [
+    {
+      "id": 1,
+      "name": "Valtrion Admin",
+      "email": "valtrioncarservices@gmail.com",
+      "phone": "9876543210",
+      "address": null,
+      "role": "admin",
+      "created_at": "2026-03-05T15:50:00.248127"
+    },
+    {
+      "id": 2,
+      "name": "Niveditha M",
+      "email": "niveditha8277@gmail.com",
+      "phone": "6362840854",
+      "address": "sunkadakatte",
+      "role": "customer",
+      "created_at": "2026-03-05T15:51:52.182036"
+    },
+    {
+      "id": 3,
+      "name": "Valtrion Admin",
+      "email": "valtrionbookings@gmail.com",
+      "phone": "9876543210",
+      "address": null,
+      "role": "admin",
+      "created_at": "2026-05-03T03:19:49.090952"
+    }
+  ]
+}
