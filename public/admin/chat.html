@@ -20,16 +20,7 @@
                 <input type="text" id="customer-search" class="form-control" placeholder="Search customers..." oninput="filterCustomers()">
             </div>
             <div id="customer-list" style="overflow-y:auto;flex:1;">
-                
-                <button type="button" class="customer-row" data-name="" onclick="setActiveThread(, )" id="cust-">
-                    <div class="customer-avatar"></div>
-                    <div class="customer-meta">
-                        <div class="customer-name"></div>
-                        <div class="customer-phone" id="cust-preview-"></div>
-                    </div>
-                    <span class="customer-badge" id="cust-badge-" style="display:none;">0</span>
-                </button>
-                
+                <!-- Customer rows are populated dynamically via fetch('/admin/chat/customers') -->
             </div>
         </aside>
 
